@@ -17,12 +17,12 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class ZoneSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Zone
-        fields = ('url', 'name')
+        fields = ('url', 'name', 'photo')
 
 class CategorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Category
-        fields = ('url', 'name')
+        fields = ('url', 'name', 'photo')
 
 class LugarSerializer(serializers.ModelSerializer):
     # photos = serializers.StringRelatedField(many=True)

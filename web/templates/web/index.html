@@ -1,17 +1,46 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
+{% block styles %}
+<style>
+	
+.zone-item
+{
+	height: 200px;
+}	
+</style>
+
+{% endblock %}
+
 {% block content %}
 
-<div class="row">
-	
-{% for row in data %}
-	
-	<div class="col-6">		
-	{{ row.name }}
+<section id="zonas">
+
+	<div class="row">
+		<div class="col text-center">
+			<h1>
+				Acapulco
+				<hr class="divider">
+			</h1>
+		</div>
 	</div>
 
-{% endfor %}
+	<div class="row">
+		{% for row in data %}
+			<div class="col-12 col-sm-6" style="padding:0;">
+				<div class="zone-item text-center" style="background:url(/media/{{row.photo}}) no-repeat; width: 100%; height: 200px; background-size: 100%;">
+					<h2 style="position:absolute; top: 50%; left: 35%;">
+						<a href="" style="color: white;">
+							{{ row.name }}
+						</a>
+					</h2>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
 
-</div>
+</section>
+
 
 {% endblock %}

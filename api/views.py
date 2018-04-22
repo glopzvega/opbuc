@@ -3,9 +3,9 @@ from rest_framework import viewsets
 
 from django.contrib.auth.models import User, Group
 
+
 from . import models
 from . import serializers as s
-
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -22,12 +22,14 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = s.GroupSerializer
 
+
 class ZoneViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
     queryset = models.Zone.objects.all()
     serializer_class = s.ZoneSerializer
+
 
 class CategoryViewSet(viewsets.ModelViewSet):
     """
@@ -36,12 +38,14 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = models.Category.objects.all()
     serializer_class = s.CategorySerializer
 
+
 class LugarViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
     queryset = models.Lugar.objects.all()
     serializer_class = s.LugarSerializer
+
 
 class PhotoViewSet(viewsets.ModelViewSet):
     """

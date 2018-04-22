@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block carousel %}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+	<div class="row">
+		<div class="col-4 offset-4">
+		  <h2>Login</h2>
+		  <form method="post">
+		    {% csrf_token %}		    
+			
+			<div class="row">
+				<div class="col">
+					{{ form.username.label_tag }}
+					{{ form.username }}
+				</div>
+			</div>
+			<br>
+			<div class="row">
+				<div class="col">
+					{{ form.password.label_tag }}
+					{{ form.password }}
+				</div>
+			</div>
+			<br>
+			<div class="row">
+				<div class="col">
+					<button type="submit" class="btn btn-primary">Acceder</button>
+				</div>
+			</div>
+
+		    
+		  </form>
+		  <br>
+		  {% if form.errors %}
+			<p>Your username and password didn't match. Please try again.</p>
+			{% endif %}
+
+			{% if next %}
+			    {% if user.is_authenticated %}
+			    <p>Your account doesn't have access to this page. To proceed,
+			    please login with an account that has access.</p>
+			    {% else %}
+			    <p>Please login to see this page.</p>
+			    {% endif %}
+			{% endif %}
+		</div>
+	</div>
+</div>
+
+
+
+{% endblock %}
