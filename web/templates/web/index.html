@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row">
+	
+{% for row in data %}
+	
+	<div class="col-6">		
+	{{ row.name }}
+	</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}
