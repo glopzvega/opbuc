@@ -55,9 +55,12 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="{% url 'lugares_zona' data.lugar.zone.id %}">{{ data.lugar.zone.name }}</a></li>
+
     <li class="breadcrumb-item"><a href="{% url 'lugares_categoria_zona' data.lugar.category.id data.lugar.zone.id %}">{{ data.lugar.category }}</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page">
     <a href="{% url 'lugar' data.lugar.id %}">{{ data.lugar.name }}</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page">{{ data.name }}</li>
   </ol>
 </nav>

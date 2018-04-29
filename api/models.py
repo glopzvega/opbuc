@@ -28,6 +28,9 @@ class Lugar(models.Model):
 	description = models.TextField(blank=True, null=True)
 	category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL)
 	zone = models.ForeignKey(Zone, null=True, blank=True, on_delete=models.SET_NULL)	
+	phone = models.IntegerField(blank=True, null=True)
+	email = models.EmailField(blank=True, null=True)
+	photo = models.ImageField(blank=True, null=True)
 
 	def __str__(self):
 		return self.name	

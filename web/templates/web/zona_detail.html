@@ -1,9 +1,8 @@
 {% extends 'base.html' %}
-
 {% load static %}
 {% block carousel %}
 
-{% if categoria.photo %}
+{% if zona.photo %}
 
 <div class="row">  	
 	<div id="PhotosCarousel" class="carousel slide" data-ride="carousel">
@@ -13,7 +12,7 @@
 		<div class="carousel-inner">
 			
 			<div class="carousel-item active">
-				<img class="d-block w-100" src="{{ categoria.photo.url }}" alt="First slide">
+				<img class="d-block w-100" src="{{ zona.photo.url }}" alt="First slide">
 				<div class="carousel-caption d-none d-md-block">	
 												 
 			  	</div>
@@ -39,14 +38,15 @@
 <section>	
 	<div class="row">
 		<div class="col text-center">
-			<h1>{{ categoria.name }}</h1>
+			<h1>{{ zona.name }}</h1>
 			<p>
-				A continuación encontraras lugares relacionados a la categoría de {{ categoria.name }}
+				A continuación encontraras lugares dentro de la {{ zona.name }} de Acapulco
 			</p>
 			<hr class="divider">
 		</div>
 	</div>
 </section>
+
 <section>
 	<div class="row">
 		<div class="col-8 offset-2">			
@@ -70,6 +70,6 @@
 		</div>
 	</div>
 </section>
-</div>
 
+</div>
 {% endblock %}

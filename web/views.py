@@ -39,10 +39,11 @@ def lugares_zona(request, id):
 	lugares = []
 
 	if zona:
-		lugares = model.Lugar.objects.filter(zone__exact=id)
+		lugares = models.Lugar.objects.filter(zone__exact=id)
 
 	context = {
-		"data" : lugares
+		"data" : lugares,
+		"zona" : zona
 	}
 	return render(request, "web/zona_detail.html", context)
 
@@ -54,7 +55,8 @@ def lugares_categoria(request, id):
 		lugares = models.Lugar.objects.filter(category__exact=id)
 
 	context = {
-		"data" : lugares
+		"data" : lugares,
+		"categoria" : categoria
 	}
 	return render(request, "web/categoria_detail.html", context)
 
