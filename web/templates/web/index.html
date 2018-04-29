@@ -15,29 +15,39 @@
 
 {% block content %}
 
-<section id="zonas">
+{{ zones }}
+
+<section id="categorias">
 
 	<div class="row">
 		<div class="col text-center">
 			<h1>
-				Acapulco
-				<hr class="divider">
+				¿Qué estás buscando?
 			</h1>
+			<p>
+				A continuación se muestran algúnas categorias con las que podrás encontrar facilmente el lugar que estás buscando.
+			</p>				
+			<hr class="divider">
 		</div>
 	</div>
-
 	<div class="row">
-		{% for row in data %}
-			<div class="col-12 col-sm-6" style="padding:0;">
-				<div class="zone-item text-center" style="background:url(/media/{{row.photo}}) no-repeat; width: 100%; height: 200px; background-size: 100%;">
-					<h2 style="position:absolute; top: 50%; left: 35%;">
-						<a href="" style="color: white;">
-							{{ row.name }}
-						</a>
-					</h2>
-				</div>
+		<div class="col-8 offset-2">
+	
+			<div class="row">
+				{% for row in data %}
+					<div class="col-12 col-sm-6" style="padding:0;">
+						<div class="zone-item text-center" style="background:url(/media/{{row.photo}}) no-repeat; width: 100%; height: 200px; background-size: 100%;">
+							<h2>
+								<a href="{% url 'lugares_categoria' row.id %}" class="etiqueta" style="color: white;">
+									{{ row.name }}
+								</a>
+							</h2>
+						</div>
+					</div>
+				{% endfor %}
 			</div>
-		{% endfor %}
+
+		</div>		
 	</div>
 
 </section>

@@ -53,3 +53,17 @@ class PhotoViewSet(viewsets.ModelViewSet):
     """
     queryset = models.Photo.objects.all()
     serializer_class = s.PhotoSerializer
+
+class ProductoViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = models.Producto.objects.all()
+    serializer_class = s.ProductoSerializer
+
+class CommentViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = models.Comment.objects.all()
+    serializer_class = s.CommentSerializer

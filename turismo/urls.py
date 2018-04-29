@@ -29,6 +29,8 @@ router.register('zones', views.ZoneViewSet)
 router.register('categories', views.CategoryViewSet)
 router.register('lugares', views.LugarViewSet)
 router.register('photos', views.PhotoViewSet)
+router.register('productos', views.ProductoViewSet)
+router.register('comentarios', views.CommentViewSet)
 
 urlpatterns = [
     path('', include('web.urls')),

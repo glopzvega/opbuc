@@ -1,0 +1,39 @@
+server {
+    listen 8000;
+    server_name 0.0.0.0;    
+
+    location /static {
+            root /home/glvega/envs/turismoenv;
+            alias /home/glvega/envs/turismoenv/turismo/static;
+    }
+
+    location / {
+            include proxy_params;
+            proxy_pass http://unix:/home/glvega/envs/turismoenv/turismo.sock;
+    }
+}
+
+gunicorn --daemon --workers 3 --bind unix:/home/glvega/envs/turismoenv/turismo.sock turismo.wsgi
+
+gunicorn --bind unix:/home/glvega/envs/turismoenv/turismo.sock turismo.wsgi
+
+[program:turismo]
+command=/home/glvega/envs/turismoenv/bin/gunicorn --workers 3 --bind unix:/home/glvega/envs/turismoenv/turismo.sock turismo.wsgi
+directory=/home/glvega/envs/turismoenv/turismo
+autostart=true
+autorestart=true
+stderr_logfile=/var/log/turismo.err.log
+stdout_logfile=/var/log/turismo.out.log
+
+<VirtualHost *:80>
+    ServerName turismo.iozoft.com
+    ServerAlias turismo.iozoft.com
+
+    LogLevel warn
+    ErrorLog /var/log/apache2/turismo.iozoft.com.error.log
+    CustomLog /var/log/apache2/turismo.iozoft.com.access.log combined
+
+    ProxyPass / http://turismo.iozoft.com:8000/
+    ProxyPassReverse / http://turismo.iozoft.com:8000/
+
+</VirtualHost>
