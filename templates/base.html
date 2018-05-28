@@ -29,6 +29,7 @@
             margin-right: -15px;
             margin-left: -15px;
             padding-top: 3em;
+            width: 100%;
         } 
 
         hr.divider
@@ -36,7 +37,7 @@
             border: 2px solid #17a2b8;
             margin-bottom: 2em;
             width: 80px;            
-        }
+        }        
 
         hr.divider.red
         {
@@ -167,7 +168,7 @@
 
   {% if zonas %}
     
-    <div class="row">
+ 
   
       <div id="ZonesCarousel" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">
@@ -209,15 +210,16 @@
           <span class="sr-only">Next</span>
         </a>
       </div>
-      </div>
 
   {% endif %}
 
   {% endblock %}
-        
+  
+  <div class="container-fluid">    
   {% block content %}  
 
   {% endblock %}    
+  </div>
    
     
     <!-- Optional JavaScript -->

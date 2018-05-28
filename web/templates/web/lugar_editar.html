@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<section>
+	<form action="{% url 'lugar_editar' data.id %}" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+	<div class="row">
+		<div class="col-8 offset-2">	
+		<div class="row">
+			<div class="col text-center">
+				<h1>Lugares</h1>
+				<h4 class="text-muted">(Edición de Datos)</h4>
+				<hr class="divider">
+			</div>
+		</div>		
+		<div class="row">
+		{% for field in form %}
+			<div class="col-12">			
+			{{ field.label }}
+			{{ field }}
+			<br>
+			</div>
+		{% endfor %}
+		</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col text-center">
+			<button class="btn btn-danger"> GUARDAR </button>
+		</div>
+	</div>
+	</form>
+</section>
+
+{% endblock %}
