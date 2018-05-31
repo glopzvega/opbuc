@@ -123,25 +123,22 @@
             <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
               <li class="nav-item">
                 <a class="nav-link" href="/">Inicio <span class="sr-only">(current)</span></a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/bares">Bares</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/restaurantes">Restaurantes</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/dicotecas">Dicotecas</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/entretenimiento">Entretenimiento</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/cultura">Cultura</a>
-              </li>
+              </li>              
               
               {% if user.is_authenticated %}
               
+              <li class="nav-item">
+                <a class="nav-link" href="/categorias">Categorias</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="/lugares">Lugares</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="/productos">Productos</a>
+              </li>
+
               <li class="nav-item">
                 <a class="nav-link" href="/admin">Admin</a>
               </li>
