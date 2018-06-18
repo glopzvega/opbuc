@@ -18,8 +18,15 @@ urlpatterns = [
     path('lugares/', views.ver_lugares, name="ver_lugares"),
     path('lugar/nuevo', views.lugar_nuevo, name="lugar_nuevo"),
     path('lugar/editar/<int:id>', views.lugar_editar, name="lugar_editar"),
+    path('lugar/<int:id>/foto/upload', views.lugar_photo_upload, name='lugar_photo_upload'),
 
     path('productos/', views.ver_productos, name="ver_productos"),
     path('producto/nuevo', views.producto_nuevo, name="producto_nuevo"),
     path('producto/editar/<int:id>', views.producto_editar, name="producto_editar"),
+    path('producto/<int:id>/fotos', views.producto_fotos, name="producto_fotos"),
+    
+    path('photo/<int:id>/delete', views.eliminar_foto, name="eliminar_foto"),
+    path('photo/<int:id>/main', views.main_foto, name="main_foto"),
+
+
 ] 

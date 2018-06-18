@@ -4,36 +4,36 @@
 <style>
 	.info
 	{
-		padding: 1em;
+		/*padding: 1em;*/
 	}
+	.info a, .info span
+	{
+		color: gray;
+	}
+	.carousel img
+	{
+		height: 450px;
+	}
+	.separator
+	{
+		border-right: 1px solid gray;
+		margin: 10px; 
+	}
+
 </style>
 {% endblock %}
 {% block carousel %}
-
-{% if photos %}
+<!--<div class="container-fluid">
+	
 <div class="row">  	
 	<div id="PhotosCarousel" class="carousel slide" data-ride="carousel">
 		<ol class="carousel-indicators">
-			{% for row in photos %}		
-				{% if forloop.first %}		
-			  		<li data-target="#PhotosCarousel" data-slide-to="{{ forloop.counter0 }}" class="active"></li>
-			  	{% else %}
-			  		<li data-target="#PhotosCarousel" data-slide-to="{{ forloop.counter0 }}" class=""></li>
-			  	{% endif %}
-		  	{% endfor %}
+			<li data-target="#PhotosCarousel" data-slide-to="{{ forloop.counter0 }}" class="active"></li>			
 		</ol>
-		<div class="carousel-inner">
-			{% for row in photos %}	
-				{% if forloop.first %}	
-				<div class="carousel-item active">
-				{% else %}
-				<div class="carousel-item">
-				{% endif %}
-					<img class="d-block w-100" src="{{ row.photo.url }}" alt="First slide">
-					<div class="carousel-caption d-none d-md-block">					 
-				  	</div>
-				</div>   
-			{% endfor %}
+		<div class="carousel-inner">			
+			<img class="d-block w-100" src="{{ data.photo.url }}" alt="First slide">
+			<div class="carousel-caption d-none d-md-block">
+		  	</div>				
 		</div>
 		
 		<a class="carousel-control-prev" href="#PhotosCarousel" role="button" data-slide="prev">
@@ -46,30 +46,112 @@
 		</a>
 	</div>
 </div>
-{% endif %}
+</div>
+-->
+{% endblock %}
+{% block breadcumb %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'lugares_categoria' data.category.id %}">{{data.category}}</a></li>    
+    <li class="breadcrumb-item active">{{data.name}}</li>    
+  </ol>
+</nav>
 {% endblock %}
 {% block content %}
-<div class="row">
-	<div class="col">
-		<img src="{{ data.photo.url }}" alt="" style="width: 100%; height: 400px;">
-	</div>
-</div>
-<div class="row">
-	<div class="col-8 offset-2">
-		<div class="row">
-			<div class="col-8 info">
-				<h5><b>{{ data.category }}</b></h5>
-				<h1>{{ data.name }}</h1>
-				<span class="text-muted">{{ data.description }}</span>
+<div class="container-fluid">
+	
+	<div class="row">
+		<div class="col-12">
+			<div class="row">
+				<div class="col-12">
+					<div class="row">
+						<div class="col info">
+							<h1>{{ data.name }}</h1>
+							<p class="text-muted">{{ data.description }}</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col info">							
+							<a href="{% url 'lugares_categoria' data.category.id %}">{{ data.category }}</a> 
+							<span class="separator"></span> 
+							<a href="{% url 'lugares_zona' data.zone.id %}">Acapulco, {{ data.zone }}</a>
+							<span class="separator"></span> 
+							<span>${{ data.price }}</span>
+					<!--	</div>
+					</div>
+					<div class="row">
+						<div class="col info">							-->
+							<span class="separator"></span>
+							<span>								
+							<i class="fa fa-map-marker-alt"></i>
+							{{ data.address }}
+							</span>
+							<span class="separator"></span> 
+							<span>								
+							<i class="fa fa-phone-square"></i>
+							{{ data.phone }}
+							</span>
+							<span class="separator"></span> 
+							<span>								
+							<i class="fa fa-envelope"></i>
+							{{ data.email }}
+							</span>
+
+						</div>
+					</div>
+					<hr>
+					<ul class="nav nav-tabs" id="myTab" role="tablist">
+					  <li class="nav-item">
+					    <a class="nav-link active" id="fotos-tab" data-toggle="tab" href="#fotos" role="tab" aria-controls="fotos" aria-selected="true">Fotos</a>
+					  </li>
+					  <li class="nav-item">
+					    <a class="nav-link" id="menu-tab" data-toggle="tab" href="#menu" role="tab" aria-controls="menu" aria-selected="false">Menu</a>
+					  </li>
+					  
+					</ul>
+					<div class="tab-content container-fluid" id="myTabContent">
+						<div class="tab-pane fade show active" id="fotos" role="tabpanel" aria-labelledby="fotos-tab">
+							<div class="row gallery">
+								<div class="col-md-12 col-lg-6">
+									{% if data.photo %}
+									<a class="picture" href="{{ data.photo.url }}">
+										<img src="{{ data.photo.url }}" alt="fotos" class="img-main">
+									</a>
+									{% else %}
+									<img src="{% static '/img/default.png' %}" alt="fotos" class="img-main">	
+									{% endif %}
+									<br><br>
+								</div>
+								<div class="col-md-12 col-lg-6">
+									<div class="row">
+										{% if photos %}
+										{% for el in photos %}
+											<div class='col-sm-4 col-md-4 col-6'>
+												
+												<a href="{% url 'main_foto' el.id %}" class="main" data-toggle="tooltip" data-placement="right" title="Hacer Foto Principal"><i class="fa fa-home"></i></a>
+												
+												<a href="{% url 'eliminar_foto' el.id %}" class="delete" data-toggle="tooltip" data-placement="right" title="Eliminar">
+												<i class="fa fa-trash"></i></a>
+												
+												<a class="picture" href='{{ el.photo.url }}'>
+													<img src='{{ el.photo.url }}'/>
+												</a>
+												<br><br>
+											</div>
+										{% endfor %}
+										{% endif %}
+									</div>
+								</div>
+							</div>	
+						</div>
+						<div class="tab-pane fade show active" id="menu" role="tabpanel" aria-labelledby="menu-tab"></div>
+					</div>			
+				</div>
 				
 			</div>
-			<div class="col-4">
-				<h2> ${{ data.price }} </h2>
-			</div>
+			
 		</div>
-		
-	</div>
-	<div class="col-4">
 		
 	</div>
 </div>

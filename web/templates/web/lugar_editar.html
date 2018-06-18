@@ -1,35 +1,124 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block styles %}
+<style>
+	
+	
+</style>
+{% endblock %}
+{% block breadcumb %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'categoria_editar' data.category.id %}">{{data.category}}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{data.name}}</li>
+  </ol>
+</nav>
+{% endblock %}
 {% block content %}
 
-<section>
-	<form action="{% url 'lugar_editar' data.id %}" method="post" enctype="multipart/form-data">
+<div class="container-fluid">
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="lugar-tab" data-toggle="tab" href="#lugar" role="tab" aria-controls="lugar" aria-selected="true">Lugar</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="fotos-tab" data-toggle="tab" href="#fotos" role="tab" aria-controls="fotos" aria-selected="false">Fotos</a>
+  </li>
+  
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="lugar" role="tabpanel" aria-labelledby="lugar-tab">
+  	<form action="{% url 'lugar_editar' data.id %}" method="post" enctype="multipart/form-data">
 	{% csrf_token %}
-	<div class="row">
-		<div class="col-8 offset-2">	
+		<div class="row">
+			<div class="col">
+				<div class="row">
+					<div class="col">						
+						{% if data.photo %}
+						<img src="{{ data.photo.url }}" alt="fotos" class="img-main">
+						{% else %}
+						<img src="{% static '/img/default.png' %}" alt="fotos" class="img-main">	
+						{% endif %}
+					</div>
+				</div>
+				<br>
+				<div class="row gallery">
+					{% if fotos %}
+					{% for el in fotos %}
+						<div class='col-3'>
+							
+							<a href="{% url 'main_foto' el.id %}" class="main" data-toggle="tooltip" data-placement="right" title="Hacer Foto Principal"><i class="fa fa-home"></i></a>
+							
+							<a href="{% url 'eliminar_foto' el.id %}" class="delete" data-toggle="tooltip" data-placement="right" title="Eliminar">
+							<i class="fa fa-trash"></i></a>
+							
+							<a class="picture" href='{{ el.photo.url }}'>
+								<img src='{{ el.photo.url }}'/>
+							</a>
+							<br><br>
+						</div>
+					{% endfor %}
+					{% endif %}
+				</div>
+				<hr>
+				<div class="row">
+					<div class="col">
+						<button type="button" class="btn btn-primary js-upload-photos">
+					      <span class="glyphicon glyphicon-cloud-upload"></span> Subir Fotos
+					    </button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col">
+						<input id="fileupload" type="file" name="photo" multiple style="display: none;" data-url="{% url 'lugar_photo_upload' data.id %}" data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'>
+					</div>
+				</div>
+			</div>
+			<div class="col">	
+					
+			<div class="row">
+			{% for field in form %}
+				<div class="col-12">			
+				{{ field.label }}
+				{{ field }}
+				<br>
+				</div>
+			{% endfor %}
+			</div>
+			</div>
+		</div>
 		<div class="row">
 			<div class="col text-center">
-				<h1>Lugares</h1>
-				<h4 class="text-muted">(Edición de Datos)</h4>
-				<hr class="divider">
+				<button class="btn btn-danger"> GUARDAR </button>
 			</div>
-		</div>		
-		<div class="row">
-		{% for field in form %}
-			<div class="col-12">			
-			{{ field.label }}
-			{{ field }}
-			<br>
-			</div>
-		{% endfor %}
 		</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col text-center">
-			<button class="btn btn-danger"> GUARDAR </button>
-		</div>
-	</div>
 	</form>
-</section>
+  </div>
+  <div class="tab-pane fade" id="fotos" role="tabpanel" aria-labelledby="fotos-tab">...</div>
+  
+</div>
 
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'js/jquery-file-upload/vendor/jquery.ui.widget.js' %}"></script>
+<script src="{% static 'js/jquery-file-upload/jquery.iframe-transport.js' %}"></script>
+<script src="{% static 'js/jquery-file-upload/jquery.fileupload.js' %}"></script>
+<script>
+	$(".js-upload-photos").click(function () {
+    $("#fileupload").click();
+  });
+
+  $("#fileupload").fileupload({
+    dataType: 'json',
+    done: function (e, data) {
+      if (data.result.success) {
+        $(".gallery").prepend("<div class='col-3'><a href='"+data.result.url+"'><img src='" + data.result.url + "'/></a><br><br></div>");
+      }
+    }
+  });
+  
+</script>
 {% endblock %}

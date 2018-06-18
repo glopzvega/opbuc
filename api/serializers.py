@@ -32,7 +32,7 @@ class LugarSerializer(serializers.HyperlinkedModelSerializer):
         view_name='photo-detail')
     class Meta:
         model = models.Lugar
-        fields = ('url', 'name', 'description', 'category', 'zone', 'phone', 'email', 'photo', 'photos')
+        fields = ('url', 'name', 'description', 'address', 'category', 'zone', 'phone', 'email', 'web', 'photo', 'photos')
 
 class PhotoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

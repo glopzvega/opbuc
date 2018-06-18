@@ -15,7 +15,8 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap-table.css' %}">
     <link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/select2-bootstrap.css' %}">
-        
+    <link rel="stylesheet" href="{% static 'css/fontawesome-all.min.css' %}">
+
     <style>
 
         h1, h2, h3, h4, h5
@@ -101,6 +102,46 @@
         .sombra
         {
           text-shadow: 2px 2px #5d6165
+        }
+
+        img
+        {
+          width: 100%;
+        }
+
+        .gallery img
+        {
+          height: 130px;          
+        }
+
+        img.img-main
+        {
+          height: 400px;
+          /*min-height: 300px;*/
+        }
+
+        .gallery .delete
+        {
+          position: absolute;
+            right: 20px;
+            top: 20px;
+            color: white;
+            text-decoration: none;
+            opacity: .75;
+        }
+
+        .gallery .main
+        {
+          position: absolute;
+          right: 20px;
+          color: white;     
+          text-decoration: none;
+          opacity: .75;
+        }
+
+        .tab-content
+        {
+          padding: 1em;
         }
 
     </style>
@@ -212,12 +253,16 @@
 
   {% endblock %}
   
-  <div class="container-fluid">    
+  {% block breadcumb %}
+  <nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Inicio</a></li>    
+  </ol>
+</nav>
+  {% endblock %}
   {% block content %}  
 
-  {% endblock %}    
-  </div>
-   
+  {% endblock %} 
     
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -235,6 +280,36 @@
       $('[data-toggle="tooltip"]').tooltip();    
 
       $('body').scrollspy({ target: '.navbar' , offset : 300})
+
+      $(".gallery a.delete").on("click", function(e){
+        e.preventDefault()
+        let el = $(this)
+        let url = $(this).attr("href");
+        $.getJSON(url, function(res){
+          if(res.success)
+          {
+            el.parent().remove();
+          }
+        });
+      });
+
+      $(".gallery a.main").on("click", function(e){
+        e.preventDefault()
+        let el = $("img.img-main")
+        let url = $(this).attr("href");
+        $.getJSON(url, {"tipo" : "lugar"}, function(res){
+          if(res.success)
+          {
+            el.attr("src", res.url)
+          }
+        });
+      });
+
+      $("a.picture").on("click", function(e){
+        e.preventDefault();
+        let url = $(this).attr("href");
+        lity(url);
+      });
 
     </script>
   

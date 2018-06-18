@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load static %}
+
 {% block carousel %}
 
 {% if categoria.photo %}
@@ -33,20 +34,17 @@
 </div>
 {% endif %}
 {% endblock %}
+{% block breadcumb %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+    <li class="breadcrumb-item active">{{categoria}}</li>    
+  </ol>
+</nav>
+{% endblock %}
 {% block content %}
 <div class="container-fluid">
 	
-<section>	
-	<div class="row">
-		<div class="col text-center">
-			<h1>{{ categoria.name }}</h1>
-			<p>
-				A continuación encontraras lugares relacionados a la categoría de {{ categoria.name }}
-			</p>
-			<hr class="divider">
-		</div>
-	</div>
-</section>
 <section>
 	<div class="row">
 		<div class="col-8 offset-2">			

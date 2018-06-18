@@ -26,12 +26,14 @@ class Category(models.Model):
 class Lugar(models.Model):
 	name = models.CharField(max_length=255)
 	description = models.TextField(blank=True, null=True)
+	address = models.TextField(blank=True, null=True)
 	category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL)
 	zone = models.ForeignKey(Zone, null=True, blank=True, on_delete=models.SET_NULL)	
 	phone = models.IntegerField(blank=True, null=True)
 	email = models.EmailField(blank=True, null=True)
 	photo = models.ImageField(blank=True, null=True)
-
+	web = models.CharField(max_length=255, blank=True, null=True)
+	
 	def __str__(self):
 		return self.name	
 
@@ -69,7 +71,7 @@ class Comment(models.Model):
 class Photo(models.Model):
 	name = models.CharField(max_length=255)
 	photo = models.ImageField()
-	order = models.IntegerField()
+	order = models.IntegerField(default=0)
 	lugar_id = models.ForeignKey(Lugar, blank=True, null=True, related_name='photos', on_delete=models.CASCADE)
 	producto_id = models.ForeignKey(Producto, blank=True, null=True, related_name='photos', on_delete=models.CASCADE)
 
