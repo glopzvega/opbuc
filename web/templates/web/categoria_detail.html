@@ -3,36 +3,6 @@
 {% load static %}
 
 {% block carousel %}
-
-{% if categoria.photo %}
-
-<div class="row">  	
-	<div id="PhotosCarousel" class="carousel slide" data-ride="carousel">
-		<ol class="carousel-indicators">			
-			<li data-target="#PhotosCarousel" data-slide-to="0" class="active"></li>
-		</ol>
-		<div class="carousel-inner">
-			
-			<div class="carousel-item active">
-				<img class="d-block w-100" src="{{ categoria.photo.url }}" alt="First slide">
-				<div class="carousel-caption d-none d-md-block">	
-												 
-			  	</div>
-			</div>   
-			
-		</div>
-		
-		<a class="carousel-control-prev" href="#PhotosCarousel" role="button" data-slide="prev">
-		  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-		  <span class="sr-only">Previous</span>
-		</a>
-		<a class="carousel-control-next" href="#PhotosCarousel" role="button" data-slide="next">
-		  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-		  <span class="sr-only">Next</span>
-		</a>
-	</div>
-</div>
-{% endif %}
 {% endblock %}
 {% block breadcumb %}
 <nav aria-label="breadcrumb">
@@ -45,29 +15,119 @@
 {% block content %}
 <div class="container-fluid">
 	
-<section>
 	<div class="row">
-		<div class="col-8 offset-2">			
-			<div class="row">
-				{% for row in data %}
-				<div class="col-4">
-					<div class="caja">
-						<img src="{{ row.photo.url }}" alt="{{ row.name }}">
-						<h2><a href="{% url 'lugar' row.id %}">{{ row.name }}</a></h2>
-						<a href='{% url "lugares_zona" row.zone.id %}'>{{ row.zone.name }}</a>
-						<p class="text-muted">
-							{{ row.description }}
-						</p>
-						<hr>
-						<span>Tel. {{ row.phone }}</span>
+		<div class="col-3">
+			<h5>Ubicación</h5>
+			<hr>
+			<div class="list-group">	
+				{% for zone in zones %}
+				<a href="{% url 'lugares_categoria' categoria.id %}?zone={{ zone.id }}" class="list-group-item list-group-item-action">
+					<i class="far fa-square"></i>
+					{{ zone.name }}
+				</a>
+	
+				{% endfor %}
 
+			</div>
+		</div>
+		<div class="col-9">	
+			<div class="row">
+				<div class="col">
+					<h2>{{ categoria }}s en Acapulco</h2>
+					<hr>
+				</div>
+			</div>		
+			<div class="row lugar-items">
+				{% for row in data %}
+				<div class="col-3">
+					<div class="caja">
+						<a href="{% url 'lugar' row.id %}">
+							<img src="{{ row.photo.url }}" alt="{{ row.name }}">
+						</a>
+						<div class="detail">
+							<div class="item-name">
+								<a href="{% url 'lugar' row.id %}">{{ row.name }}</a>
+							</div>
+							<div class="item-zone">
+								<p>
+									<small class="text-muted">{{ row.zone.name }}</small>
+									<br>
+									<small>
+										<i class="fa fa-phone-square"></i>
+										{{ row.phone }}
+									</small>									
+								</p>
+							</div>
+						</div>
 					</div>					
 				</div>
 				{% endfor %}
 			</div>
 		</div>
 	</div>
-</section>
+
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+	$(".list-group-item").on("click", function(e){
+		e.preventDefault();		
+		let href = "";
+		if($(this).hasClass("active"))
+		{
+			href = "";
+			$(this).removeClass("active")
+			$(this).find("i.far").removeClass("fa-check-square").addClass("fa-square");
+		}
+		else
+		{
+			href = $(this).attr("href");
+			$(".list-group-item").removeClass("active");
+			$(".list-group-item").find("i.far").removeClass("fa-check-square").addClass("fa-square");
+
+			$(this).addClass("active")
+			$(this).find("i.far").removeClass("fa-square").addClass("fa-check-square");	
+		}
+
+		$.getJSON(href, {"type" : "json"}, function(res){
+			console.log(res)
+			if(res.success)
+			{
+				let items = "";
+				$.each(res.data, function(index, value){
+					item = [
+						'<div class="col-3">',
+							'<div class="caja">',
+								'<a href="/lugar/' + value.id + '">',
+									'<img src="' + value.photo + '" alt="' + value.name + '">',
+								'</a>',
+								'<div class="detail">',
+									'<div class="item-name">',
+										'<a href="/lugar/' + value.id + '">' + value.name + '</a>',
+									'</div>',
+									'<div class="item-zone">',
+										'<p>',
+											'<small class="text-muted">'+ value.zone.name + '</small>',
+											'<br>',
+											'<small>',
+												'<i class="fa fa-phone-square"></i>',
+												value.phone,
+											'</small>',
+										'</p>',
+									'</div>',
+								'</div>',
+							'</div>',
+						'</div>',
+					].join("");
+					items += item;
+					console.log(item)
+				})
+				$(".lugar-items").html(items);
+			}
+		})
+		// console.log(items)
+	})
+</script>
 {% endblock %}

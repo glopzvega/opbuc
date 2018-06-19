@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
+from django.core import serializers
+
 # Create your views here.
 
 from .forms import CategoriaModelForm, LugarModelForm, ProductoModelForm, PhotoModelForm
@@ -50,17 +52,57 @@ def lugares_zona(request, id):
 	return render(request, "web/zona_detail.html", context)
 
 def lugares_categoria(request, id):
+
 	categoria = get_object_or_404(models.Category, pk=id)	
 	lugares = []
 
+	RequestType = request.GET.get("type", False)
+	
 	if categoria:
 		lugares = models.Lugar.objects.filter(category__exact=id)
 
+	zones = models.Zone.objects.all()
+
+	zone = request.GET.get("zone", False)
+
+	if zone:
+		lugares = lugares.filter(zone_id__exact=zone)	
+
 	context = {
+		"categoria" : categoria,
 		"data" : lugares,
-		"categoria" : categoria
+		"zones" : zones,
 	}
-	return render(request, "web/categoria_detail.html", context)
+
+	if RequestType and RequestType == "json":
+		
+		items = []
+		for lugar in lugares:
+			item = {
+				"id" : lugar.id,
+				"name" : lugar.name,
+				"zone" : {
+					"id" : lugar.zone.id,
+					"name" : lugar.zone.name,
+				},
+				"address" : lugar.address,
+				"phone" : lugar.phone,
+				"email" : lugar.email,
+				"photo" : lugar.photo.url
+			}
+			items.append(item)		
+
+		data = {
+			"success" :  True,
+			"data" : items,			
+		}
+
+		return JsonResponse(data)
+	
+	else:
+		return render(request, "web/categoria_detail.html", context)
+		
+
 
 def lugares_categoria_zona(request, id, zone_id):
 	categoria = get_object_or_404(models.Category, pk=id)	
