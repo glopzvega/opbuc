@@ -24,6 +24,7 @@ urlpatterns = [
     path('producto/nuevo', views.producto_nuevo, name="producto_nuevo"),
     path('producto/editar/<int:id>', views.producto_editar, name="producto_editar"),
     path('producto/<int:id>/fotos', views.producto_fotos, name="producto_fotos"),
+    path('producto/<int:id>/foto/upload', views.producto_photo_upload, name='producto_photo_upload'),
     
     path('photo/<int:id>/delete', views.eliminar_foto, name="eliminar_foto"),
     path('photo/<int:id>/main', views.main_foto, name="main_foto"),

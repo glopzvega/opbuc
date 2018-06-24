@@ -36,7 +36,7 @@ class ProductoModelForm(ModelForm):
 
 	class Meta:
 		model = Producto
-		fields = "__all__"
+		fields = ("name", "description", "price", "category", "lugar")
 		# fields = ("nocontrol", "apellidop", "apellidom", "nombre", "edad", "sexo", "email", "celular", "telefono", "carrera", "semestre", "promedio", "curp", "lugarnac", "fechanac", "maestro1", "maestro2", "maestro3", "maestro4", "maestro1a", "maestro2a", "maestro3a", "maestro4a")
 
 		labels = {

@@ -129,7 +129,7 @@
 										{% for el in photos %}
 											<div class='col-sm-4 col-md-4 col-6'>
 												
-												<a href="{% url 'main_foto' el.id %}" class="main" data-toggle="tooltip" data-placement="right" title="Hacer Foto Principal"><i class="fa fa-home"></i></a>
+												<a href="{% url 'main_foto' el.id %}" tipo="lugar" class="main" data-toggle="tooltip" data-placement="right" title="Hacer Foto Principal"><i class="fa fa-home"></i></a>
 												
 												<a href="{% url 'eliminar_foto' el.id %}" class="delete" data-toggle="tooltip" data-placement="right" title="Eliminar">
 												<i class="fa fa-trash"></i></a>
@@ -145,7 +145,40 @@
 								</div>
 							</div>	
 						</div>
-						<div class="tab-pane fade show active" id="menu" role="tabpanel" aria-labelledby="menu-tab"></div>
+						<div class="tab-pane fade show" id="menu" role="tabpanel" aria-labelledby="menu-tab">
+							<table class="table">
+								<thead>
+									<tr>
+										<th></th>
+										<th>Producto</th>
+										<th>Categoria</th>
+										<th>Precio</th>
+									</tr>
+								</thead>
+								<tbody>
+								{% for prod in productos %}		
+								<tr>	
+									<td>
+										{% if prod.photo %}
+										<a class="picture" href="{{ prod.photo.url }}">
+											<img src="{{ prod.photo.url }}" alt="fotos">
+										</a>
+										{% else %}
+										<img src="{% static '/img/default.png' %}" alt="fotos">	
+										{% endif %}
+									</td>								
+									<td>
+										<a href="{% url 'producto' prod.id %}">{{ prod }} </a>
+										<br> 
+										<small class="text-muted"> {{ prod.description }} </small> 
+									</td>
+									<td> {{ prod.category }} </td>
+									<td>{{ prod.price }}</td>
+								</tr>							
+								{% endfor %}
+								</tbody>
+							</table>
+						</div>
 					</div>			
 				</div>
 				

@@ -66,7 +66,7 @@ def lugares_categoria(request, id):
 	zone = request.GET.get("zone", False)
 
 	if zone:
-		lugares = lugares.filter(zone_id__exact=zone)	
+		lugares = lugares.filter(zone_id__exact=zone)
 
 	context = {
 		"categoria" : categoria,
@@ -123,10 +123,12 @@ def lugares_categoria_zona(request, id, zone_id):
 def lugar(request, id):
 	lugar = get_object_or_404(models.Lugar, pk=id)	
 	photos = models.Photo.objects.filter(lugar_id__exact=id)
-	
+	productos = models.Producto.objects.filter(lugar=lugar)	
+
 	context = {
 		"data" : lugar ,
-		"photos" : photos
+		"photos" : photos,
+		"productos" : productos
 	}
 	return render(request, "web/lugar_detail.html", context)
 
@@ -234,6 +236,28 @@ def lugar_editar(request, id):
 
 	return render(request, "web/lugar_editar.html", context)
 
+def producto_photo_upload(request, id):
+	producto = get_object_or_404(models.Producto, pk=id)
+
+	form = PhotoModelForm(request.POST, request.FILES)
+	
+	if form.is_valid():
+		photo = form.save(commit=False)
+		photo.name = photo.photo.name
+		photo.producto_id = producto
+		photo.save()
+
+		if not producto.photo:
+			producto.photo = photo.photo
+			producto.save()
+
+		data = {'success': True, 'name': photo.photo.name, 'url': photo.photo.url}
+	
+	else:
+		data = {'success': False}
+	
+	return JsonResponse(data)
+
 def lugar_photo_upload(request, id):
 	lugar = get_object_or_404(models.Lugar, pk=id)
 
@@ -244,6 +268,11 @@ def lugar_photo_upload(request, id):
 		photo.name = photo.photo.name
 		photo.lugar_id = lugar
 		photo.save()
+
+		if not lugar.photo:
+			lugar.photo = photo.photo
+			lugar.save()
+
 		data = {'success': True, 'name': photo.photo.name, 'url': photo.photo.url}
 	
 	else:
@@ -289,7 +318,10 @@ def producto_editar(request, id):
 	else:
 		form = ProductoModelForm(instance=producto)
 
+	fotos = models.Photo.objects.filter(producto_id=producto)
+
 	context = {
+		"fotos" : fotos,
 		"data" : producto,
 		"form" : form
 	}
