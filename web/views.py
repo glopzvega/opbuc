@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.core import serializers
-
+import locale
 # Create your views here.
 
 from .forms import CategoriaModelForm, LugarModelForm, ProductoModelForm, PhotoModelForm
@@ -124,9 +124,10 @@ def lugar(request, id):
 	lugar = get_object_or_404(models.Lugar, pk=id)	
 	photos = models.Photo.objects.filter(lugar_id__exact=id)
 	productos = models.Producto.objects.filter(lugar=lugar)	
-
+	comments = models.Comment.objects.filter(lugar=lugar)
 	context = {
 		"data" : lugar ,
+		"comments" : comments,
 		"photos" : photos,
 		"productos" : productos
 	}
@@ -235,6 +236,21 @@ def lugar_editar(request, id):
 	}
 
 	return render(request, "web/lugar_editar.html", context)
+
+def lugar_comment_upload(request, id):
+
+	lugar = get_object_or_404(models.Lugar, pk=id)
+
+	comentario = request.GET.get("comentario", False)
+	puntuacion = request.GET.get("puntuacion", False)
+	if comentario and puntuacion:
+		newComment = models.Comment(usuario=request.user, comentario=comentario, puntuacion=puntuacion, lugar=lugar)
+		newComment.save()
+
+		if newComment.id:
+			return JsonResponse({"success" : True, "id" : newComment.id})
+
+	return JsonResponse({"success" : False})
 
 def producto_photo_upload(request, id):
 	producto = get_object_or_404(models.Producto, pk=id)
@@ -367,3 +383,143 @@ def main_foto(request, id):
 	data = {'success': True, 'url': photo.photo.url}	
 	
 	return JsonResponse(data)
+
+# @login_required
+def ver_carrito(request):
+
+	total = 0
+	if not request.session.has_key("carrito"):
+		request.session["carrito"] = []
+
+	empty = False
+	if not request.session["carrito"]:
+		empty = True
+
+	locale.setlocale( locale.LC_ALL, 'en_US.UTF-8')
+	
+	productos = []
+	for el in request.session["carrito"]:
+		producto = get_object_or_404(models.Producto, pk=el["id"])
+		producto.cantidad_carrito = el["cantidad_carrito"]
+		producto.subtotal = el["subtotal"]
+		
+		subtotal_txt = locale.currency(producto.subtotal, grouping=True)
+		producto.subtotal_txt = subtotal_txt
+		
+		price_txt = locale.currency(producto.price, grouping=True)
+		producto.price_txt = price_txt
+
+		productos.append(producto)
+
+	if "total" in request.session:
+		total = request.session["total"]
+
+	total = locale.currency(total, grouping=True)
+
+	return render(request, "web/carrito.html", {"empty" : empty, "productos" : productos, "total" : total})
+
+# @login_required
+def cantidad_carrito(request, id):
+
+	producto = get_object_or_404(models.Producto, pk=id)
+
+	if not request.session.has_key("carrito"):
+		request.session["carrito"] = []
+
+	cantidad_carrito = int(request.GET.get("qty", 1))
+
+	carrito = request.session["carrito"]
+	total = 0
+	subtotal = 0
+
+	for el in carrito:
+		if el["id"] == producto.id:
+			el["cantidad_carrito"] = cantidad_carrito
+			subtotal = float(producto.price) * cantidad_carrito
+			el["subtotal"] = subtotal
+		total += el["subtotal"]
+
+	request.session["numero"] = len(carrito)
+	request.session["total"] = total
+	request.session["carrito"] = carrito
+	
+	locale.setlocale( locale.LC_ALL, 'en_US.UTF-8')
+	total = locale.currency(total, grouping=True)
+	subtotal = locale.currency(subtotal, grouping=True)
+
+	return JsonResponse({"success" : True, "qty" : len(carrito), "subtotal" : subtotal, "total" : total})		
+
+# @login_required
+def agregar_carrito(request, id):
+
+	producto = get_object_or_404(models.Producto, pk=id)
+
+	if not request.session.has_key("carrito"):
+		request.session["carrito"] = []
+		
+	carrito = request.session["carrito"]
+		
+	find = False		
+	for el in carrito:
+		if el["id"] == producto.id:
+			find = True			
+			el["cantidad_carrito"] += 1 
+			el["subtotal"] = float(producto.price) * el["cantidad_carrito"]			
+			break
+
+	if not find:
+
+		prod = {
+			"id" : producto.id,
+			"nombre" : producto.name,
+			"descripcion" : producto.description,
+			# "imagen" : producto.imagen,
+			"categoria_id" : producto.category.id,
+			"categoria" : producto.category.name,
+			"precio" : float(producto.price),
+			# "cantidad" : cantidad,
+			"cantidad_carrito" : 1,
+			"subtotal" : float(producto.price),			
+			"lugar" : producto.lugar.name,
+			"lugar_id" : producto.lugar.id,
+		}
+
+		carrito.append(prod)
+
+	total = 0
+	for el in carrito:
+		total += el["subtotal"]
+
+	request.session["numero"] = len(carrito)
+	request.session["total"] = total
+	request.session["carrito"] = carrito
+
+	return JsonResponse({"success" : True, "qty" : len(carrito)})
+
+# @login_required
+def quitar_carrito(request, id):
+
+	producto = get_object_or_404(models.Producto, pk=id)
+
+	if not request.session.has_key("carrito"):
+		request.session["carrito"] = []
+		
+	carrito = request.session["carrito"]	
+	
+	for el in carrito:
+		if el["id"] == producto.id:
+			carrito.remove(el)			
+			break
+
+	total = 0
+	for el in carrito:
+		total += el["subtotal"]
+
+	request.session["numero"] = len(carrito)
+	request.session["total"] = total
+	request.session["carrito"] = carrito
+
+	locale.setlocale( locale.LC_ALL, 'en_US.UTF-8')
+	total = locale.currency(total, grouping=True)
+
+	return JsonResponse({"success" : True, "qty" : len(carrito), "total" : total})

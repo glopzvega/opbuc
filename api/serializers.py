@@ -24,6 +24,16 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
         model = models.Category
         fields = ('url', 'name', 'photo', 'tipo')
 
+class OrderSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = models.Order
+        fields = ('url', 'name', 'usuario', 'fecha_pedido', 'hora_pedido', 'total')
+
+class OrderLineSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = models.OrderLine
+        fields = ('url', 'producto', 'orden', 'quantity', 'subtotal')
+
 class LugarSerializer(serializers.HyperlinkedModelSerializer):
     # photos = serializers.StringRelatedField(many=True)
     photos = serializers.HyperlinkedRelatedField(

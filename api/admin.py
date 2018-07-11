@@ -19,11 +19,19 @@ class LugarAdmin(admin.ModelAdmin):
 class ProductoAdmin(admin.ModelAdmin):
 	list_display = ("id", "name", "category", "lugar", "description", "price")
 
+@admin.register(models.Order)
+class OrderAdmin(admin.ModelAdmin):
+	list_display = ("id", "name", "fecha_pedido", "hora_pedido", "usuario", "total")
+
+@admin.register(models.OrderLine)
+class OrderLineAdmin(admin.ModelAdmin):
+	list_display = ("id", "producto", "quantity", "subtotal", "order")
+
 @admin.register(models.Photo)
 class PhotoAdmin(admin.ModelAdmin):
 	list_display = ("id", "lugar_id", "producto_id")
 
 @admin.register(models.Comment)
 class CommentAdmin(admin.ModelAdmin):
-	list_display = ("id", "lugar", "producto", "usuario", "fecha", "like", "lugar")	
+	list_display = ("id", "lugar", "producto", "usuario", "fecha", "lugar")	
 

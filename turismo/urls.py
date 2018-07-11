@@ -30,6 +30,8 @@ router.register('categories', views.CategoryViewSet)
 router.register('lugares', views.LugarViewSet)
 router.register('photos', views.PhotoViewSet)
 router.register('productos', views.ProductoViewSet)
+router.register('orders', views.OrderViewSet)
+router.register('order_lines', views.OrderLineViewSet)
 router.register('comentarios', views.CommentViewSet)
 
 urlpatterns = [

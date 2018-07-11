@@ -19,7 +19,31 @@
 		border-right: 1px solid gray;
 		margin: 10px; 
 	}
-
+	.comments .comment
+	{
+		padding: 1em 0 0 1em;
+	}
+	.comments img.rounded-circle
+	{
+		height: 80px;
+		width: 80px;
+	}
+	.comments .nombre-usuario
+	{
+		font-weight: bold;
+		font-size: 1.2em;
+		margin-top: 0.5em;		
+	}
+	.comments .comentario
+	{		
+		
+	}
+	.starrr span
+	{
+		font-size: 1.5em;
+		color: green;
+	}
+	
 </style>
 {% endblock %}
 {% block carousel %}
@@ -120,8 +144,63 @@
 									</a>
 									{% else %}
 									<img src="{% static '/img/default.png' %}" alt="fotos" class="img-main">	
-									{% endif %}
-									<br><br>
+									{% endif %}									
+									<hr>
+									<div class="row">
+										<div class="col">
+											<textarea name="newcomment" id="newcomment" class="form-control" cols="30" rows="5" placeholder="Deja tu comentario"></textarea>
+										</div>
+									</div>
+									<br>
+									<div class="row">
+										<div class="col-9">
+											¿Que tanto recomendarías el lugar?<div id="stars" class="starrr"></div>
+										</div>
+										<div class="col text-right">
+											<input type="hidden" id="puntuacion">
+											<a href="" class="btn btn-success disabled guardar_comentario">Comentar</a>
+										</div>
+									</div>
+									<hr>
+									<div class="row comments">
+										{% for comment in comments %}
+										<div class="col-12">
+											<div class="row comment">
+												<div class="col-2">
+													<img class="rounded-circle" src="{% static '/photos/1.jpg' %}" alt="">
+												</div>
+												<div class="col-10">
+													<div class="row">
+														<div class="col">
+															<div class="nombre-usuario">		
+															{{ comment.usuario }}
+															</div>					
+														</div>
+													</div>
+													<div class="row">
+														<div class="col">
+															<div class="puntuacion">
+																<small class="text-muted">
+																<i>
+																	{{ comment.puntuacion }}
+																</i>, 
+																{{ comment.fecha }}</small>
+
+															</div>
+														</div>
+													</div>
+													<div class="row">
+														<div class="col">
+														<p class="comentario text-muted">
+															{{ comment.comentario }}
+														</p>
+														</div>
+													</div>											
+												</div>
+											</div>
+										</div>
+										{% endfor %}
+									</div>
 								</div>
 								<div class="col-md-12 col-lg-6">
 									<div class="row">
@@ -153,6 +232,7 @@
 										<th>Producto</th>
 										<th>Categoria</th>
 										<th>Precio</th>
+										<th></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -174,6 +254,9 @@
 									</td>
 									<td> {{ prod.category }} </td>
 									<td>{{ prod.price }}</td>
+									<td>
+										<a class="btn btn-success agregar_carrito" href="{% url 'agregar_carrito' prod.id %}" title="Agregar al carrito"><i class="fas fa-cart-plus"></i></a>
+									</td>
 								</tr>							
 								{% endfor %}
 								</tbody>
@@ -188,4 +271,92 @@
 		
 	</div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+	let lugar_id = "{{ data.id }}";
+	$(".guardar_comentario").on("click", function(e){
+		e.preventDefault();
+		let comentario = $("#newcomment").val();
+		let puntuacion = $("#puntuacion").val();
+		let url = "/lugar/" + lugar_id + "/comment/upload";
+		$.getJSON(url, {"comentario" : comentario, "puntuacion" : puntuacion}, function(res){
+			console.log(res)
+		});
+	})
+
+	$(".comment .puntuacion i").each(function(){
+		let puntaje = $.trim($(this).text())
+		let puntajes = ["No lo recomendaría", "Lo recomendaría poco", "Lo recomendaría regular", "Es bueno", "Me encanta!"];
+		$(this).text(puntajes[puntaje-1])		
+	});
+
+	$(function() {		
+	  return $(".starrr").starrr();
+	});
+
+	$( document ).ready(function() {	      
+
+	  $('#stars').on('starrr:change', function(e, value){
+	    $('#count').html(value);
+	    $("#puntuacion").val(value);
+
+	    let newcomment = $("#newcomment").val()
+	    if(newcomment != "" && value != undefined)
+	    {
+	    	$(".guardar_comentario").removeClass("disabled");
+	    }
+	    else
+	    {
+	    	$(".guardar_comentario").addClass("disabled");
+	    }
+	  });
+	  
+	  $('#stars-existing').on('starrr:change', function(e, value){
+	    $('#count-existing').html(value);
+	    $("#puntuacion").val(value);
+
+	    let newcomment = $("#newcomment").val()
+	    if(newcomment != "" && value != undefined)
+	    {
+	    	$(".guardar_comentario").removeClass("disabled");
+	    }
+	    else
+	    {
+	    	$(".guardar_comentario").addClass("disabled");
+	    }
+	  });
+
+	  $("#newcomment").on("keyup", function(){
+
+	  	let comentario = $(this).val()
+	  	let puntuacion = $("#puntuacion").val()
+	  	if (comentario != "" && puntuacion != "")
+	  	{
+	  		$(".guardar_comentario").removeClass("disabled")
+	  	}
+	  	else
+	    {
+	    	$(".guardar_comentario").addClass("disabled");
+	    }
+	  });
+
+	  $(".agregar_carrito").on("click", function(e){
+	  	e.preventDefault()
+	  	let url = $(this).attr("href");
+	  	console.log(url)
+	  	$.getJSON(url, function(res){
+	  		console.log(res)
+	  		if(res.success)
+	  		{
+	  			alert("se ha agregado al carrito")
+	  			actualizar_carrito(res.qty);
+	  		}
+	  	})
+	  })
+
+
+	});
+</script>
 {% endblock %}

@@ -163,6 +163,13 @@
             <a class="navbar-brand" href="/">PBUC</a>
             <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
               <li class="nav-item">
+                <a href="{% url 'carrito' %}" class="nav-link carrito">
+                  <i class="fas fa-shopping-cart"></i>
+                  Carrito
+                  <span class="badge badge-primary">{{ request.session.numero }}</span>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a class="nav-link" href="/">Inicio <span class="sr-only">(current)</span></a>
               </li>              
               
@@ -273,8 +280,20 @@
     <script src="{% static 'js/bootstrap-table-export.js' %}"></script>
     <script src="{% static 'js/tableExport.js' %}"></script>
     <script src="{% static 'js/lity.min.js' %}"></script>
+    <script src="{% static 'js/starrr.js' %}"></script>
 
     <script>
+      monedaFormatter = function(value){
+        let params = {style: 'currency', currency: 'MXN'};
+        return Number(value).toLocaleString('es-MX', params)
+      }
+
+      actualizar_carrito = function(qty)
+      {
+        $(".carrito .badge").text(qty);
+      }
+
+
 
       $("input,select,textarea").addClass("form-control")
       $('[data-toggle="tooltip"]').tooltip();    

@@ -48,16 +48,33 @@ class Producto(models.Model):
 	def __str__(self):
 		return self.name
 
+class Order(models.Model):
+	usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+	fecha = models.DateTimeField(auto_now_add=True)
+	name = models.CharField(max_length=255)
+	fecha_pedido = models.DateField()
+	hora_pedido = models.TimeField()
+	total = models.DecimalField(max_digits=6, decimal_places=2)
+
+class OrderLine(models.Model):
+	usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+	fecha = models.DateTimeField(auto_now_add=True)
+	order = models.ForeignKey(Order, on_delete=models.CASCADE)
+	producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+	quantity = models.IntegerField()
+	subtotal = models.DecimalField(max_digits=6, decimal_places=2)
+
 class Comment(models.Model):
 	usuario = models.ForeignKey(User, on_delete=models.CASCADE)
 	fecha = models.DateField(auto_now_add=True)
 	comentario = models.TextField()
 	lugar = models.ForeignKey(Lugar, blank=True, null=True, on_delete=models.CASCADE)	
 	producto = models.ForeignKey(Producto, blank=True, null=True, on_delete=models.CASCADE)	
-	like = models.BooleanField()
+	puntuacion = models.IntegerField()
+	# like = models.BooleanField()
 	
-	class Meta:
-		unique_together = ('usuario', 'lugar')
+	# class Meta:
+	# 	unique_together = ('usuario', 'lugar')
 
 	def __str__(self):
 		if self.lugar:

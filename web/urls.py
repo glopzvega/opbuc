@@ -9,6 +9,10 @@ urlpatterns = [
     path('categoria/<int:id>/zona/<int:zone_id>', views.lugares_categoria_zona, name="lugares_categoria_zona"),    
     path('lugar/<int:id>', views.lugar, name="lugar"),
     path('producto/<int:id>', views.producto, name="producto"),
+    path('carrito/', views.ver_carrito, name="carrito"),
+    path('carrito/agregar/<int:id>', views.agregar_carrito, name="agregar_carrito"),
+    path('carrito/quitar/<int:id>', views.quitar_carrito, name="quitar_carrito"),
+    path('carrito/qty/<int:id>', views.cantidad_carrito, name="qty_carrito"),
 
     # ADMIN URL
     path('categorias/', views.ver_categorias, name="ver_categorias"),
@@ -19,6 +23,7 @@ urlpatterns = [
     path('lugar/nuevo', views.lugar_nuevo, name="lugar_nuevo"),
     path('lugar/editar/<int:id>', views.lugar_editar, name="lugar_editar"),
     path('lugar/<int:id>/foto/upload', views.lugar_photo_upload, name='lugar_photo_upload'),
+    path('lugar/<int:id>/comment/upload', views.lugar_comment_upload, name='lugar_comment_upload'),
 
     path('productos/', views.ver_productos, name="ver_productos"),
     path('producto/nuevo', views.producto_nuevo, name="producto_nuevo"),

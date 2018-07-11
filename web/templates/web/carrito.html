@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+{# {{ request.session.carrito }} #}
+
+<div class="container">
+<h1>Carrito de Compra:</h1>
+{{ request.session.ahora }}
+<div class="row">
+	<div class="col">
+		
+	</div>
+</div>
+<hr>
+<div class="row">
+	<div class="col-12">	
+		
+		
+		<table class="table">
+			<thead>
+				<tr>
+					<th></th>
+					<th>Lugar</th>
+					<th>Producto</th>					
+					<th>Cantidad</th>
+					<th>Precio Unitario</th>
+					<th>Subtotal</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% if not empty %}
+				{% for prod in productos %}
+				<tr>
+					<td>
+					{% if prod.photo %}
+						<a href="{{ prod.photo.url }}" data-lity data-toggle="tooltip" data-placement="right" title="Da clic para ampliar">
+							<img src="{{ prod.photo.url }}" alt="{{ prod.name }}" style="width: 100px;" >
+						</a>
+					{% else %}						
+						<img src="{% static 'img/default.png' %}" alt="Imagen" style="width: 100px;">
+					{% endif %}
+					</td>
+					<td><a href="{% url 'lugar' prod.lugar.id %}">{{ prod.lugar }}</a></td>
+					<td>{{ prod.name }} <b> [ {{ prod.category }} ] </b> <br> <small>{{ prod.description }} </small></td>
+					
+					<td>
+					
+					<form action="" method="post">
+						{% csrf_token %}
+						<input type="number" href="{% url 'qty_carrito' prod.id %}" name="cantidad_carrito" class="cantidad_carrito" min="0" value="{{ prod.cantidad_carrito }}">			
+					</form>
+
+					</td>					
+					<td>{{ prod.price_txt }}</td>
+					<td><b class="subtotal">{{ prod.subtotal_txt }}</b></td>
+					<td>
+						<a href="{% url 'quitar_carrito' prod.id %}" class="btn btn-light text-danger quitar_carrito" title="Quitar del Carrito de compra" data-toggle="tooltip" data-placement="left">
+							<i class="fas fa-trash"></i>
+						</a>
+					</td>
+				</tr>
+				{% endfor %}	
+				
+				{% else %}
+
+				<tr>
+					<td>Aun no has agregado nada a tu carrito.</td>					
+				</tr>
+
+				{% endif %}
+
+			</tbody>
+		</table>
+
+	</div>
+</div>
+<hr>
+<div class="row">
+	<div class="col">
+		<a href="{% url 'index' %}" class="btn btn-info">Continuar Comprando</a>
+	</div>
+	<div class="col">
+		{# <a href="{% url 'comprar' %}" class="btn btn-success">Comprar</a> #}
+		<div class="row">
+			<div class="col-11 text-right">				
+				<h1>Total: <span class="txt_total">{{ total }}</span> </h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-9 offset-3">				
+				<hr>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-11 text-right">
+				<a href="" class="btn btn-success btn-lg"> CONFIRMAR COMPRA </a>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+	$(".quitar_carrito").on("click", function(e){
+		e.preventDefault()
+		let row = $(this).parents("tr");
+		let url = $(this).attr("href")
+		$.getJSON(url, function(res){
+			console.log(res);
+			if(res.success)
+			{
+				row.remove()	
+				$(".txt_total").text(res.total);
+				actualizar_carrito(res.qty);	
+			}
+		});
+	})
+
+	$(".cantidad_carrito").on("change", function(e){
+		e.preventDefault()		
+		let row = $(this).parents("tr");		
+		let url = $(this).attr("href")
+		let qty = $(this).val();
+
+		$.getJSON(url, {"qty" : qty}, function(res){
+			console.log(res);
+			if(res.success)
+			{				
+				row.find(".subtotal").text(res.subtotal)
+				$(".txt_total").text(res.total);				
+			}
+		});
+	})
+</script>
+{% endblock %}

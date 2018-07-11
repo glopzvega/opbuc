@@ -61,6 +61,20 @@ class ProductoViewSet(viewsets.ModelViewSet):
     queryset = models.Producto.objects.all()
     serializer_class = s.ProductoSerializer
 
+class OrderViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = models.Order.objects.all()
+    serializer_class = s.OrderSerializer
+
+class OrderLineViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = models.OrderLine.objects.all()
+    serializer_class = s.OrderLineSerializer
+
 class CommentViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
