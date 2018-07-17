@@ -36,6 +36,8 @@
 
 {{ zones }}
 
+<div class="container-fluid">
+	
 <section id="categorias">
 
 	<div class="row">
@@ -50,7 +52,20 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-8 offset-2">
+		<div class="col-3">
+			<h5>Ubicación</h5>
+			<hr>
+			<div class="list-group">
+				<input type="hidden" id="id_zona">	
+				{% for zone in zonas %}
+				<a href="{{zone.id}}" class="list-group-item list-group-item-action">
+					<i class="far fa-square"></i>
+					{{ zone.name }}
+				</a>	
+				{% endfor %}
+			</div>
+		</div>
+		<div class="col-8">
 	
 			<div class="row">
 				{% for row in data %}
@@ -71,5 +86,44 @@
 
 </section>
 
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+
+	$(".list-group-item").on("click", function(e){
+		e.preventDefault();		
+		let href = "";
+		if($(this).hasClass("active"))
+		{
+			href = "";
+			$(this).removeClass("active")
+			$(this).find("i.far").removeClass("fa-check-square").addClass("fa-square");		
+		}
+		else
+		{
+			href = $(this).attr("href");
+			$(".list-group-item").removeClass("active");
+			$(".list-group-item").find("i.far").removeClass("fa-check-square").addClass("fa-square");
+
+			$(this).addClass("active")
+			$(this).find("i.far").removeClass("fa-square").addClass("fa-check-square");	
+		}
+		
+		$("#id_zona").val(href);
+	});
+
+	$(".etiqueta").on("click", function(e){
+		e.preventDefault();
+		let url = $(this).attr("href");
+		let id_zona = $("#id_zona").val()
+		if(id_zona != "")
+			url += "?zone="+id_zona
+		location.href = url;
+	});
+
+</script>
 
 {% endblock %}

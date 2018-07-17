@@ -13,6 +13,7 @@
 </nav>
 {% endblock %}
 {% block content %}
+
 <div class="container-fluid">
 	
 	<div class="row">
@@ -20,12 +21,19 @@
 			<h5>Ubicación</h5>
 			<hr>
 			<div class="list-group">	
-				{% for zone in zones %}
-				<a href="{% url 'lugares_categoria' categoria.id %}?zone={{ zone.id }}" class="list-group-item list-group-item-action">
+				{% for z in zones %}
+				{% if z.id == zone.id %}
+				<a href="{% url 'lugares_categoria' categoria.id %}?zone={{ z.id }}" class="list-group-item list-group-item-action active">
+				{% else %}
+				<a href="{% url 'lugares_categoria' categoria.id %}?zone={{ z.id }}" class="list-group-item list-group-item-action">
+				{% endif %}
+					{% if z.id == zone.id %}					
+					<i class="far fa-check-square"></i>
+					{% else %}
 					<i class="far fa-square"></i>
-					{{ zone.name }}
-				</a>
-	
+					{% endif %}
+					{{ z.name }}
+				</a>	
 				{% endfor %}
 
 			</div>
@@ -33,7 +41,7 @@
 		<div class="col-9">	
 			<div class="row">
 				<div class="col">
-					<h2>{{ categoria }}s en Acapulco</h2>
+					<h2>{{ categoria }}s en Acapulco <small class="zona_name text-muted">({{ zone.name }})</small> </h2>
 					<hr>
 				</div>
 			</div>		
@@ -96,35 +104,49 @@
 			if(res.success)
 			{
 				let items = "";
-				$.each(res.data, function(index, value){
-					item = [
-						'<div class="col-3">',
-							'<div class="caja">',
-								'<a href="/lugar/' + value.id + '">',
-									'<img src="' + value.photo + '" alt="' + value.name + '">',
-								'</a>',
-								'<div class="detail">',
-									'<div class="item-name">',
-										'<a href="/lugar/' + value.id + '">' + value.name + '</a>',
-									'</div>',
-									'<div class="item-zone">',
-										'<p>',
-											'<small class="text-muted">'+ value.zone.name + '</small>',
-											'<br>',
-											'<small>',
-												'<i class="fa fa-phone-square"></i>',
-												value.phone,
-											'</small>',
-										'</p>',
+				let zone = "";
+				if(res.data.length > 0)
+				{					
+					$(".zona_name").text("(" + res.zone.name + ")");
+					
+					$.each(res.data, function(index, value){
+						
+						if (zone == "")
+							zone = value.zone.name
+						
+						item = [
+							'<div class="col-3">',
+								'<div class="caja">',
+									'<a href="/lugar/' + value.id + '">',
+										'<img src="' + value.photo + '" alt="' + value.name + '">',
+									'</a>',
+									'<div class="detail">',
+										'<div class="item-name">',
+											'<a href="/lugar/' + value.id + '">' + value.name + '</a>',
+										'</div>',
+										'<div class="item-zone">',
+											'<p>',
+												'<small class="text-muted">'+ value.zone.name + '</small>',
+												'<br>',
+												'<small>',
+													'<i class="fa fa-phone-square"></i>',
+													value.phone,
+												'</small>',
+											'</p>',
+										'</div>',
 									'</div>',
 								'</div>',
 							'</div>',
-						'</div>',
-					].join("");
-					items += item;
-					console.log(item)
-				})
-				$(".lugar-items").html(items);
+						].join("");
+						items += item;
+						console.log(item)
+					})
+					$(".lugar-items").html(items);
+				}
+				else
+				{
+					$(".lugar-items").html("<div class='col'><p class='text-muted'>No se encontraron resultados</p></div>");					
+				}
 			}
 		})
 		// console.log(items)

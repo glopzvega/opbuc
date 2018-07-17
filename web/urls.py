@@ -7,8 +7,10 @@ urlpatterns = [
     path('zona/<int:id>', views.lugares_zona, name="lugares_zona"),    
     path('categoria/<int:id>', views.lugares_categoria, name="lugares_categoria"),
     path('categoria/<int:id>/zona/<int:zone_id>', views.lugares_categoria_zona, name="lugares_categoria_zona"),    
-    path('lugar/<int:id>', views.lugar, name="lugar"),
+    path('lugar/<int:id>', views.lugar, name="lugar"),    
     path('producto/<int:id>', views.producto, name="producto"),
+
+    # path('lugar/<int:id>/carrito/', views.ver_carrito_lugar, name="carrito_lugar"),
     path('carrito/', views.ver_carrito, name="carrito"),
     path('carrito/agregar/<int:id>', views.agregar_carrito, name="agregar_carrito"),
     path('carrito/quitar/<int:id>', views.quitar_carrito, name="quitar_carrito"),

@@ -63,15 +63,17 @@ def lugares_categoria(request, id):
 
 	zones = models.Zone.objects.all()
 
-	zone = request.GET.get("zone", False)
+	zone = request.GET.get("zone", False)	
 
 	if zone:
-		lugares = lugares.filter(zone_id__exact=zone)
+		lugares = lugares.filter(zone_id=zone)
+		zone = models.Zone.objects.get(id=zone)		
 
 	context = {
 		"categoria" : categoria,
 		"data" : lugares,
 		"zones" : zones,
+		"zone" : zone
 	}
 
 	if RequestType and RequestType == "json":
@@ -94,8 +96,15 @@ def lugares_categoria(request, id):
 
 		data = {
 			"success" :  True,
+			"zone" : False,
 			"data" : items,			
 		}
+
+		if zone: 
+			data["zone"] = {
+					"id" : zone.id,
+					"name" : zone.name
+				} 
 
 		return JsonResponse(data)
 	
