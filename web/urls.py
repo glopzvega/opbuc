@@ -9,9 +9,12 @@ urlpatterns = [
     path('categoria/<int:id>/zona/<int:zone_id>', views.lugares_categoria_zona, name="lugares_categoria_zona"),    
     path('lugar/<int:id>', views.lugar, name="lugar"),    
     path('producto/<int:id>', views.producto, name="producto"),
+    path('pedidos/', views.ver_pedidos, name="ver_pedidos"),
+    path('pedidos/<int:id>', views.detalle_pedido, name="detalle_pedido"),
 
     # path('lugar/<int:id>/carrito/', views.ver_carrito_lugar, name="carrito_lugar"),
     path('carrito/', views.ver_carrito, name="carrito"),
+    path('carrito/comprar/', views.comprar_carrito, name="comprar_carrito"),
     path('carrito/agregar/<int:id>', views.agregar_carrito, name="agregar_carrito"),
     path('carrito/quitar/<int:id>', views.quitar_carrito, name="quitar_carrito"),
     path('carrito/qty/<int:id>', views.cantidad_carrito, name="qty_carrito"),

@@ -350,8 +350,11 @@
 	  		console.log(res)
 	  		if(res.success)
 	  		{
-	  			alert("se ha agregado al carrito")
 	  			actualizar_carrito(res.qty);
+	  			if(confirm("El producto se ha agregado al carrito, ¿deseas ir a pagar?"))
+	  			{
+	  				location.href = "/carrito";
+	  			}	  			
 	  		}
 	  	})
 	  })

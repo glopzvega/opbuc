@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.core import serializers
 import locale
+from datetime import datetime
 # Create your views here.
 
 from .forms import CategoriaModelForm, LugarModelForm, ProductoModelForm, PhotoModelForm
@@ -391,6 +392,68 @@ def main_foto(request, id):
 
 	data = {'success': True, 'url': photo.photo.url}	
 	
+	return JsonResponse(data)
+
+def ver_pedidos(request):
+
+	orders = models.Order.objects.filter(usuario=request.user)
+
+	if orders:
+		for oid in orders:
+			oid.lines = models.OrderLine.objects.filter(order=oid)
+
+	data = {
+		"orders" : orders
+	}
+
+	return render(request, "web/orders.html", data)
+
+def detalle_pedido(request, id):
+
+	order = get_object_or_404(models.Order, pk=id)
+
+	order.lines = models.OrderLine.objects.filter(order=order)
+
+	data = {
+		"order" : order
+	}
+
+	return render(request, "web/order_detail.html", data)	
+
+
+def comprar_carrito(request):
+	
+	if not request.session.has_key("carrito"):
+		request.session["carrito"] = []
+
+	carrito = request.session["carrito"]
+
+	if not carrito:
+		data = {'success': False, 'id' : 0, 'error' : 'El carrito está vacío'}	
+		return JsonResponse(data)
+
+	hoy = datetime.now().strftime("%Y-%m-%d")
+	ahora = datetime.now().strftime("%H:%M:%S")
+	
+	total = 0
+	if "total" in request.session:
+		total = request.session["total"]
+	
+	newOrder = models.Order(usuario=request.user, name="/", fecha_pedido=hoy, hora_pedido=ahora, total=total)
+	newOrder.save()
+
+	if newOrder.id:
+		for prod in carrito:
+			producto = models.Producto.objects.get(pk=prod["id"])
+			if producto:
+				line = models.OrderLine(usuario=request.user, order=newOrder, producto=producto, quantity=prod["cantidad_carrito"], subtotal=prod["subtotal"])
+				line.save()
+
+	request.session['carrito'] = []
+	request.session['total'] = 0
+	request.session['numero'] = 0
+
+	data = {'success': True, 'id' : newOrder.id}	
 	return JsonResponse(data)
 
 # @login_required

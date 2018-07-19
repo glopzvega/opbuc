@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col">
+			<h1>Pedidos</h1>
+			<hr>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<table class="table">
+				<thead>
+					<th>No. Pedido</th>
+					<th>Fecha</th>
+					<th>Total</th>
+					<th></th>
+				</thead>
+				<tbody>
+				{% for order in orders %}
+					
+					<tr>
+						<td>{{ order.name }}</td>
+						<td>{{ order.fecha_pedido }}</td>
+						<td>{{ order.total }}</td>
+						<td>
+							<a href="{% url 'detalle_pedido' order.id %}" class="btn btn-info">
+								<i class="fa fa-search"></i>
+							</a>
+						</td>
+					</tr>
+
+				{% endfor %}					
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>	
+
+
+
+
+{% endblock %}
+

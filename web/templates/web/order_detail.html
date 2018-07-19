@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col">
+			<h1>Pedido #{{ order.name }}</h1>
+			<p class="text-muted">Fecha: {{ order.fecha_pedido }} {{ order.hora_pedido }}</p>
+			<hr>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<table class="table">
+				<thead>
+					<th>Producto</th>
+					<th>Precio</th>
+					<th>Cantidad</th>
+					<th>Subtotal</th>
+				</thead>
+				<tbody>
+				{% for line in order.lines %}
+					
+					<tr>
+						<td>{{ line.producto }}</td>
+						<td>{{ line.producto.price }}</td>
+						<td>{{ line.quantity }}</td>
+						<td>{{ line.subtotal }}</td>
+					</tr>
+
+				{% endfor %}					
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col text-right text-success">
+			<h2>Total: $ {{ order.total }}</h2>
+		</div>
+	</div>
+</div>	
+
+
+
+
+{% endblock %}
+
