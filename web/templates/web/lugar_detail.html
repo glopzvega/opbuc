@@ -238,13 +238,13 @@
 								<tbody>
 								{% for prod in productos %}		
 								<tr>	
-									<td>
+									<td width="10%">
 										{% if prod.photo %}
 										<a class="picture" href="{{ prod.photo.url }}">
-											<img src="{{ prod.photo.url }}" alt="fotos">
+											<img src="{{ prod.photo.url }}" alt="fotos" style="width:100%;">
 										</a>
 										{% else %}
-										<img src="{% static '/img/default.png' %}" alt="fotos">	
+										<img src="{% static '/img/default.png' %}" alt="fotos" style="width:100%;">	
 										{% endif %}
 									</td>								
 									<td>

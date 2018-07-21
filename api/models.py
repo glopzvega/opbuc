@@ -49,12 +49,19 @@ class Producto(models.Model):
 		return self.name
 
 class Order(models.Model):
+	STATES = [
+		("draft", "Pendiente"),
+		("done", "Realizado"),
+	]
 	usuario = models.ForeignKey(User, on_delete=models.CASCADE)
 	fecha = models.DateTimeField(auto_now_add=True)
 	name = models.CharField(max_length=255)
 	fecha_pedido = models.DateField()
 	hora_pedido = models.TimeField()
+	lugar = models.ForeignKey(Lugar, on_delete=models.CASCADE)
 	total = models.DecimalField(max_digits=6, decimal_places=2)
+	state = models.CharField(max_length=255, choices=STATES, default="draft")
+	payment_info = models.TextField()
 
 class OrderLine(models.Model):
 	usuario = models.ForeignKey(User, on_delete=models.CASCADE)

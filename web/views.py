@@ -3,6 +3,9 @@ from django.http import JsonResponse
 from django.core import serializers
 import locale
 from datetime import datetime
+import json
+import logging
+_logger = logging.getLogger(__name__)
 # Create your views here.
 
 from .forms import CategoriaModelForm, LugarModelForm, ProductoModelForm, PhotoModelForm
@@ -396,10 +399,16 @@ def main_foto(request, id):
 
 def ver_pedidos(request):
 
-	orders = models.Order.objects.filter(usuario=request.user)
+	orders = models.Order.objects.filter(usuario=request.user).order_by('-fecha_pedido')
 
 	if orders:
 		for oid in orders:
+			
+			if oid.state == "draft":
+				oid.state_txt = "Pendiente"
+			else:
+				oid.state_txt = "Realizado"
+
 			oid.lines = models.OrderLine.objects.filter(order=oid)
 
 	data = {
@@ -411,6 +420,10 @@ def ver_pedidos(request):
 def detalle_pedido(request, id):
 
 	order = get_object_or_404(models.Order, pk=id)
+	
+	order.state_txt = "Pendiente"
+	if order.state == "done":
+		order.state_txt = "Realizado"
 
 	order.lines = models.OrderLine.objects.filter(order=order)
 
@@ -420,6 +433,118 @@ def detalle_pedido(request, id):
 
 	return render(request, "web/order_detail.html", data)	
 
+def confirmar_compra(request, newOrder):
+
+	if request.method == "GET":
+		
+		if request.GET.get("conektaTokenId", False):
+
+			import conekta
+
+			conekta.api_key = "key_Gh4y91YYiyTrLcPbuKtyQw"
+			conekta.api_version = "2.0.0"
+
+			try:
+				token_id = request.GET.get("conektaTokenId", False)
+				print(token_id)
+				token_id = "tok_test_visa_4242"
+
+				customer = conekta.Customer.create({
+					'name': request.user.username,
+					'email': request.user.email or "mcgalv@gmail.com",
+					'phone': '+52181818181',
+					'payment_sources': [{
+						'type': 'card',
+						'token_id': token_id
+					}]
+				})
+				
+				order = conekta.Order.create({
+					"line_items": [{
+						"name": "Tacos",
+						"unit_price": 1000,
+						"quantity": 12
+					}],
+					"shipping_lines": [{
+						"amount": 1500,
+						"carrier": "FEDEX"
+					}], #shipping_lines - physical goods only
+					"currency": "MXN",
+					"customer_info": {
+						"customer_id": customer.id
+					},
+					"shipping_contact":{
+						"address": {
+							"street1": "Calle 123, int 2",
+							"postal_code": "06100",
+							"country": "MX"
+						} #shipping_contact - required only for physical goods
+					},
+					"metadata": {"description": "Compra de creditos: 300(MXN)", "reference": "1334523452345"},
+					"charges":[{
+						"payment_method": {
+							"type": "default"
+						}  #payment_method - use the customer's default - a card
+					 #to charge a card, different from the default,
+					 #you can indicate the card's source_id as shown in the Retry Card Section
+					}]
+				})
+
+				customerJson = vars(customer)
+				del customerJson["payment_sources"]
+				# print(customerJson)
+				
+				# print(vars(order))
+				order = vars(order)
+				line_items = order["line_items"]
+				shipping_lines = order["shipping_lines"]
+				charges = order["charges"]
+								
+				line_ids = []
+				for line in line_items:
+					line = vars(line)
+					del line["parent"]
+					line_ids.append(line)
+
+				# print(line_ids)
+
+				shipping_ids = []
+				for line in shipping_lines:
+					line = vars(line)
+					del line["parent"]
+					shipping_ids.append(line)
+
+				# print(shipping_ids)
+
+				charges_ids = []
+				for charge in charges:
+					charge = vars(charge)
+					# del charge["parent"]
+					charge["payment_method"] = vars(charge["payment_method"])
+					charges_ids.append(charge)
+
+				# print(charges_ids)
+
+				order["customer_info"] = customerJson
+				order["line_items"] = line_ids
+				order["shipping_lines"] = shipping_ids
+				order["charges"] = charges_ids
+				order["shipping_contact"] = vars(order["shipping_contact"])
+
+				print(order)
+				order["success"] = True
+				return order
+				# return JsonResponse(order)
+
+			except conekta.ConektaError as e:												
+				print(vars(e))		
+				e = vars(e)			
+				e["success"] = False
+				return e
+				# return JsonResponse(e)
+
+	return {"success" : False, "error" : "No se recibieron datos"}
+	# return JsonResponse({"success" : False, "error" : "No se recibieron datos"})
 
 def comprar_carrito(request):
 	
@@ -432,6 +557,9 @@ def comprar_carrito(request):
 		data = {'success': False, 'id' : 0, 'error' : 'El carrito está vacío'}	
 		return JsonResponse(data)
 
+	lugar_id = request.session["lugar"]
+	lugar = get_object_or_404(models.Lugar, pk=lugar_id)
+
 	hoy = datetime.now().strftime("%Y-%m-%d")
 	ahora = datetime.now().strftime("%H:%M:%S")
 	
@@ -439,7 +567,7 @@ def comprar_carrito(request):
 	if "total" in request.session:
 		total = request.session["total"]
 	
-	newOrder = models.Order(usuario=request.user, name="/", fecha_pedido=hoy, hora_pedido=ahora, total=total)
+	newOrder = models.Order(usuario=request.user, name="/", fecha_pedido=hoy, hora_pedido=ahora, total=total, lugar=lugar)
 	newOrder.save()
 
 	if newOrder.id:
@@ -448,6 +576,13 @@ def comprar_carrito(request):
 			if producto:
 				line = models.OrderLine(usuario=request.user, order=newOrder, producto=producto, quantity=prod["cantidad_carrito"], subtotal=prod["subtotal"])
 				line.save()
+		
+		res = confirmar_compra(request, newOrder)
+			
+		if res["success"]:
+			newOrder.state = "done"			
+			newOrder.payment_info = res
+			newOrder.save()
 
 	request.session['carrito'] = []
 	request.session['total'] = 0
@@ -528,9 +663,13 @@ def agregar_carrito(request, id):
 
 	if not request.session.has_key("carrito"):
 		request.session["carrito"] = []
+
+	if not request.session.has_key("lugar"):
+		request.session["lugar"] = False
 		
 	carrito = request.session["carrito"]
-		
+	lugar = request.session["lugar"]
+
 	find = False		
 	for el in carrito:
 		if el["id"] == producto.id:
@@ -539,7 +678,11 @@ def agregar_carrito(request, id):
 			el["subtotal"] = float(producto.price) * el["cantidad_carrito"]			
 			break
 
-	if not find:
+	if not find:		
+
+		if lugar != producto.lugar.id:
+			request.session["lugar"] = producto.lugar.id
+			carrito = []
 
 		prod = {
 			"id" : producto.id,

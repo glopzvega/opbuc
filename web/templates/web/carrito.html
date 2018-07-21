@@ -79,39 +79,119 @@
 <hr>
 <div class="row">
 	<div class="col">
-		<a href="{% url 'index' %}" class="btn btn-info">Continuar Comprando</a>
+		<a href="{% url 'index' %}" class="btn btn-info">Regresar al Inicio</a>
 	</div>
 	<div class="col">
 		{# <a href="{% url 'comprar' %}" class="btn btn-success">Comprar</a> #}
 		<div class="row">
 			<div class="col-11 text-right">				
-				<h1>Total: <span class="txt_total">{{ total }}</span> </h1>
+				<h2>Total: <span class="txt_total">{{ total }}</span> </h2>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-9 offset-3">				
 				<hr>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-11 text-right">
-				<a href="{% url 'comprar_carrito' %}" class="btn btn-success btn-lg confirmar"> CONFIRMAR COMPRA </a>
-			</div>
-		</div>
-		<br><br>
+		</div>		
 	</div>
 </div>
+<div class="row">
+	<div class="col-7"></div>
+	<div class="col-2">Metodo de Pago:</div>
+	<div class="col-3">								
+		<select name="metodopago" id="metodopago" class="form-control">
+			<!--<option value="1">Pago en Oxxo</option>-->
+			<option value="">Selecciona un método de pago</option>
+			<option value="2">Pago con Tarjeta de Crédito</option>
+		</select>				
+	</div>
 </div>
+<br>
+<div class="row">
+	<div class="col text-right">
+		<a href="{% url 'comprar_carrito' %}" class="disabled btn btn-danger btn-lg confirmar"> CONFIRMAR COMPRA </a>
+	</div>
+</div>
+<br><br>
+</div>
+
+<div class="modal modal-tarjeta" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Datos de la Tarjeta</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="" method="POST" id="card-form" enctype="multipart/form-data">
+          {% csrf_token %}
+		  <span class="card-errors"></span>
+		  <div class="row">
+		  	<div class="col">			    
+			    Nombre del tarjetahabiente			    
+			    <input type="text" size="20" data-conekta="card[name]" class="form-control">
+		  	</div>
+		  </div>
+		  <br>
+		  <div class="row">
+		  	<div class="col">		  		
+			    Número de tarjeta de crédito		    
+			    <input type="text" size="20" data-conekta="card[number]" class="form-control">
+		  	</div>
+		  </div>
+		  <br>
+		  <div class="row">		  	
+			  <div class="col-4">
+			   	CVC
+			    <input type="text" size="4" data-conekta="card[cvc]" class="form-control">
+			  </div>
+			  <div class="col-8">
+			  	<div class="row">
+			  		<div class="col">			  			
+			    		Fecha de expiración
+			  		</div>
+			  	</div>
+			  	<div class="row">
+			  		<div class="col">
+			    		<input type="text" size="2" data-conekta="card[exp_month]" class="form-control" placeholder="MM">			  			
+			  		</div>
+			  		<div class="col">
+			    		<input type="text" size="4" data-conekta="card[exp_year]" class="form-control" placeholder="AAAA">			  			
+			  		</div>
+			  	</div>
+			  </div>			  
+		  </div>
+		  <hr>
+		  <div class="row">
+		  	<div class="col text-right">
+		  		<button type="submit" class="btn btn-success">PAGAR</button>		  		
+		  	</div>
+		  </div>
+		</form>
+      </div>      
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
+
+<script type="text/javascript" src="https://cdn.conekta.io/js/latest/conekta.js"></script>
+
 <script>
 
-	$(".confirmar").on("click", function(e){
-		e.preventDefault()
+	Conekta.setPublicKey('key_KJysdbf6PotS2ut2');
 
-		let url = $(this).attr("href")
-		$.getJSON(url, function(res){
+	var conektaSuccessResponseHandler = function(token) {
+		var $form = $("#card-form");
+		//Inserta el token_id en la forma para que se envíe al servidor
+		$form.append($('<input type="hidden" name="conektaTokenId" id="conektaTokenId">').val(token.id));
+		// $form.get(0).submit(); //Hace submit
+		let url = $(".confirmar").attr("href");
+		$.getJSON(url, {"conektaTokenId" : token.id}, function(res){
 			console.log(res);
 			if(res.success)
 			{
@@ -119,6 +199,50 @@
 				location.href = "/pedidos/" + res.id
 			}
 		});
+	};
+	var conektaErrorResponseHandler = function(response) {
+		var $form = $("#card-form");
+		$form.find(".card-errors").text(response.message_to_purchaser);
+		$form.find("button").prop("disabled", false);
+	};
+
+	//jQuery para que genere el token después de dar click en submit
+	$(function () {
+		$("#card-form").submit(function(event) {
+		  event.preventDefault()
+		  var $form = $(this);
+		  // Previene hacer submit más de una vez
+		  $form.find("button").prop("disabled", true);
+		  Conekta.Token.create($form, conektaSuccessResponseHandler, conektaErrorResponseHandler);
+		  return false;
+		});
+	});
+
+	$("#metodopago").on("change", function(){
+		let val = $(this).val()
+		if (val != "")
+		{
+			$(".confirmar").removeClass("disabled");
+		}
+		else
+		{
+			$(".confirmar").addClass("disabled");			
+		}
+	})
+
+	$(".confirmar").on("click", function(e){
+		e.preventDefault()
+		$(".modal-tarjeta").modal("show")
+
+		// let url = $(this).attr("href")
+		// $.getJSON(url, function(res){
+		// 	console.log(res);
+		// 	if(res.success)
+		// 	{
+		// 		alert("Se ha realizado la compra")
+		// 		location.href = "/pedidos/" + res.id
+		// 	}
+		// });
 	});
 
 	$(".quitar_carrito").on("click", function(e){

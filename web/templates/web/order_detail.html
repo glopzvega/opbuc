@@ -5,8 +5,13 @@
 <div class="container-fluid">
 	<div class="row">
 		<div class="col">
-			<h1>Pedido #{{ order.name }}</h1>
-			<p class="text-muted">Fecha: {{ order.fecha_pedido }} {{ order.hora_pedido }}</p>
+			<h1>Pedido #{{ order.name }} </h1>
+			<p class="text-muted">
+				Fecha: {{ order.fecha_pedido }} {{ order.hora_pedido }} | 
+				<span class="badge badge-warning"> {{ order.lugar.name }}</span> | 
+				<span class="badge badge-secondary">{{ order.state_txt }}</span> |
+				<b class="text-success"> Total: ${{ order.total }} </b>
+			</p>
 			<hr>
 		</div>
 	</div>
@@ -14,6 +19,7 @@
 		<div class="col">
 			<table class="table">
 				<thead>
+					<th></th>
 					<th>Producto</th>
 					<th>Precio</th>
 					<th>Cantidad</th>
@@ -23,6 +29,12 @@
 				{% for line in order.lines %}
 					
 					<tr>
+						<td width="10%;">
+							{% if line.producto.photo %}
+							<a class="picture" href="{{ line.producto.photo.url }}">
+							<img src="{{ line.producto.photo.url }}" alt="{{ line.producto }}" style="width:100%;"></a>
+							{% endif %}
+						</td>
 						<td>{{ line.producto }}</td>
 						<td>{{ line.producto.price }}</td>
 						<td>{{ line.quantity }}</td>
@@ -36,14 +48,33 @@
 	</div>
 	<hr>
 	<div class="row">
+		<div class="col">
+			<a class="btn btn-link ver-pago" href="">Ver Info Pago <i class="fas fa-caret-right"></i></a>
+		</div>
+	</div>
+	<div class="row info-pago" style="display:none;">
+		<div class="col">
+			{% if order.payment_info %}
+				{{ order.payment_info }}
+			{% else %}
+				<p class="text-muted">No hay información de pago</p>
+			{% endif %}
+		</div>
+	</div>
+	<hr>
+	<div class="row" style="display:none;">
 		<div class="col text-right text-success">
 			<h2>Total: $ {{ order.total }}</h2>
 		</div>
 	</div>
 </div>	
 
-
-
-
 {% endblock %}
-
+{% block scripts %}
+<script>
+	$(".ver-pago").on("click", function(e){
+		e.preventDefault()
+		$(".info-pago").toggle()
+	})
+</script>
+{% endblock %}
