@@ -36,7 +36,7 @@ router.register('comentarios', views.CommentViewSet)
 
 urlpatterns = [
     path('', include('web.urls')),
-    path('login/', auth_views.login, name="login"),
+    path('login/', auth_views.login, name="login"),    
     path('logout/', auth_views.logout, {'next_page': '/'}, name='logout'), 
 	path('api/auth/', include('rest_framework.urls', namespace="rest_framework")),
 	path('api/', include(router.urls)),

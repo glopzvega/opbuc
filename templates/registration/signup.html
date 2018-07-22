@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Registro{% endblock %}
+
+{% block carousel %}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+	<div class="row">
+		<div class="col-4 offset-4 text-center">
+		  <h2>Registro</h2>
+		  <hr>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-4 offset-4">
+		  
+		  <form method="post">
+		    {% csrf_token %}
+		    {% for field in form %}
+		      <p>
+		        {{ field.label_tag }}<br>
+		        {{ field }}
+		        {% if field.help_text %}
+		          <small style="color: grey">{{ field.help_text | safe }}</small>
+		        {% endif %}
+		        {% for error in field.errors %}
+		          <p style="color: red">{{ error }}</p>
+		        {% endfor %}
+		      </p>
+		    {% endfor %}
+		    <div class="row">
+		    	<div class="col text-center">
+		    		<button type="submit" class="btn btn-primary">Registrarse</button>
+		    		<br>
+					<a href="{% url 'login' %}" class="btn btn-link">ya tengo una cuenta</a>
+		    	</div>
+		    </div>
+		  </form>
+
+		  <br>
+		  {% if form.errors %}
+			<p>Your username and password didn't match. Please try again.</p>
+			{% endif %}
+
+			{% if next %}
+			    {% if user.is_authenticated %}
+			    <p>Your account doesn't have access to this page. To proceed,
+			    please login with an account that has access.</p>
+			    {% else %}
+			    <p>Please login to see this page.</p>
+			    {% endif %}
+			{% endif %}
+		</div>
+	</div>
+</div>
+<br>
+<br>
+
+
+
+{% endblock %}

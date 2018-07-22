@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.core import serializers
+from django.contrib.auth import login, authenticate
 import locale
 from datetime import datetime
 import json
@@ -8,7 +9,7 @@ import logging
 _logger = logging.getLogger(__name__)
 # Create your views here.
 
-from .forms import CategoriaModelForm, LugarModelForm, ProductoModelForm, PhotoModelForm
+from .forms import CategoriaModelForm, LugarModelForm, ProductoModelForm, PhotoModelForm, SignupForm
 
 from api import models
 
@@ -20,6 +21,21 @@ def index(request):
 		"zonas" : zonas
 	}
 	return render(request, "web/index.html", context)
+
+def signup(request):
+	if request.method == 'POST':
+		form = SignupForm(request.POST)
+		if form.is_valid():
+			form.save()
+			username = form.cleaned_data.get('username')
+			raw_password = form.cleaned_data.get('password1')
+			user = authenticate(username=username, password=raw_password)
+			login(request, user)
+			return redirect('index')
+	else:
+		form = SignupForm()
+
+	return render(request, 'registration/signup.html', {'form': form})
 
 def zonas(request):
 	zonas = models.Zone.objects.all()
