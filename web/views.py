@@ -109,9 +109,12 @@ def lugares_categoria(request, id):
 				},
 				"address" : lugar.address,
 				"phone" : lugar.phone,
-				"email" : lugar.email,
+				"email" : lugar.email,				
 				"photo" : lugar.photo.url
 			}
+			# if lugar.photo and lugar.photo.url:
+			# 	item["photo"] = lugar.photo.url
+
 			items.append(item)		
 
 		data = {
@@ -162,6 +165,31 @@ def lugar(request, id):
 	}
 	return render(request, "web/lugar_detail.html", context)
 
+def buscarlugar(request):
+	data = []
+	if request.method == "GET":
+		if request.GET.get("busqueda", False):
+			busqueda = request.GET.get("busqueda", False)
+			lugares = models.Lugar.objects.filter(clear_name__icontains=busqueda)
+			print("###")
+			# print(lugares)
+			if lugares:
+				data = []
+				for lugar in lugares:
+					data.append({
+						"id" : lugar.id,
+						"name" : lugar.name,
+						"video" : lugar.video,
+						"photo" : lugar.photo.url,
+						"description" : lugar.description,
+						"zone_id" : lugar.zone_id,
+						"category_id" : lugar.category_id,
+						"phone" : lugar.phone,
+						"address" : lugar.address,
+						"email" : lugar.email,
+						})
+	
+	return JsonResponse({"data" : data})
 
 def producto(request, id):
 	producto = get_object_or_404(models.Producto, pk=id)	
@@ -220,7 +248,7 @@ def categoria_editar(request, id):
 
 def ver_lugares(request):
 	
-	lugares = models.Lugar.objects.all()
+	lugares = models.Lugar.objects.all().filter(user=request.user)
 
 	context = {
 		"data" : lugares
@@ -234,7 +262,16 @@ def lugar_nuevo(request):
 	if request.method == "POST":
 		form = LugarModelForm(request.POST)
 		if form.is_valid():
-			form.save()
+			lugar = form.save(commit=False)
+			clear_name = lugar.name.lower()
+			clear_name = clear_name.replace("á", "a")
+			clear_name = clear_name.replace("é", "e")
+			clear_name = clear_name.replace("í", "i")
+			clear_name = clear_name.replace("ó", "o")
+			clear_name = clear_name.replace("ú", "u")
+			lugar.clear_name = clear_name.replace("ñ", "n")
+			lugar.user = request.user
+			lugar.save()
 			return redirect("ver_lugares")
 	else:
 		form = LugarModelForm()
@@ -327,7 +364,8 @@ def lugar_photo_upload(request, id):
 
 def ver_productos(request):
 	
-	productos = models.Producto.objects.all()
+	lugares = models.Lugar.objects.filter(user=request.user)
+	productos = models.Producto.objects.all().filter(lugar__in=lugares)
 
 	context = {
 		"data" : productos

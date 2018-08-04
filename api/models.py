@@ -25,6 +25,7 @@ class Category(models.Model):
 
 class Lugar(models.Model):
 	name = models.CharField(max_length=255)
+	clear_name = models.CharField(max_length=255)
 	description = models.TextField(blank=True, null=True)
 	address = models.TextField(blank=True, null=True)
 	category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL)
@@ -33,6 +34,8 @@ class Lugar(models.Model):
 	email = models.EmailField(blank=True, null=True)
 	photo = models.ImageField(blank=True, null=True)
 	web = models.CharField(max_length=255, blank=True, null=True)
+	video = models.TextField(blank=True, null=True)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	
 	def __str__(self):
 		return self.name	

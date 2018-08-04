@@ -46,33 +46,10 @@
 	
 </style>
 {% endblock %}
+
 {% block carousel %}
-<!--<div class="container-fluid">
-	
-<div class="row">  	
-	<div id="PhotosCarousel" class="carousel slide" data-ride="carousel">
-		<ol class="carousel-indicators">
-			<li data-target="#PhotosCarousel" data-slide-to="{{ forloop.counter0 }}" class="active"></li>			
-		</ol>
-		<div class="carousel-inner">			
-			<img class="d-block w-100" src="{{ data.photo.url }}" alt="First slide">
-			<div class="carousel-caption d-none d-md-block">
-		  	</div>				
-		</div>
-		
-		<a class="carousel-control-prev" href="#PhotosCarousel" role="button" data-slide="prev">
-		  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-		  <span class="sr-only">Previous</span>
-		</a>
-		<a class="carousel-control-next" href="#PhotosCarousel" role="button" data-slide="next">
-		  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-		  <span class="sr-only">Next</span>
-		</a>
-	</div>
-</div>
-</div>
--->
 {% endblock %}
+
 {% block breadcumb %}
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
@@ -121,7 +98,13 @@
 							<i class="fa fa-envelope"></i>
 							{{ data.email }}
 							</span>
-
+							{% if data.video != None %}
+							<span class="separator"></span> 
+							<span>								
+							<i class="fa fa-video"></i>
+							<a href="{{ data.video }}" class="btn btn-link vervideo">Ver video</a>
+							</span>
+							{% endif %}
 						</div>
 					</div>
 					<hr>
@@ -276,6 +259,21 @@
 {% block scripts %}
 <script>
 	let lugar_id = "{{ data.id }}";
+	{% if data.video != None %}
+		let video = "{{ data.video }}";
+		// lity(video)
+
+		$(".vervideo").on("click", function(e){
+			e.preventDefault()
+			lity(video)
+		});
+
+		setTimeout(function(){
+			$(".vervideo").click()			
+		}, 500);
+
+	{% endif %}
+
 	$(".guardar_comentario").on("click", function(e){
 		e.preventDefault();
 		let comentario = $("#newcomment").val();

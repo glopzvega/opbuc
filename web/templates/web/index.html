@@ -23,12 +23,21 @@
     width: 100%;
     height: 100%;
 }
+.linear-progress-material
+{
+	display: none;
+}
+
+.linear-progress-material.active
+{
+  display: block;
+}
 </style>
 
 {% endblock %}
 {% block carousel %}
 <div id="video" class="videoWrapper">	
-	<iframe class="video-background" width="100%" height="315" src="https://www.youtube.com/embed/7QcSGE6qeIQ?rel=0&amp;controls=0&amp;showinfo=0&amp;loop=1&amp;autoplay=1&amp;html5=1&amp;allowfullscreen=true&amp;wmode=transparent" allow="autoplay; encripted-media" frameborder="0" allowfullscreen></iframe>
+	<!--<iframe class="video-background" width="100%" height="315" src="https://www.youtube.com/embed/7QcSGE6qeIQ?rel=0&amp;controls=0&amp;showinfo=0&amp;loop=1&amp;autoplay=1&amp;html5=1&amp;allowfullscreen=true&amp;wmode=transparent" allow="autoplay; encripted-media" frameborder="0" allowfullscreen></iframe>-->
 </div>
 {% endblock %}
 
@@ -39,18 +48,7 @@
 <div class="container-fluid">
 	
 <section id="categorias">
-
-	<div class="row">
-		<div class="col text-center">
-			<h1>
-				¿Qué estás buscando?
-			</h1>
-			<p>
-				A continuación se muestran algúnas categorias con las que podrás encontrar facilmente el lugar que estás buscando.
-			</p>				
-			<hr class="divider">
-		</div>
-	</div>
+	
 	<div class="row">
 		<div class="col-3">
 			<h5>Ubicación</h5>
@@ -66,17 +64,39 @@
 			</div>
 		</div>
 		<div class="col-8">
-	
+
 			<div class="row">
+				<div class="col">
+					<h2>
+						¿Qué estás buscando?
+					</h2>
+					<p class="text-muted">
+						A continuación se muestran algúnas categorias con las que podrás encontrar facilmente el lugar que estás buscando.
+					</p>
+					<div class="linear-progress-material small">
+					    <div class="bar bar1"></div>
+					    <div class="bar bar2"></div>
+					</div>					
+					<input type="text" class="form-control" id="busqueda" placeholder="Busca por nombre de algún lugar en Acapulco">
+					<br>
+					
+				</div>
+			</div>
+			
+			<div class="row" id="lugares_encontrados">
+				
+			</div>
+
+			<div class="row" id="categorias">
 				{% for row in data %}
-					<div class="col-12 col-sm-6" style="padding:0;">
+					<div class="col-12 col-sm-6">
 						<div class="zone-item text-center" style="background:url(/media/{{row.photo}}) no-repeat; width: 100%; height: 200px; background-size: 100%;">
-							<h2>
-								<a href="{% url 'lugares_categoria' row.id %}" class="etiqueta" style="color: white;">
-									{{ row.name }}
-								</a>
-							</h2>
 						</div>
+							
+						<a href="{% url 'lugares_categoria' row.id %}" class="etiqueta" style="color: white;">
+							{{ row.name }}
+						</a>
+							
 					</div>
 				{% endfor %}
 			</div>
@@ -92,6 +112,48 @@
 {% block scripts %}
 
 <script>
+	
+	let tiempounidad = false;
+
+	buscarlugares = function()
+	{
+		let busqueda = $("#busqueda").val()
+		console.log(busqueda)
+		$.getJSON("/buscarlugar/", {"busqueda" : busqueda}, function(res){
+			$(".linear-progress-material").removeClass("active")
+
+			if (res.data != undefined && res.data.length > 0){
+
+				$.each(res.data, function(index, lugar){
+					let card = [
+						'<div class="col-3">',
+						'<div class="caja">',
+							'<a href="/lugar/'+lugar.id+'">',
+							'</a>',
+							'<div class="detail">',
+								'<div class="item-name">',
+									'<a href="">lugar.name</a>',
+								'</div>',
+								'<div class="item-zone">',
+									'<p>',
+										'<small class="text-muted">Zona</small>',
+										'<br>',
+										'<small>',
+											'<i class="fa fa-phone-square"></i>',
+											lugar.phone,
+										'</small>',
+									'</p>',
+								'</div>',
+							'</div>',
+						'</div>',
+					'</div>'].join("")
+					$("#lugares_encontrados").append(card)
+				})
+
+				$("#categorias").hide();
+			}
+		});
+	}
 
 	$(".list-group-item").on("click", function(e){
 		e.preventDefault();		
@@ -123,6 +185,23 @@
 			url += "?zone="+id_zona
 		location.href = url;
 	});
+
+	$("#busqueda").on("keyup", function(){
+		$(".linear-progress-material").addClass("active")
+		clearTimeout(tiempounidad);
+	    
+	    if($(this).val().length >= 2)
+	    { 
+	    	
+	      	$("#lugares_encontrados").html("").hide();
+	      	tiempounidad = setTimeout(buscarlugares, 900);
+	    }
+	    else
+	    {		
+	    	this.activeLoader = ""	      
+	      	$("#lugares_encontrados").html("").hide();
+	    }
+	})
 
 </script>
 

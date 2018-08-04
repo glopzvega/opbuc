@@ -50,7 +50,11 @@
 				<div class="col-3">
 					<div class="caja">
 						<a href="{% url 'lugar' row.id %}">
-							<img src="{{ row.photo.url }}" alt="{{ row.name }}">
+							{% if row.photo %}
+							<img src="{{ row.photo.url }}" alt="{{ row.name }}" style="height:132px; width:100%;">
+							{% else %}
+							<img src="{% static '/img/default.png' %}" alt="{{ row.name }}" style="height:132px; width:100%;">
+							{% endif %}
 						</a>
 						<div class="detail">
 							<div class="item-name">
