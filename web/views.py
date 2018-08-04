@@ -176,18 +176,23 @@ def buscarlugar(request):
 			if lugares:
 				data = []
 				for lugar in lugares:
-					data.append({
-						"id" : lugar.id,
-						"name" : lugar.name,
-						"video" : lugar.video,
-						"photo" : lugar.photo.url,
-						"description" : lugar.description,
-						"zone_id" : lugar.zone_id,
-						"category_id" : lugar.category_id,
-						"phone" : lugar.phone,
-						"address" : lugar.address,
-						"email" : lugar.email,
-						})
+					lugar_data = {
+							"id" : lugar.id,
+							"name" : lugar.name,
+							"video" : lugar.video,
+							"photo" : lugar.photo.url,
+							"description" : lugar.description,
+							"zone_id" : lugar.zone_id,
+							"category_id" : lugar.category_id,
+							"phone" : lugar.phone,
+							"address" : lugar.address,
+							"email" : lugar.email,
+						}
+					zone = models.Zone.objects.get(pk=lugar.zone_id)
+					if zone:
+						lugar_data["zone_id"] = (zone.id, zone.name)
+
+					data.append(lugar_data)
 	
 	return JsonResponse({"data" : data})
 

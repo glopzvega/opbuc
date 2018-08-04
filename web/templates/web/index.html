@@ -37,7 +37,7 @@
 {% endblock %}
 {% block carousel %}
 <div id="video" class="videoWrapper">	
-	<!--<iframe class="video-background" width="100%" height="315" src="https://www.youtube.com/embed/7QcSGE6qeIQ?rel=0&amp;controls=0&amp;showinfo=0&amp;loop=1&amp;autoplay=1&amp;html5=1&amp;allowfullscreen=true&amp;wmode=transparent" allow="autoplay; encripted-media" frameborder="0" allowfullscreen></iframe>-->
+	<iframe class="video-background" width="100%" height="315" src="https://www.youtube.com/embed/7QcSGE6qeIQ?rel=0&amp;controls=0&amp;showinfo=0&amp;loop=1&amp;autoplay=1&amp;html5=1&amp;allowfullscreen=true&amp;wmode=transparent" allow="autoplay; encripted-media" frameborder="0" allowfullscreen></iframe>
 </div>
 {% endblock %}
 
@@ -47,7 +47,7 @@
 
 <div class="container-fluid">
 	
-<section id="categorias">
+<section id="index">
 	
 	<div class="row">
 		<div class="col-3">
@@ -129,14 +129,15 @@
 						'<div class="col-3">',
 						'<div class="caja">',
 							'<a href="/lugar/'+lugar.id+'">',
+								'<img src="' + lugar.photo + '"/>',
 							'</a>',
 							'<div class="detail">',
 								'<div class="item-name">',
-									'<a href="">lugar.name</a>',
+									'<a href="/lugar/'+lugar.id+'">' + lugar.name + '</a>',
 								'</div>',
 								'<div class="item-zone">',
 									'<p>',
-										'<small class="text-muted">Zona</small>',
+										'<small class="text-muted">' + lugar.zone_id[1] + '</small>',
 										'<br>',
 										'<small>',
 											'<i class="fa fa-phone-square"></i>',
@@ -148,6 +149,7 @@
 						'</div>',
 					'</div>'].join("")
 					$("#lugares_encontrados").append(card)
+					$("#lugares_encontrados").show()
 				})
 
 				$("#categorias").hide();
@@ -190,6 +192,12 @@
 		$(".linear-progress-material").addClass("active")
 		clearTimeout(tiempounidad);
 	    
+	    if($(this).val() == "")
+	    {
+	    	$(".linear-progress-material").removeClass("active");
+	    	$("#categorias").show();
+	    }
+
 	    if($(this).val().length >= 2)
 	    { 
 	    	
@@ -199,7 +207,7 @@
 	    else
 	    {		
 	    	this.activeLoader = ""	      
-	      	$("#lugares_encontrados").html("").hide();
+	      	$("#lugares_encontrados").html("").hide();	      	
 	    }
 	})
 

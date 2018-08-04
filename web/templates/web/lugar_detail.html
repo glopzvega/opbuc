@@ -98,7 +98,7 @@
 							<i class="fa fa-envelope"></i>
 							{{ data.email }}
 							</span>
-							{% if data.video != None %}
+							{% if data.video %}
 							<span class="separator"></span> 
 							<span>								
 							<i class="fa fa-video"></i>
@@ -115,7 +115,9 @@
 					  <li class="nav-item">
 					    <a class="nav-link" id="menu-tab" data-toggle="tab" href="#menu" role="tab" aria-controls="menu" aria-selected="false">Menu</a>
 					  </li>
-					  
+					  <li class="nav-item">
+					    <a class="nav-link" id="mapa-tab" data-toggle="tab" href="#mapa" role="tab" aria-controls="mapa" aria-selected="false">Mapa</a>
+					  </li>
 					</ul>
 					<div class="tab-content container-fluid" id="myTabContent">
 						<div class="tab-pane fade show active" id="fotos" role="tabpanel" aria-labelledby="fotos-tab">
@@ -245,6 +247,23 @@
 								</tbody>
 							</table>
 						</div>
+						<div class="tab-pane fade show" id="mapa" role="tabpanel" aria-labelledby="mapa-tab">
+							{% if data.mapa %}
+							<div class="row">
+								<div class="col">
+									<h3>Puesdes encontrarnos en:</h3>
+									<hr>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									{% autoescape off %}
+									{{ data.mapa }}
+									{% endautoescape %}									
+								</div>
+							</div>
+							{% endif %}
+						</div>
 					</div>			
 				</div>
 				
@@ -259,9 +278,10 @@
 {% block scripts %}
 <script>
 	let lugar_id = "{{ data.id }}";
-	{% if data.video != None %}
-		let video = "{{ data.video }}";
-		// lity(video)
+
+	{% if data.video %}
+		
+		let video = "{{ data.video }}";		
 
 		$(".vervideo").on("click", function(e){
 			e.preventDefault()

@@ -42,7 +42,7 @@ class LugarModelForm(ModelForm):
 	class Meta:
 		model = Lugar
 		# fields = "__all__"
-		fields = ("name", "category", "zone", "phone", "email", "description", "video", "web")
+		fields = ("name", "category", "zone", "phone", "email", "description", "video", "mapa", "web")
 		# exclude = ("photo",)
 
 

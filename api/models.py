@@ -35,6 +35,7 @@ class Lugar(models.Model):
 	photo = models.ImageField(blank=True, null=True)
 	web = models.CharField(max_length=255, blank=True, null=True)
 	video = models.TextField(blank=True, null=True)
+	mapa = models.TextField(blank=True, null=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	
 	def __str__(self):

@@ -308,32 +308,7 @@
       $("input,select,textarea").addClass("form-control")
       $('[data-toggle="tooltip"]').tooltip();    
 
-      $('body').scrollspy({ target: '.navbar' , offset : 300})
-
-      $(".gallery a.delete").on("click", function(e){
-        e.preventDefault()
-        let el = $(this)
-        let url = $(this).attr("href");
-        $.getJSON(url, function(res){
-          if(res.success)
-          {
-            el.parent().remove();
-          }
-        });
-      });
-
-      $(".gallery a.main").on("click", function(e){
-        e.preventDefault()
-        let tipo = $(this).attr("tipo");
-        let el = $("img.img-main")
-        let url = $(this).attr("href");
-        $.getJSON(url, {"tipo" : tipo}, function(res){
-          if(res.success)
-          {
-            el.attr("src", res.url)
-          }
-        });
-      });
+      $('body').scrollspy({ target: '.navbar' , offset : 300})      
 
       $("a.picture").on("click", function(e){
         e.preventDefault();
