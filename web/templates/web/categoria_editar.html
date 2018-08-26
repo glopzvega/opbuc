@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-
+<div class="container-fluid">
 <section>
 	<form action="{% url 'categoria_editar' data.id %}" method="post" enctype="multipart/form-data">
 	{% csrf_token %}
@@ -31,5 +31,5 @@
 	</div>
 	</form>
 </section>
-
+</div>
 {% endblock %}
