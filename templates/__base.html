@@ -146,35 +146,6 @@
           padding: 1em;
         }
 
-        .linear-progress-material
-        {
-          display: none;
-        }
-
-        .linear-progress-material.active
-        {
-          display: block;
-        }
-
-        .zone-item
-        {
-          height: 200px;
-        } 
-        .videoWrapper
-        {
-          position: relative;
-            padding-bottom: 56.25%;    
-            height: 0;
-            margin-top: -100px;
-        }
-        .videoWrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
     </style>
 
     {% block styles %}
@@ -184,70 +155,16 @@
   </head>
   <body>
 
-{% block header %}
-<div class="row">
-  <div class="col-3">
-    <a class="navbar-brand" href="/">
-            <img src="{% static '/img/logo.jpeg' %}" alt="Logo" style="width:auto; height: 100px;"></a>
-  </div>
-  <div class="col-6">
-    <br>
-    <div class="row">
-      <div class="col">       
-        <div class="linear-progress-material small">
-            <div class="bar bar1"></div>
-            <div class="bar bar2"></div>
-        </div>          
-        <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Buscar" aria-label="Buscar" aria-describedby="basic-addon2">
-          <div class="input-group-append">
-            <button class="btn btn-outline-danger buscar-btn" type="button"><i class="fas fa-search"></i></button>
-          </div>
-        </div>
-        <br>
-        
-      </div>
-    </div>
-  </div>
-  <div class="col-3">
-    <br>
-    <div class="row">
-      <div class="col">
-        <a href="#" class="btn btn-danger" title="Facebook">
-          <i class="fab fa-facebook"></i>
-        </a>
-        <a href="#" class="btn btn-danger" title="Facebook">
-          <i class="fab fa-twitter"></i>
-        </a>
-        <a href="#" class="btn btn-danger" title="Facebook">
-          <i class="fab fa-instagram"></i>
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
-{% endblock %}
-
 {% block navbar %}
     
-    <nav id="header" class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+    <nav id="header" class="navbar sticky-top navbar-expand-lg navbar-dark bg-danger">
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-            
+            <a class="navbar-brand" href="/">
+              <img src="{% static '/img/logo.jpeg' %}" alt="Logo" style="width:50px"></a>
             <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-              
-              <li class="nav-item">
-                <a class="nav-link" href="/">Inicio <span class="sr-only">(current)</span></a>
-              </li>       
-
-              {% for zone in zonas %}              
-              <li class="nav-item">
-                <a class="nav-link" href="/?zone={{zone.id}}">{{zone.name}}</a>
-              </li>
-              {% endfor %}
-
               <li class="nav-item">
                 <a href="{% url 'carrito' %}" class="nav-link carrito">
                   <i class="fas fa-shopping-cart"></i>
@@ -255,8 +172,28 @@
                   <span class="badge badge-primary">{{ request.session.numero }}</span>
                 </a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/">Inicio <span class="sr-only">(current)</span></a>
+              </li>              
               
               {% if user.is_authenticated %}
+              
+              <li class="nav-item">
+                <a class="nav-link" href="/categorias">Categorias</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="/lugares">Lugares</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="/productos">Productos</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="/admin">Admin</a>
+              </li>
+
 
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -333,37 +270,14 @@
   {% endblock %}
   
   {% block breadcumb %}
-  <br>
-  <!-- <nav aria-label="breadcrumb">
+  <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Inicio</a></li>    
   </ol>
-</nav> -->
+</nav>
   {% endblock %}
   {% block content %}  
-  <div class="container-fluid">
-  
-    <section id="index">
-      
-      <div class="row">
-        <div class="col-3">
-          
-          <div class="list-group">
-          {% for row in data %}       
-            <a href="{% url 'lugares_categoria' row.id %}" class="list-group-item list-group-item-action list-group-item-dark categoria">
-              {{ row.name }}
-            </a>
-          {% endfor %}
-          </div>      
-        </div>
-        <div class="col-8">
-          <div class="row" id="lugares_encontrados"></div>
-        </div>    
-      </div>
 
-    </section>
-
-  </div>
   {% endblock %} 
     
     <!-- Optional JavaScript -->
@@ -376,24 +290,8 @@
     <script src="{% static 'js/tableExport.js' %}"></script>
     <script src="{% static 'js/lity.min.js' %}"></script>
     <script src="{% static 'js/starrr.js' %}"></script>
-    <script src="{% static 'js/base.js' %}"></script>
 
     <script>
-      let tiempounidad = false;
-      let urlparams = getUrlVars();
-      let zone_id = "";
-      let category_id = "";
-
-      if(urlparams["zone"] != "" && urlparams["zone"] != undefined)
-      {
-        zone_id = urlparams["zone"];
-      }
-      
-      if(urlparams["category"] != "" && urlparams["category"] != undefined)
-      {
-        category_id = urlparams["zone"];
-      }
-
       monedaFormatter = function(value){
         let params = {style: 'currency', currency: 'MXN'};
         return Number(value).toLocaleString('es-MX', params)
@@ -403,6 +301,8 @@
       {
         $(".carrito .badge").text(qty);
       }
+
+
 
       $("input,select,textarea").addClass("form-control")
       $('[data-toggle="tooltip"]').tooltip();    
@@ -414,62 +314,6 @@
         let url = $(this).attr("href");
         lity(url);
       });
-
-        $(".categoria").on("click", function(e){
-          debugger
-          e.preventDefault();
-          alert("LOL")
-          // let url = $(this).attr("href");
-          let url = "";   
-          if(zone_id != "")
-          {
-            url += "zone="+zone_id
-          }
-          
-          if(category_id != "")
-          {
-            if(url != "")
-              url += "&";
-            url += "cat="+category_id;
-          }
-          
-          if(url != "")
-            url = "?" + url;
-
-          location.href = url;
-        });
-
-        
-
-        
-
-        $(".buscar-btn").on("click", function(){
-          $("#lugares_encontrados").html("").hide();
-        buscarlugares();
-      });
-
-    $("#busqueda").on("keyup", function(){
-      $(".linear-progress-material").addClass("active")
-      clearTimeout(tiempounidad);
-        
-        if($(this).val() == "")
-        {
-          $(".linear-progress-material").removeClass("active");
-          $("#categorias").show();
-        }
-
-        if($(this).val().length >= 2)
-        { 
-          
-            $("#lugares_encontrados").html("").hide();
-            tiempounidad = setTimeout(buscarlugares, 900);
-        }
-        else
-        {   
-          this.activeLoader = ""        
-            $("#lugares_encontrados").html("").hide();          
-        }
-    })
 
     </script>
   

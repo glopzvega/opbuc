@@ -146,35 +146,6 @@
           padding: 1em;
         }
 
-        .linear-progress-material
-        {
-          display: none;
-        }
-
-        .linear-progress-material.active
-        {
-          display: block;
-        }
-
-        .zone-item
-        {
-          height: 200px;
-        } 
-        .videoWrapper
-        {
-          position: relative;
-            padding-bottom: 56.25%;    
-            height: 0;
-            margin-top: -100px;
-        }
-        .videoWrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
     </style>
 
     {% block styles %}
@@ -184,48 +155,8 @@
   </head>
   <body>
 
-{% block header %}
-<div class="row">
-  <div class="col-3">
-    <a class="navbar-brand" href="/">
-            <img src="{% static '/img/logo.jpeg' %}" alt="Logo" style="width:auto; height: 100px;"></a>
-  </div>
-  <div class="col-6">
-    <br>
-    <div class="row">
-      <div class="col">       
-        <div class="linear-progress-material small">
-            <div class="bar bar1"></div>
-            <div class="bar bar2"></div>
-        </div>          
-        <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Buscar" aria-label="Buscar" aria-describedby="basic-addon2">
-          <div class="input-group-append">
-            <button class="btn btn-outline-danger buscar-btn" type="button"><i class="fas fa-search"></i></button>
-          </div>
-        </div>
-        <br>
-        
-      </div>
-    </div>
-  </div>
-  <div class="col-3">
-    <br>
-    <div class="row">
-      <div class="col">
-        <a href="#" class="btn btn-danger" title="Facebook">
-          <i class="fab fa-facebook"></i>
-        </a>
-        <a href="#" class="btn btn-danger" title="Facebook">
-          <i class="fab fa-twitter"></i>
-        </a>
-        <a href="#" class="btn btn-danger" title="Facebook">
-          <i class="fab fa-instagram"></i>
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
+{% block header%}
+
 {% endblock %}
 
 {% block navbar %}
@@ -240,13 +171,19 @@
               
               <li class="nav-item">
                 <a class="nav-link" href="/">Inicio <span class="sr-only">(current)</span></a>
-              </li>       
-
-              {% for zone in zonas %}              
-              <li class="nav-item">
-                <a class="nav-link" href="/?zone={{zone.id}}">{{zone.name}}</a>
               </li>
-              {% endfor %}
+
+              <li class="nav-item">
+                <a class="nav-link" href="/?zone=diamante">Zona Diamante</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="/?zone=dorada">Zona Dorada</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="/?zone=tradicional">Zona Tradicional</a>
+              </li>
 
               <li class="nav-item">
                 <a href="{% url 'carrito' %}" class="nav-link carrito">
@@ -257,6 +194,23 @@
               </li>
               
               {% if user.is_authenticated %}
+              
+              <!-- <li class="nav-item">
+                <a class="nav-link" href="/categorias">Categorias</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="/lugares">Lugares</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="/productos">Productos</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="/admin">Admin</a>
+              </li> -->
+
 
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -333,37 +287,14 @@
   {% endblock %}
   
   {% block breadcumb %}
-  <br>
-  <!-- <nav aria-label="breadcrumb">
+  <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Inicio</a></li>    
   </ol>
-</nav> -->
+</nav>
   {% endblock %}
   {% block content %}  
-  <div class="container-fluid">
-  
-    <section id="index">
-      
-      <div class="row">
-        <div class="col-3">
-          
-          <div class="list-group">
-          {% for row in data %}       
-            <a href="{% url 'lugares_categoria' row.id %}" class="list-group-item list-group-item-action list-group-item-dark categoria">
-              {{ row.name }}
-            </a>
-          {% endfor %}
-          </div>      
-        </div>
-        <div class="col-8">
-          <div class="row" id="lugares_encontrados"></div>
-        </div>    
-      </div>
 
-    </section>
-
-  </div>
   {% endblock %} 
     
     <!-- Optional JavaScript -->
@@ -379,16 +310,14 @@
     <script src="{% static 'js/base.js' %}"></script>
 
     <script>
-      let tiempounidad = false;
-      let urlparams = getUrlVars();
-      let zone_id = "";
-      let category_id = "";
-
+  
+      urlparams = getUrlVars();
+      zone_id = "";
       if(urlparams["zone"] != "" && urlparams["zone"] != undefined)
       {
         zone_id = urlparams["zone"];
       }
-      
+      category_id = "";
       if(urlparams["category"] != "" && urlparams["category"] != undefined)
       {
         category_id = urlparams["zone"];
@@ -415,61 +344,7 @@
         lity(url);
       });
 
-        $(".categoria").on("click", function(e){
-          debugger
-          e.preventDefault();
-          alert("LOL")
-          // let url = $(this).attr("href");
-          let url = "";   
-          if(zone_id != "")
-          {
-            url += "zone="+zone_id
-          }
-          
-          if(category_id != "")
-          {
-            if(url != "")
-              url += "&";
-            url += "cat="+category_id;
-          }
-          
-          if(url != "")
-            url = "?" + url;
-
-          location.href = url;
-        });
-
-        
-
-        
-
-        $(".buscar-btn").on("click", function(){
-          $("#lugares_encontrados").html("").hide();
-        buscarlugares();
-      });
-
-    $("#busqueda").on("keyup", function(){
-      $(".linear-progress-material").addClass("active")
-      clearTimeout(tiempounidad);
-        
-        if($(this).val() == "")
-        {
-          $(".linear-progress-material").removeClass("active");
-          $("#categorias").show();
-        }
-
-        if($(this).val().length >= 2)
-        { 
-          
-            $("#lugares_encontrados").html("").hide();
-            tiempounidad = setTimeout(buscarlugares, 900);
-        }
-        else
-        {   
-          this.activeLoader = ""        
-            $("#lugares_encontrados").html("").hide();          
-        }
-    })
+      get
 
     </script>
   

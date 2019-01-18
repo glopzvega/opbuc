@@ -168,31 +168,46 @@ def lugar(request, id):
 def buscarlugar(request):
 	data = []
 	if request.method == "GET":
-		if request.GET.get("busqueda", False):
-			busqueda = request.GET.get("busqueda", False)
-			lugares = models.Lugar.objects.filter(clear_name__icontains=busqueda)
-			print("###")
-			# print(lugares)
-			if lugares:
-				data = []
-				for lugar in lugares:
-					lugar_data = {
-							"id" : lugar.id,
-							"name" : lugar.name,
-							"video" : lugar.video,
-							"photo" : lugar.photo.url,
-							"description" : lugar.description,
-							"zone_id" : lugar.zone_id,
-							"category_id" : lugar.category_id,
-							"phone" : lugar.phone,
-							"address" : lugar.address,
-							"email" : lugar.email,
-						}
-					zone = models.Zone.objects.get(pk=lugar.zone_id)
-					if zone:
-						lugar_data["zone_id"] = (zone.id, zone.name)
+		lugares = models.Lugar.objects.all()
+		
+		if request.GET.get("busqueda", False):			
+			busqueda = request.GET.get("busqueda", False)			
+			lugares = lugares.filter(clear_name__icontains=busqueda)
 
-					data.append(lugar_data)
+		if request.GET.get("zone", False):			
+			zone_id = int(request.GET.get("zone", False))
+			zone_ids = models.Zone.objects.filter(id=zone_id)
+			if zone_ids:
+				zone = zone_ids[0]
+				lugares = lugares.filter(zone=zone)
+
+		if request.GET.get("category", False):			
+			category_id = int(request.GET.get("category", False))
+			category_ids = models.Category.objects.filter(id=category_id)
+			if category_ids:
+				category = category_ids[0]
+				lugares = lugares.filter(category=category)
+				
+		if lugares:
+			data = []
+			for lugar in lugares:
+				lugar_data = {
+						"id" : lugar.id,
+						"name" : lugar.name,
+						"video" : lugar.video,
+						"photo" : lugar.photo.url,
+						"description" : lugar.description,
+						"zone_id" : lugar.zone_id,
+						"category_id" : lugar.category_id,
+						"phone" : lugar.phone,
+						"address" : lugar.address,
+						"email" : lugar.email,
+					}
+				zone = models.Zone.objects.get(pk=lugar.zone_id)
+				if zone:
+					lugar_data["zone_id"] = (zone.id, zone.name)
+
+				data.append(lugar_data)
 	
 	return JsonResponse({"data" : data})
 
