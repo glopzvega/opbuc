@@ -84,12 +84,6 @@ let buscarlugares = function()
 }
   // $('body').scrollspy({ target: '.navbar' , offset : 300})      
 
-$("a.picture").on("click", function(e){
-  e.preventDefault();
-  let url = $(this).attr("href");
-  lity(url);
-});
-
 $("a.categoria").on("click", function(e){  
   e.preventDefault();   
   category_id = $(this).attr("category_id");  

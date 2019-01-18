@@ -157,11 +157,29 @@ def lugar(request, id):
 	photos = models.Photo.objects.filter(lugar_id__exact=id)
 	productos = models.Producto.objects.filter(lugar=lugar)	
 	comments = models.Comment.objects.filter(lugar=lugar)
+	zonas = models.Zone.objects.all()
+	
+	cats = []
+	for prod in productos:
+		cat = prod.category
+		existe = False
+		for c in cats:
+			if c.id == cat.id:
+				existe = True
+				break
+		if not existe:
+			cats.append(cat)
+
+	for cat in cats:
+		cat.prods = productos.filter(category=cat)
+
 	context = {
 		"data" : lugar ,
 		"comments" : comments,
 		"photos" : photos,
-		"productos" : productos
+		"productos" : productos,
+		"categories" : cats,
+		# "zonas" : zonas
 	}
 	return render(request, "web/lugar_detail.html", context)
 
@@ -187,7 +205,7 @@ def buscarlugar(request):
 			if category_ids:
 				category = category_ids[0]
 				lugares = lugares.filter(category=category)
-				
+
 		if lugares:
 			data = []
 			for lugar in lugares:

@@ -89,7 +89,7 @@ WSGI_APPLICATION = 'turismo.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'turismo',
+        'NAME': 'turismoprod',
         'USER' : 'turismoadmin',
         'PASSWORD' : '123456',
         'HOST' : 'localhost',

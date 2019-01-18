@@ -176,6 +176,16 @@
   {
     category_id = urlparams["category"];
   }
+
+  $("a.picture, a.map").on("click", function(e){
+    e.preventDefault();
+    let url = $(this).attr("href");
+    lity(url);
+  });
+
+  $("input,select,textarea").addClass("form-control");
+  $('[data-toggle="tooltip"]').tooltip(); 
+
   </script>  
 
   {% block scripts %}

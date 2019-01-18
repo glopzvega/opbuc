@@ -1,14 +1,15 @@
-{% extends 'base.html' %}
+{% extends 'web/__base.html' %}
 {% load static %}
 {% block styles %}
+<link rel="stylesheet" href="{% static 'css/index.css' %}">
 <style>
-	.info
+	.title, .subtitle
 	{
-		/*padding: 1em;*/
+		color: white;
 	}
 	.info a, .info span
 	{
-		color: gray;
+		color: white;
 	}
 	.carousel img
 	{
@@ -30,18 +31,26 @@
 	}
 	.comments .nombre-usuario
 	{
+		color: white;
 		font-weight: bold;
 		font-size: 1.2em;
-		margin-top: 0.5em;		
+		margin-top: 0.5em;
 	}
 	.comments .comentario
 	{		
-		
+		color: white;
 	}
-	.starrr span
+	.sidebar .list-item
 	{
-		font-size: 1.5em;
-		color: green;
+	  font-size: 1em;
+	}
+	.nav-tabs a.nav-link
+	{
+		color: white;
+	}
+	.comments .puntuacion
+	{
+		color: white;
 	}
 	
 </style>
@@ -50,45 +59,52 @@
 {% block carousel %}
 {% endblock %}
 
-{% block breadcumb %}
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/">Inicio</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'lugares_categoria' data.category.id %}">{{data.category}}</a></li>    
-    <li class="breadcrumb-item active">{{data.name}}</li>    
-  </ol>
-</nav>
-{% endblock %}
 {% block content %}
 <div class="container-fluid">
 	
-	<div class="row">
-		<div class="col-12">
+	<div class="row row-main">
+		<div class="col-3 sidebar">
+			<h2 class="title-menu">Menu</h2>
+			{% for cat in categories %}
+			<div class="divider"></div>
+			<h3 class="text-secondary">{{ cat.name }}</h3>
+			{% for prod in cat.prods %}
+			<hr>     
+	        <a href="#" prod_id="{{prod.id}}" class="list-item producto">
+	          	{{ prod.name }}
+	          	<br> 
+			   	<small class="text-muted"> {{ prod.description }} </small>
+	        </a>
+	        {% endfor %}
+			
+			{% endfor %}
+		</div>
+		<div class="col-8 contenido">
 			<div class="row">
 				<div class="col-12">
 					<div class="row">
 						<div class="col info">
-							<h1>{{ data.name }}</h1>
-							<p class="text-muted">{{ data.description }}</p>
+							<h1 class="title">{{ data.name }}</h1>
+							<p class="subtitle">{{ data.description }}</p>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col info">							
-							<a href="{% url 'lugares_categoria' data.category.id %}">{{ data.category }}</a> 
-							<span class="separator"></span> 
-							<a href="{% url 'lugares_zona' data.zone.id %}">Acapulco, {{ data.zone }}</a>
-							<span class="separator"></span> 
-							<span>${{ data.price }}</span>
-					<!--	</div>
-					</div>
-					<div class="row">
-						<div class="col info">							-->
-							<span class="separator"></span>
 							<span>								
-							<i class="fa fa-map-marker-alt"></i>
-							{{ data.address }}
+							{{ data.category }}
 							</span>
 							<span class="separator"></span> 
+							<span>
+							Acapulco, {{ data.zone }}								
+							</span>
+							<span class="separator"></span>							
+							{% if data.mapa %}
+							<span>								
+							<i class="fa fa-map-marker-alt"></i>
+							<a href="{{ data.mapa }}" class="map">Ubicación</a>
+							</span>
+							<span class="separator"></span> 
+							{% endif %}
 							<span>								
 							<i class="fa fa-phone-square"></i>
 							{{ data.phone }}
@@ -108,19 +124,16 @@
 						</div>
 					</div>
 					<hr>
-					<ul class="nav nav-tabs" id="myTab" role="tablist">
+					<!-- <ul class="nav nav-tabs" id="myTab" role="tablist">
 					  <li class="nav-item">
 					    <a class="nav-link active" id="fotos-tab" data-toggle="tab" href="#fotos" role="tab" aria-controls="fotos" aria-selected="true">Fotos</a>
-					  </li>
-					  <li class="nav-item">
-					    <a class="nav-link" id="menu-tab" data-toggle="tab" href="#menu" role="tab" aria-controls="menu" aria-selected="false">Menu</a>
-					  </li>
-					  <li class="nav-item">
+					  </li>	 -->				 
+					  <!-- <li class="nav-item">
 					    <a class="nav-link" id="mapa-tab" data-toggle="tab" href="#mapa" role="tab" aria-controls="mapa" aria-selected="false">Mapa</a>
-					  </li>
-					</ul>
-					<div class="tab-content container-fluid" id="myTabContent">
-						<div class="tab-pane fade show active" id="fotos" role="tabpanel" aria-labelledby="fotos-tab">
+					  </li> -->
+					<!-- </ul> -->
+					<!-- <div class="tab-content" id="myTabContent">
+						<div class="tab-pane fade show active" id="fotos" role="tabpanel" aria-labelledby="fotos-tab"> -->
 							<div class="row gallery">
 								<div class="col-md-12 col-lg-6">
 									{% if data.photo %}
@@ -129,65 +142,9 @@
 									</a>
 									{% else %}
 									<img src="{% static '/img/default.png' %}" alt="fotos" class="img-main">	
-									{% endif %}									
-									<hr>
-									<div class="row">
-										<div class="col">
-											<textarea name="newcomment" id="newcomment" class="form-control" cols="30" rows="5" placeholder="Deja tu comentario"></textarea>
-										</div>
-									</div>
-									<br>
-									<div class="row">
-										<div class="col-9">
-											¿Que tanto recomendarías el lugar?<div id="stars" class="starrr"></div>
-										</div>
-										<div class="col text-right">
-											<input type="hidden" id="puntuacion">
-											<a href="" class="btn btn-success disabled guardar_comentario">Comentar</a>
-										</div>
-									</div>
-									<hr>
-									<div class="row comments">
-										{% for comment in comments %}
-										<div class="col-12">
-											<div class="row comment">
-												<div class="col-2">
-													<img class="rounded-circle" src="{% static '/photos/1.jpg' %}" alt="">
-												</div>
-												<div class="col-10">
-													<div class="row">
-														<div class="col">
-															<div class="nombre-usuario">		
-															{{ comment.usuario }}
-															</div>					
-														</div>
-													</div>
-													<div class="row">
-														<div class="col">
-															<div class="puntuacion">
-																<small class="text-muted">
-																<i>
-																	{{ comment.puntuacion }}
-																</i>, 
-																{{ comment.fecha }}</small>
-
-															</div>
-														</div>
-													</div>
-													<div class="row">
-														<div class="col">
-														<p class="comentario text-muted">
-															{{ comment.comentario }}
-														</p>
-														</div>
-													</div>											
-												</div>
-											</div>
-										</div>
-										{% endfor %}
-									</div>
+									{% endif %}
 								</div>
-								<div class="col-md-12 col-lg-6">
+								<div class="col-md-12 col-lg-6 fotos">
 									<div class="row">
 										{% if photos %}
 										{% for el in photos %}
@@ -207,47 +164,67 @@
 										{% endif %}
 									</div>
 								</div>
-							</div>	
-						</div>
-						<div class="tab-pane fade show" id="menu" role="tabpanel" aria-labelledby="menu-tab">
-							<table class="table">
-								<thead>
-									<tr>
-										<th></th>
-										<th>Producto</th>
-										<th>Categoria</th>
-										<th>Precio</th>
-										<th></th>
-									</tr>
-								</thead>
-								<tbody>
-								{% for prod in productos %}		
-								<tr>	
-									<td width="10%">
-										{% if prod.photo %}
-										<a class="picture" href="{{ prod.photo.url }}">
-											<img src="{{ prod.photo.url }}" alt="fotos" style="width:100%;">
-										</a>
-										{% else %}
-										<img src="{% static '/img/default.png' %}" alt="fotos" style="width:100%;">	
-										{% endif %}
-									</td>								
-									<td>
-										<a href="{% url 'producto' prod.id %}">{{ prod }} </a>
-										<br> 
-										<small class="text-muted"> {{ prod.description }} </small> 
-									</td>
-									<td> {{ prod.category }} </td>
-									<td>{{ prod.price }}</td>
-									<td>
-										<a class="btn btn-success agregar_carrito" href="{% url 'agregar_carrito' prod.id %}" title="Agregar al carrito"><i class="fas fa-cart-plus"></i></a>
-									</td>
-								</tr>							
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col">
+									<textarea name="newcomment" id="newcomment" class="form-control" cols="30" rows="5" placeholder="Deja tu comentario"></textarea>
+								</div>
+							</div>
+							<br>
+							<div class="row">
+								<div class="col-9">
+									¿Que tanto recomendarías el lugar?
+									<div id="stars" class="starrr"></div>
+								</div>
+								<div class="col text-right">
+									<input type="hidden" id="puntuacion">
+									<a href="" class="btn btn-warning disabled guardar_comentario">Comentar</a>
+								</div>
+							</div>
+							<hr>
+							<div class="row comments">
+								{% for comment in comments %}
+								<div class="col-12">
+									<div class="row comment">
+										<div class="col-2">
+											<img class="rounded-circle" src="{% static '/photos/1.jpg' %}" style="width: 100%; height: 100%;" alt="">
+										</div>
+										<div class="col-10">
+											<div class="row">
+												<div class="col">
+													<div class="nombre-usuario">	
+													{{ comment.usuario }}
+													</div>					
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-12">
+													<div class="puntuacion">
+														<span>
+														<i>
+															{{ comment.puntuacion }}
+														</i>, 
+														{{ comment.fecha }}
+														</span>
+
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-12">
+												<p class="comentario">
+													{{ comment.comentario }}
+												</p>
+												</div>
+											</div>											
+										</div>
+									</div>
+								</div>
 								{% endfor %}
-								</tbody>
-							</table>
-						</div>
-						<div class="tab-pane fade show" id="mapa" role="tabpanel" aria-labelledby="mapa-tab">
+							</div>
+						<!-- </div>						 -->
+						<!-- <div class="tab-pane fade show" id="mapa" role="tabpanel" aria-labelledby="mapa-tab">
 							{% if data.mapa %}
 							<div class="row">
 								<div class="col">
@@ -263,8 +240,8 @@
 								</div>
 							</div>
 							{% endif %}
-						</div>
-					</div>			
+						</div> -->
+					<!-- </div>			 -->
 				</div>
 				
 			</div>

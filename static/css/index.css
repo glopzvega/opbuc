@@ -1,6 +1,7 @@
 html, body, .container-fluid, .row-main
 {
-  height: 100%;
+  height: auto;
+  min-height: 1024px
 }
 
 .container-fluid
@@ -26,6 +27,12 @@ section
     /*padding-top: 3em;*/
     /*width: 100%;*/
 } 
+
+.divider
+{
+  border: 1px solid #dc3545;
+  margin: 10px; 
+}
 
 hr.divider
 {
@@ -104,6 +111,13 @@ img
   width: 100%;
 }
 
+.gallery .fotos
+{
+  max-height: 400px;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
 .gallery img
 {
   height: 130px;          
@@ -176,7 +190,12 @@ img.img-main
   text-align: center;
 }
 
-.sidebar .category-item
+.sidebar.left
+{ 
+  text-align: left;
+}
+
+.sidebar .list-item
 {
   color: white;
   display: inline-block;
@@ -199,4 +218,26 @@ img.img-main
 {
   height: 180px;
   min-height: 180px;
+}
+
+.starrr span
+{
+  font-size: 1.5em;
+  color: green;
+}
+
+.starrr {
+  display: inline-block; 
+}
+.starrr a {
+  font-size: 16px;
+  padding: 0 1px;
+  cursor: pointer;
+  color: #FFD119;
+  text-decoration: none; 
+}
+.title-menu
+{
+  font-family: 'Clicker Script', cursive;
+  padding: 0.5em;
 }
