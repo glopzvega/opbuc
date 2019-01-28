@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.core import serializers
 from django.contrib.auth import login, authenticate
-import locale
+# import locale
 from datetime import datetime
 import json
 import logging
@@ -694,7 +694,7 @@ def ver_carrito(request):
 	if not request.session["carrito"]:
 		empty = True
 
-	locale.setlocale( locale.LC_ALL, 'en_US.UTF-8')
+	# locale.setlocale( locale.LC_ALL, 'en_US.UTF-8')
 	
 	productos = []
 	for el in request.session["carrito"]:
@@ -702,18 +702,21 @@ def ver_carrito(request):
 		producto.cantidad_carrito = el["cantidad_carrito"]
 		producto.subtotal = el["subtotal"]
 		
-		subtotal_txt = locale.currency(producto.subtotal, grouping=True)
-		producto.subtotal_txt = subtotal_txt
+		# subtotal_txt = locale.currency(producto.subtotal, grouping=True)
+		# producto.subtotal_txt = subtotal_txt
+		producto.subtotal_txt = "%.2f" % producto.subtotal
 		
-		price_txt = locale.currency(producto.price, grouping=True)
-		producto.price_txt = price_txt
+		# price_txt = locale.currency(producto.price, grouping=True)
+		# producto.price_txt = price_txt
+		producto.price_txt = "%.2f" % producto.price
 
 		productos.append(producto)
 
 	if "total" in request.session:
 		total = request.session["total"]
 
-	total = locale.currency(total, grouping=True)
+	# total = locale.currency(total, grouping=True)
+	total = "%.2f" % total
 
 	return render(request, "web/carrito.html", {"empty" : empty, "productos" : productos, "total" : total})
 
@@ -742,9 +745,9 @@ def cantidad_carrito(request, id):
 	request.session["total"] = total
 	request.session["carrito"] = carrito
 	
-	locale.setlocale( locale.LC_ALL, 'en_US.UTF-8')
-	total = locale.currency(total, grouping=True)
-	subtotal = locale.currency(subtotal, grouping=True)
+	# locale.setlocale( locale.LC_ALL, 'en_US.UTF-8')
+	# total = locale.currency(total, grouping=True)
+	# subtotal = locale.currency(subtotal, grouping=True)
 
 	return JsonResponse({"success" : True, "qty" : len(carrito), "subtotal" : subtotal, "total" : total})		
 
@@ -826,7 +829,7 @@ def quitar_carrito(request, id):
 	request.session["total"] = total
 	request.session["carrito"] = carrito
 
-	locale.setlocale( locale.LC_ALL, 'en_US.UTF-8')
-	total = locale.currency(total, grouping=True)
+	# locale.setlocale( locale.LC_ALL, 'en_US.UTF-8')
+	# total = locale.currency(total, grouping=True)
 
 	return JsonResponse({"success" : True, "qty" : len(carrito), "total" : total})
