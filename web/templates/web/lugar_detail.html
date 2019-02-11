@@ -137,13 +137,7 @@
                         <div class="col-md-12 col-lg-6 fotos">
                             <div class="row">
                                 {% if photos %} {% for el in photos %}
-                                <div class='col-sm-4 col-md-4 col-6'>
-
-                                    <a href="{% url 'main_foto' el.id %}" tipo="lugar" class="main" data-toggle="tooltip" data-placement="right" title="Hacer Foto Principal"><i class="fa fa-home"></i></a>
-
-                                    <a href="{% url 'eliminar_foto' el.id %}" class="delete" data-toggle="tooltip" data-placement="right" title="Eliminar">
-                                        <i class="fa fa-trash"></i></a>
-
+                                <div class='col-sm-4 col-md-4 col-6'>                                    
                                     <a class="picture" href='{{ el.photo.url }}'>
                                         <img src='{{ el.photo.url }}' />
                                     </a>
@@ -269,6 +263,10 @@
             "puntuacion": puntuacion
         }, function(res) {
             console.log(res)
+            if(res.success)
+            {
+                location.reload();
+            }
         });
     })
 
