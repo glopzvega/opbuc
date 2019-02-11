@@ -1,80 +1,81 @@
-{% extends 'base.html' %}
+{% extends 'web/__base.html' %}
 {% load static %}
 {% block content %}
 <div class="container-fluid">
-<form action="{% url 'producto_editar' data.id %}" method="post" enctype="multipart/form-data">
-{% csrf_token %}
-	<div class="row">
-		<div class="col">
-			<h1 class="text-center">
-				{{ data.name }}
-			</h1>
-			<hr class="divider">
+	<br>
+	<div class="card">
+		<div class="card-body">
+			<div class="card-title"></div>
+			<div class="card-text">
+					<form action="{% url 'producto_editar' data.id %}" method="post" enctype="multipart/form-data">
+						{% csrf_token %}							
+							<div class="row">
+								<div class="col">
+									<div class="row">
+										<div class="col">						
+											{% if data.photo %}
+											<img src="{{ data.photo.url }}" alt="fotos" class="img-main">
+											{% else %}
+											<img src="{% static '/img/default.png' %}" alt="fotos" class="img-main">	
+											{% endif %}
+										</div>
+									</div>
+									<br>
+									<div class="row gallery">
+										{% if fotos %}
+										{% for el in fotos %}
+											<div class='col-3'>
+												
+												<a href="{% url 'main_foto' el.id %}" tipo="producto" class="main" data-toggle="tooltip" data-placement="right" title="Hacer Foto Principal"><i class="fa fa-home"></i></a>
+												
+												<a href="{% url 'eliminar_foto' el.id %}" class="delete" data-toggle="tooltip" data-placement="right" title="Eliminar">
+												<i class="fa fa-trash"></i></a>
+												
+												<a class="picture" href='{{ el.photo.url }}'>
+													<img src='{{ el.photo.url }}'/>
+												</a>
+												<br><br>
+											</div>
+										{% endfor %}
+										{% endif %}
+									</div>
+									<hr>
+									<div class="row">
+										<div class="col">
+											<button type="button" class="btn btn-primary js-upload-photos">
+													<span class="glyphicon glyphicon-cloud-upload"></span> Subir Fotos
+												</button>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col">
+											<input id="fileupload" type="file" name="photo" multiple style="display: none;" data-url="{% url 'producto_photo_upload' data.id %}" data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'>
+										</div>
+									</div>
+								</div>
+								<div class="col">
+									
+									<div class="row">
+									{% for field in form %}
+										<div class="col-12">			
+										{{ field.label }}
+										{{ field }}
+										<br>
+										</div>
+									{% endfor %}
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col text-center">
+									<button class="btn btn-danger"> GUARDAR </button>
+								</div>
+							</div>
+						</form>
+			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col">
-			<div class="row">
-				<div class="col">						
-					{% if data.photo %}
-					<img src="{{ data.photo.url }}" alt="fotos" class="img-main">
-					{% else %}
-					<img src="{% static '/img/default.png' %}" alt="fotos" class="img-main">	
-					{% endif %}
-				</div>
-			</div>
-			<br>
-			<div class="row gallery">
-				{% if fotos %}
-				{% for el in fotos %}
-					<div class='col-3'>
-						
-						<a href="{% url 'main_foto' el.id %}" tipo="producto" class="main" data-toggle="tooltip" data-placement="right" title="Hacer Foto Principal"><i class="fa fa-home"></i></a>
-						
-						<a href="{% url 'eliminar_foto' el.id %}" class="delete" data-toggle="tooltip" data-placement="right" title="Eliminar">
-						<i class="fa fa-trash"></i></a>
-						
-						<a class="picture" href='{{ el.photo.url }}'>
-							<img src='{{ el.photo.url }}'/>
-						</a>
-						<br><br>
-					</div>
-				{% endfor %}
-				{% endif %}
-			</div>
-			<hr>
-			<div class="row">
-				<div class="col">
-					<button type="button" class="btn btn-primary js-upload-photos">
-				      <span class="glyphicon glyphicon-cloud-upload"></span> Subir Fotos
-				    </button>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col">
-					<input id="fileupload" type="file" name="photo" multiple style="display: none;" data-url="{% url 'producto_photo_upload' data.id %}" data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'>
-				</div>
-			</div>
-		</div>
-		<div class="col">
-			
-			<div class="row">
-			{% for field in form %}
-				<div class="col-12">			
-				{{ field.label }}
-				{{ field }}
-				<br>
-				</div>
-			{% endfor %}
-			</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col text-center">
-			<button class="btn btn-danger"> GUARDAR </button>
-		</div>
-	</div>
-</form>
+
 </div>
 
 {% endblock %}
@@ -95,6 +96,11 @@
       }
     }
   });
+
+  $(".gallery a.main, .gallery a.delete").on("click", function(e){
+	e.preventDefault()
+	alert("OK")
+  })
   
 </script>
 {% endblock %}

@@ -1,40 +1,50 @@
-{% extends 'base.html' %}
+{% extends 'web/__base.html' %}
 
 {% block content %}
 <div class="container-fluid">
-	<div class="row">
-		<div class="col text-center">
-			<h1>Categorias</h1>
-			<h3 class="text-muted">(Listado de Registros)</h3>
-			<hr class="divider">
+	<br>
+	<div class="card">
+		<div class="card-body">
+			<div class="card-title">
+				<h5>Categorias(Listado de Registros)</h5>				
+			</div>
+			<div class="card-text">
+				<a href="{% url 'categoria_nuevo' %}" class="btn btn-danger">
+					<i class="glyphicon glyphicon-plus"></i>
+					Nuevo Registro
+				</a>
+				<hr>
+				<table class="table table-fixed">
+					<thead>
+						<tr>
+							<th class="col-2"></th>
+							<th class="col-10">Nombre</th>
+							<!-- <th>Tipo</th> -->
+						</tr>
+					</thead>
+					<tbody>
+						{% for row in data %}
+						<tr>
+						<td class="col-2">
+							{% if row.photo %}
+							<a href="{{ row.photo.url }}" class="picture">
+								<img src="{{ row.photo.url }}" alt="{{ row.name }}">
+							</a>
+							{% endif %}
+						</td>				
+						<td class="col-10">
+							<a href="{% url 'categoria_editar' row.id %}">
+								{{ row.name }}
+							</a>
+						</td>
+						
+						{% endfor %}
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col">
-			<a href="{% url 'categoria_nuevo' %}" class="btn btn-success">
-				<i class="glyphicon glyphicon-plus"></i>
-				Nuevo Registro
-			</a>
-			<hr>
-			<table class="table">
-				<thead>
-					<tr>
-						<th>Nombre</th>
-						<th>Tipo</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for row in data %}
-					<tr>				
-					<td><a href="{% url 'categoria_editar' row.id %}">
-					{{ row.name }}</a></td>
-					<td>{{ row.tipo }}</td>
-					{% endfor %}
-					</tr>
-				</tbody>
-			</table>
-
-		</div>
-	</div>
+	
 </div>
 {% endblock %}

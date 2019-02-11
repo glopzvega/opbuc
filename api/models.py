@@ -19,6 +19,7 @@ class Category(models.Model):
 	name = models.CharField(max_length=255)
 	photo = models.ImageField(blank=True, null=True)
 	tipo = models.CharField(max_length=255, choices=CATEGORIAS)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 	def __str__(self):
 		return self.name

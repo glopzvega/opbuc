@@ -1,46 +1,43 @@
-{% extends 'base.html' %}
+{% extends 'web/__base.html' %}
 {% block content %}
 <div class="container-fluid">
-	<div class="row">
-		<div class="col text-center">
-			<h1>Productos</h1>
-			<h3 class="text-muted">(Listado de Registros)</h3>
-			<hr class="divider">
+	<br>
+	<div class="card">
+		<div class="card-body">
+			<div class="card-title">
+				<h5>Productos(Listado de Registros)</h5>				
+			</div>
+			<div class="card-text">
+				<a href="{% url 'producto_nuevo' %}" class="btn btn-danger">
+					<i class="glyphicon glyphicon-plus"></i>
+					Nuevo Registro
+				</a>
+				<hr>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Nombre</th>
+							<th>Descripcion</th>
+							<th>Categoria</th>
+							<th>Lugar</th>	
+							<th>Precio</th>					
+						</tr>
+					</thead>
+					<tbody>
+						{% for row in data %}
+						<tr>				
+						<td><a href="{% url 'producto_editar' row.id %}">
+						{{ row.name }}</a></td>
+						<td>{{ row.description }}</td>
+						<td>{{ row.category }}</td>
+						<td> {{ row.lugar }}</td>
+						<td> {{ row.price }}</td>
+						{% endfor %}
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col">
-			<a href="{% url 'producto_nuevo' %}" class="btn btn-success">
-				<i class="glyphicon glyphicon-plus"></i>
-				Nuevo Registro
-			</a>
-			<hr>
-			<table class="table">
-				<thead>
-					<tr>
-						<th>Nombre</th>
-						<th>Descripcion</th>
-						<th>Categoria</th>
-						<th>Lugar</th>	
-						<th>Precio</th>					
-					</tr>
-				</thead>
-				<tbody>
-					{% for row in data %}
-					<tr>				
-					<td><a href="{% url 'producto_editar' row.id %}">
-					{{ row.name }}</a></td>
-					<td>{{ row.description }}</td>
-					<td>{{ row.category }}</td>
-					<td> {{ row.lugar }}</td>
-					<td> {{ row.price }}</td>
-					{% endfor %}
-					</tr>
-				</tbody>
-			</table>
-
-		</div>
-	</div>
-
 </div>
 {% endblock %}

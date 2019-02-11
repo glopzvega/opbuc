@@ -53,6 +53,7 @@
 							</div>
 						</div>
 						<hr>
+						{% if request.user.is_superuser and request.user.is_staff %}
 						<div class="row">
 							<div class="col">
 								<a class="btn btn-link ver-pago" href="">Ver Info Pago <i class="fas fa-caret-right"></i></a>
@@ -68,6 +69,7 @@
 							</div>
 						</div>
 						<hr>
+						{% endif %}
 						<div class="row" style="display:none;">
 							<div class="col text-right text-success">
 								<h2>Total: $ {{ order.total }}</h2>

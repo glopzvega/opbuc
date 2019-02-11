@@ -213,7 +213,7 @@ def buscarlugar(request):
 						"id" : lugar.id,
 						"name" : lugar.name,
 						"video" : lugar.video,
-						"photo" : lugar.photo.url,
+						"photo" : lugar.photo and lugar.photo.url or "",
 						"description" : lugar.description,
 						"zone_id" : lugar.zone_id,
 						"category_id" : lugar.category_id,
@@ -241,7 +241,7 @@ def producto(request, id):
 
 def ver_categorias(request):
 	
-	categorias = models.Category.objects.all()
+	categorias = models.Category.objects.filter(user=request.user)
 
 	context = {
 		"data" : categorias
@@ -253,9 +253,12 @@ def ver_categorias(request):
 def categoria_nuevo(request):
 	
 	if request.method == "POST":
-		form = CategoriaModelForm(request.POST)
+		form = CategoriaModelForm(request.POST, request.FILES)
 		if form.is_valid():
-			form.save()
+			cat = form.save(commit=False)
+			cat.tipo = 'producto'
+			cat.user = request.user
+			cat.save()
 			return redirect("ver_categorias")
 	else:
 		form = CategoriaModelForm()
@@ -270,7 +273,7 @@ def categoria_editar(request, id):
 	cat = get_object_or_404(models.Category, pk=id)
 
 	if request.method == "POST":
-		form = CategoriaModelForm(request.POST, instance=cat)
+		form = CategoriaModelForm(request.POST, request.FILES, instance=cat)
 		if form.is_valid():
 			form.save()
 			return redirect("ver_categorias")
@@ -415,12 +418,12 @@ def ver_productos(request):
 def producto_nuevo(request):
 	
 	if request.method == "POST":
-		form = ProductoModelForm(request.POST, request.FILES)
+		form = ProductoModelForm(request.user, request.POST, request.FILES)
 		if form.is_valid():
 			form.save()
 			return redirect("ver_productos")
 	else:
-		form = ProductoModelForm()
+		form = ProductoModelForm(request.user)
 
 	context = {
 		"form" : form
@@ -432,12 +435,12 @@ def producto_editar(request, id):
 	producto = get_object_or_404(models.Producto, pk=id)
 
 	if request.method == "POST":
-		form = ProductoModelForm(request.POST, request.FILES, instance=producto)
+		form = ProductoModelForm(request.user, request.POST, request.FILES, instance=producto)
 		if form.is_valid():
 			form.save()
 			return redirect("ver_productos")
 	else:
-		form = ProductoModelForm(instance=producto)
+		form = ProductoModelForm(request.user, instance=producto)
 
 	fotos = models.Photo.objects.filter(producto_id=producto)
 

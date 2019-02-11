@@ -1,35 +1,54 @@
-{% extends 'base.html' %}
+{% extends 'web/__base.html' %}
 {% block content %}
 <div class="container-fluid">
-<section>
-	<form action="{% url 'categoria_editar' data.id %}" method="post" enctype="multipart/form-data">
-	{% csrf_token %}
-	<div class="row">
-		<div class="col-8 offset-2">	
-		<div class="row">
-			<div class="col text-center">
-				<h1>Categorias</h1>
-				<h4 class="text-muted">(Edición de Datos)</h4>
-				<hr class="divider">
+	<br>
+	<div class="card">
+		<div class="card-body">
+			<div class="card-title">
+				<h5>Categorias(Edición de Datos)</h5>
+				<hr>					
 			</div>
-		</div>		
-		<div class="row">
-		{% for field in form %}
-			<div class="col-12">			
-			{{ field.label }}
-			{{ field }}
-			<br>
+			<div class="card-text">
+				<form action="{% url 'categoria_editar' data.id %}" method="post" enctype="multipart/form-data">
+					{% csrf_token %}
+					<div class="row">
+						<div class="col-8 offset-2">	
+						<div class="row">
+						{% for field in form %}
+							{% if field.name != 'photo' %}
+							<div class="col-12">			
+							{{ field.label }}
+							{{ field }}
+							<br>
+							{% endif %}
+							</div>
+						{% endfor %}
+						</div>
+						<div class="col-4 offset-4">
+							<div class="row">
+								<div class="col-12">
+									{% if data.photo %}
+									<a href="{{data.photo.url}}" class="picture">
+										<img src="{{data.photo.url}}" alt="{{data.photo.name}}">
+									</a>
+									{% endif %}
+									<br>
+									<input type="file" id="id_photo" name="photo" class="form-control">
+								</div>
+							</div>
+						</div>
+						</div>
+					</div>
+					<br>
+					<div class="row">
+						<div class="col text-center">
+							<button class="btn btn-danger"> GUARDAR </button>
+						</div>
+					</div>
+				</form>
 			</div>
-		{% endfor %}
-		</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col text-center">
-			<button class="btn btn-danger"> GUARDAR </button>
-		</div>
-	</div>
-	</form>
-</section>
+
 </div>
 {% endblock %}

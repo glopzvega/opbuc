@@ -30,7 +30,7 @@ class CategoriaModelForm(ModelForm):
 
 	class Meta:
 		model = Category
-		fields = "__all__"
+		fields = ("name", "photo")
 		# fields = ("nocontrol", "apellidop", "apellidom", "nombre", "edad", "sexo", "email", "celular", "telefono", "carrera", "semestre", "promedio", "curp", "lugarnac", "fechanac", "maestro1", "maestro2", "maestro3", "maestro4", "maestro1a", "maestro2a", "maestro3a", "maestro4a")
 
 		labels = {
@@ -42,9 +42,8 @@ class LugarModelForm(ModelForm):
 	class Meta:
 		model = Lugar
 		# fields = "__all__"
-		fields = ("name", "category", "zone", "phone", "email", "description", "video", "mapa", "web")
+		fields = ("name", "category", "zone", "phone", "email", "description", "video", "mapa", "web", "photo")
 		# exclude = ("photo",)
-
 
 		labels = {
 			'name' : 'Nombre',
@@ -55,16 +54,31 @@ class LugarModelForm(ModelForm):
 			'description' : 'Descripción',
 		}
 
+	def __init__(self, *args, **kwargs):
+		super(LugarModelForm, self).__init__(*args, **kwargs)
+		self.fields['category'].queryset = Category.objects.filter(tipo='lugar')
+				
 class ProductoModelForm(ModelForm):
 
 	class Meta:
 		model = Producto
-		fields = ("name", "description", "price", "category", "lugar")
+		fields = ("name", "price", "category", "lugar", "description", "photo")
 		# fields = ("nocontrol", "apellidop", "apellidom", "nombre", "edad", "sexo", "email", "celular", "telefono", "carrera", "semestre", "promedio", "curp", "lugarnac", "fechanac", "maestro1", "maestro2", "maestro3", "maestro4", "maestro1a", "maestro2a", "maestro3a", "maestro4a")
 
 		labels = {
-			# 'nombre' : 'Nombre(s)',			
+			'name' : 'Nombre',			
+			'description' : 'Descripción',			
+			'price' : 'Precio',			
+			'category' : 'Categoria',			
+			'lugar' : 'Lugar',			
 		}
+	
+	def __init__(self, user=None, *args, **kwargs):
+		super(ProductoModelForm, self).__init__(*args, **kwargs)
+		self.fields['category'].queryset = Category.objects.filter(tipo='producto').filter(user=user)
+		if user:
+			self.fields['category'].queryset = Category.objects.filter(user=user)
+			self.fields['lugar'].queryset = Lugar.objects.filter(user=user)
 
 class PhotoModelForm(ModelForm):
 

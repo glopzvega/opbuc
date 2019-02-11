@@ -50,12 +50,16 @@ let buscarlugares = function()
 
     if (res.data != undefined && res.data.length > 0){
 
-      $.each(res.data, function(index, lugar){
+      $.each(res.data, function(index, lugar){        
+        let photo = lugar.photo;
+        if (photo == "")
+          photo = "/static/img/default.png"
+        console.log(photo)
         let card = [
           '<div class="col-4">',
           '<div class="caja">',
             '<a href="/lugar/'+lugar.id+'">',
-              '<img src="' + lugar.photo + '"/>',
+              '<img src="' + photo + '"/>',
             '</a>',
             '<div class="detail">',
               '<div class="item-name">',
