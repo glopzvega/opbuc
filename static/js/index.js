@@ -37,9 +37,18 @@ $("#busqueda").on("keyup", function(){
   }
 });
 
-$("input,select,textarea").addClass("form-control")
+$("input").not("[type=checkbox]").addClass("form-control")
+$("select,textarea").addClass("form-control")
 $('[data-toggle="tooltip"]').tooltip();    
 
+$('.datetimepicker1').datetimepicker({
+  icons: {
+          time: "far fa-clock",
+          date: "far fa-calendar",
+          up: "fas fa-angle-up",
+          down: "fas fa-angle-down"
+      }
+});
 
 let buscarlugares = function()
 {

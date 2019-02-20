@@ -39,7 +39,7 @@
     .comments .nombre-usuario {
         color: #495057;
         font-weight: bold;
-        font-size: 1.2em;
+        /* font-size: 1.2em; */
         margin-top: 0.5em;
     }
     
@@ -101,231 +101,302 @@
         <span class="sr-only">Next</span>
     </a>
 </div>
-
-<div class="container">
-    <br>
-    <div class="row row-main">
-        <!-- <div class="col-3 sidebar">
-            <h2 class="title-menu">Menu</h2>
-            {% for cat in categories %}
-            <div class="divider"></div>
-            <h3 class="text-secondary">{{ cat.name }}</h3>
-            {% for prod in cat.prods %}
-            <hr>
-            <a href="#" prod_id="{{prod.id}}" class="list-item producto">
-	          	{{ prod.name }}
-	          	<br> 
-			   	<small class="text-muted"> {{ prod.description }} </small>
-			</a>
-            <a class="btn btn-success agregar_carrito" href="{% url 'agregar_carrito' prod.id %}" title="Agregar al carrito"><i class="fas fa-cart-plus"></i></a> {% endfor %} {% endfor %}
-        </div> -->
-        <div class="col-12 contenido">
+<br><br><br>
+<div class="container">     
+    <div class="row">
+        <div class="col-12 col-md-7">
+            <div class="row">
+                <div class="col info">
+                    <h3 class="zone">Acapulco, {{ data.zone }} </h3>
+                    <h1 class="title">{{ data.name }}</h1>
+                </div>
+            </div>
             <br>
             <div class="row">
-                <div class="col-12">
-                    
-                    
-
-                    <!-- <div class="row gallery">
-                        <div class="col-md-12 col-lg-6">
-                            {% if data.photo %}
-                            <a class="picture" href="{{ data.photo.url }}">
-                                <img src="{{ data.photo.url }}" alt="fotos" class="img-main">
-                            </a>
-                            {% else %}
-                            <img src="{% static '/img/default.png' %}" alt="fotos" class="img-main"> {% endif %}
+                <div class="col info">
+                    <span>								
+                    {{ data.category }}
+                    </span>
+                    <span class="separator"></span> 
+                    {% if data.mapa %}
+                    <span>								
+                    <i class="fa fa-map-marker-alt"></i>
+                    <a href="{{ data.mapa }}" class="map">Ubicación</a>
+                    </span>
+                    <span class="separator"></span> 
+                    {% endif %}
+                    <span>								
+                    <i class="fa fa-phone-square"></i>
+                    {{ data.phone }}
+                    </span>
+                    <span class="separator"></span>
+                    <span>								
+                    <i class="fa fa-envelope"></i>
+                    {{ data.email }}
+                    </span> {% if data.video %}
+                    <span class="separator"></span>
+                    <span>								
+                    <i class="fa fa-video"></i>
+                    <a href="{{ data.video }}" class="btn btn-link vervideo">Ver video</a>
+                    </span> {% endif %}
+                </div>
+            </div>
+            <hr>                    
+            <div class="row">
+                <div class="col">
+                    <b>Ver Experiencias:</b><br>
+                    <p class="subtitle">{{ data.description }}</p>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col">
+                    <b>Lo mejor:</b><br>
+                    <p class="subtitle">{{ data.description }}</p>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col">
+                    <b>Accesibilidad:</b><br>
+                    <p class="subtitle">{{ data.description }}</p>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col">
+                    <b>Calificación del Anfitrión:</b><br>
+                    <div class="row">
+                        <div class="col-3">
+                            <div id="stars" class="starrr"></div>
                         </div>
-                        <div class="col-md-12 col-lg-6 fotos">
-                            <div class="scrollbar" id="style-1">
-                                <div class="force-overflow">
-                                    <div class="row">
-                                        {% if photos %} {% for el in photos %}
-                                        <div class='col-sm-4 col-md-4 col-6'>                                    
-                                            <a class="picture" href='{{ el.photo.url }}'>
-                                                <img src='{{ el.photo.url }}' />
-                                            </a>
-                                            <br><br>
-                                        </div>
-                                        {% endfor %} {% endif %}
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="col">
+                            <span class="text-muted">153</span>
                         </div>
-                    </div> -->
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col">
+                    <b>Servicios:</b><br>
+                    <p class="subtitle">{{ data.description }}</p>
                 </div>
             </div>
             
-            <br>
-            <div class="row">
-                <div class="col-6">
-                    <div class="row">
-                        <div class="col info">
-                            <h3 class="zone">Acapulco, {{ data.zone }} </h3>
-                            <h1 class="title">{{ data.name }}</h1>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col info">
-                            <span>								
-                            {{ data.category }}
-                            </span>
-                            <span class="separator"></span> 
-                            {% if data.mapa %}
-                            <span>								
-                            <i class="fa fa-map-marker-alt"></i>
-                            <a href="{{ data.mapa }}" class="map">Ubicación</a>
-                            </span>
-                            <span class="separator"></span> 
-                            {% endif %}
-                            <span>								
-                            <i class="fa fa-phone-square"></i>
-                            {{ data.phone }}
-                            </span>
-                            <span class="separator"></span>
-                            <span>								
-                            <i class="fa fa-envelope"></i>
-                            {{ data.email }}
-                            </span> {% if data.video %}
-                            <span class="separator"></span>
-                            <span>								
-                            <i class="fa fa-video"></i>
-                            <a href="{{ data.video }}" class="btn btn-link vervideo">Ver video</a>
-                            </span> {% endif %}
-                        </div>
-                    </div>
-                    <hr>                    
-                    <div class="row">
-                        <div class="col">
-                            <b>Ver Experiencias:</b><br>
-                            <p class="subtitle">{{ data.description }}</p>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col">
-                            <b>Lo mejor:</b><br>
-                            <p class="subtitle">{{ data.description }}</p>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col">
-                            <b>Accesibilidad:</b><br>
-                            <p class="subtitle">{{ data.description }}</p>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col">
-                            <b>Calificación del Anfitrión:</b><br>
-                            <p class="subtitle">{{ data.description }}</p>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col">
-                            <b>Servicios:</b><br>
-                            <p class="subtitle">{{ data.description }}</p>
-                        </div>
-                    </div>
-                    
-                    
-                    <!-- <ul class="nav nav-tabs" id="myTab" role="tablist">
-					  <li class="nav-item">
-					    <a class="nav-link active" id="fotos-tab" data-toggle="tab" href="#fotos" role="tab" aria-controls="fotos" aria-selected="true">Fotos</a>
-					  </li>	 -->
-                    <!-- <li class="nav-item">
-					    <a class="nav-link" id="mapa-tab" data-toggle="tab" href="#mapa" role="tab" aria-controls="mapa" aria-selected="false">Mapa</a>
-					  </li> -->
-                    <!-- </ul> -->
-                    <!-- <div class="tab-content" id="myTabContent">
-						<div class="tab-pane fade show active" id="fotos" role="tabpanel" aria-labelledby="fotos-tab"> -->
-                    
-                    <hr>
-                    <div class="row">
-                        <div class="col">
-                            <textarea name="newcomment" id="newcomment" class="form-control" cols="30" rows="5" placeholder="Deja tu comentario"></textarea>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-9">
-                            ¿Que tanto recomendarías el lugar?
-                            <div id="stars" class="starrr"></div>
-                        </div>
-                        <div class="col text-right">
-                            <input type="hidden" id="puntuacion">
-                            <a href="" class="btn btn-warning disabled guardar_comentario">Comentar</a>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row comments">
-                        {% for comment in comments %}
-                        <div class="col-12">
-                            <div class="row comment">
-                                <div class="col-2">
-                                    <img class="rounded-circle" src="{% static '/photos/1.jpg' %}" style="width: 100%; height: 100%;" alt="">
+            
+            <!-- <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                <a class="nav-link active" id="fotos-tab" data-toggle="tab" href="#fotos" role="tab" aria-controls="fotos" aria-selected="true">Fotos</a>
+                </li>	 -->
+            <!-- <li class="nav-item">
+                <a class="nav-link" id="mapa-tab" data-toggle="tab" href="#mapa" role="tab" aria-controls="mapa" aria-selected="false">Mapa</a>
+                </li> -->
+            <!-- </ul> -->
+            <!-- <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="fotos" role="tabpanel" aria-labelledby="fotos-tab"> -->
+            
+            
+            <br>                    
+            <div class="row comments">
+                <div class="col-12">    
+                    <div class="card">
+                        <div class="card-body">                                    
+                            <div class="card-text">                                                                                       
+                                <div class="row">
+                                    <div class="col-3">
+                                        <div id="stars" class="starrr"></div>
+                                    </div>
+                                    <div class="col">
+                                        <h4>Total de Evaluaciones 153</h4>
+                                    </div>
+                                </div>                                                                                 
+                                {% for comment in comments|slice:":3" %}
+                                <div class="row comment">                                
+                                    <div class="col-12">
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="nombre-usuario">
+                                                    {{ comment.usuario }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="puntuacion">
+                                                    <span>
+                                                        <i>
+                                                            {{ comment.puntuacion }}
+                                                        </i>, 
+                                                        {{ comment.fecha }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <p class="comentario">
+                                                    {{ comment.comentario }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-10">
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="nombre-usuario">
-                                                {{ comment.usuario }}
-                                            </div>
-                                        </div>
+                                {% endfor %}
+                                <div class="row">
+                                    <div class="col">
+                                        <textarea name="newcomment" id="newcomment" class="form-control" cols="30" rows="5" placeholder="Deja tu comentario"></textarea>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="puntuacion">
-                                                <span>
-														<i>
-															{{ comment.puntuacion }}
-														</i>, 
-														{{ comment.fecha }}
-														</span>
-
-                                            </div>
-                                        </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-9">
+                                        ¿Que tanto recomendarías el lugar?
+                                        <div id="stars" class="starrr"></div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <p class="comentario">
-                                                {{ comment.comentario }}
-                                            </p>
-                                        </div>
+                                    <div class="col text-right">
+                                        <input type="hidden" id="puntuacion">
+                                        <a href="" class="btn btn-warning disabled guardar_comentario">Comentar</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        {% endfor %}
                     </div>
-                    <!-- </div>						 -->
-                    <!-- <div class="tab-pane fade show" id="mapa" role="tabpanel" aria-labelledby="mapa-tab">
-							{% if data.mapa %}
-							<div class="row">
-								<div class="col">
-									<h3>Puesdes encontrarnos en:</h3>
-									<hr>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col">
-									{% autoescape off %}
-									{{ data.mapa }}
-									{% endautoescape %}									
-								</div>
-							</div>
-							{% endif %}
-						</div> -->
-                    <!-- </div>			 -->
                 </div>
-
-            </div>
-
+            </div>                   
+            
+            
+            <!-- </div>						 -->
+            <!-- <div class="tab-pane fade show" id="mapa" role="tabpanel" aria-labelledby="mapa-tab">
+                    {% if data.mapa %}
+                    <div class="row">
+                        <div class="col">
+                            <h3>Puesdes encontrarnos en:</h3>
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            {% autoescape off %}
+                            {{ data.mapa }}
+                            {% endautoescape %}									
+                        </div>
+                    </div>
+                    {% endif %}
+                </div> -->
+            <!-- </div>			 -->
         </div>
-
+        <div class="col-12 col-md-5">                
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h5>RESERVA</h5>
+                        <div class="divider"></div>                        
+                    </div>
+                    <div class="card-text">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="menu scrollbar" id="style-1">
+                                    <ul class="list-group">
+                                        
+                                        {% for cat in categories %}
+                                        <!-- <h3 class="text-secondary">{{ cat.name }}</h3> -->
+                                        {% for prod in cat.prods %}
+                                        <!-- <hr> -->
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <label><h5>
+                                                    <input type="checkbox">
+                                                    {{ prod.name }}</h5>
+                                                </label>
+                                                <br> 
+                                                <small class="text-muted">It is a long established fact that a reader will be distracted by the readable content of a page</small>                                    
+                                            </div>
+                                            <span class="badge badge-danger badge-pill">${{prod.price}}</span>                                   
+                                        </li>                                
+                                        {% endfor %} {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <br>
+                        <div class="row">
+                            <div class="col-12 col-lg-6">
+                                <div style="padding: 0 1em;">
+                                    <label>
+                                        Fecha de la reservación:
+                                    </label>
+                                    <br>
+                                    <div class="form-group">
+                                        <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                                            <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
+                                            <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                        
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <div style="padding: 0 1em;">
+                                    <label>
+                                        Número de Invitados:
+                                    </label>
+                                    <br>
+                                    <input type="number" min="1" value="1" class="form-control">
+                                </div>                        
+                            </div>
+                        </div>    
+                        <br>
+                        <div class="row">
+                            <div class="col-12 col-lg-6">
+                                <div style="padding: 0 1em;">
+                                    <label>Cupón</label>
+                                    <input type="text" class="form-control readonly" value="-100">
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 text-right">
+                                <br>
+                                <h3>Total: $0.00</h3>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <button class="btn btn-lg btn-outline-danger">CONFIRMAR</button>
+                            </div>
+                        </div>                      
+                    </div>
+                </div>
+            </div>
+                
+        </div>
     </div>
+    <br>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h5>REGLAS DE LA CASA</h5>
+                    </div>
+                    <div class="card-text">
+                        <p>
+                            It is a long established fact that a reader 
+                            will be distracted by the readable content 
+                            of a page when looking at its layout. 
+                            The point of using Lorem Ipsum is that it has a 
+                            more-or-less normal distribution of letters, 
+                            as opposed to using 'Content here, content here', 
+                            making it look like readable English.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
 </div>
 {% endblock %}
 {% block scripts %}
@@ -426,7 +497,6 @@
                 }
             })
         })
-
 
     });
 </script>
