@@ -1,16 +1,21 @@
-{% extends 'web/__base.html' %} 
+{% extends 'web/__main.html' %} 
 {% load static %} 
 {% block styles %}
-<link rel="stylesheet" href="{% static 'css/index.css' %}">
 <style>
     .title,
     .subtitle {
-        color: white;
+        color: #495057;
+    }
+    .zone
+    {
+        color: crimson;
+        font-weight: bold;
+        font-size: 18px;
     }
     
     .info a,
     .info span {
-        color: white;
+        color: #495057;
     }
     
     .carousel img {
@@ -32,14 +37,14 @@
     }
     
     .comments .nombre-usuario {
-        color: white;
+        color: #495057;
         font-weight: bold;
         font-size: 1.2em;
         margin-top: 0.5em;
     }
     
     .comments .comentario {
-        color: white;
+        color: #495057;
     }
     
     .sidebar .list-item {
@@ -47,20 +52,60 @@
     }
     
     .nav-tabs a.nav-link {
-        color: white;
+        color: #495057;
     }
     
     .comments .puntuacion {
-        color: white;
+        color: #495057;
     }
 </style>
 {% endblock %} 
 {% block carousel %} {% endblock %} 
 {% block content %}
-<div class="container-fluid">
 
+<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" style="padding: 0 1em;">
+    <ol class="carousel-indicators">
+        {% if photos %} {% for el in photos %}
+        {% if forloop.counter0 == 0 %}
+        <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}" class="active"></li>
+        {% else %}
+        <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}"></li>
+        {% endif %}                            
+        {% endfor %} {% endif %}
+    </ol>
+    <div class="carousel-inner">
+
+        {% if photos %} {% for el in photos %}
+            {% if forloop.counter0 == 0 %}
+            <div class="carousel-item active">
+                <a class="picture" href='{{ el.photo.url }}'>
+                    <img src="{{ el.photo.url }}" class="d-block w-100" alt="Fotos">
+                </a>
+            </div>                                
+            {% else %}
+            <div class="carousel-item">
+                <a class="picture" href='{{ el.photo.url }}'>
+                    <img src="{{ el.photo.url }}" class="d-block w-100" alt="Fotos">
+                </a>
+            </div>   
+            {% endif %}
+        {% endfor %} {% endif %}
+        
+    </div>
+    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+<div class="container">
+    <br>
     <div class="row row-main">
-        <div class="col-3 sidebar">
+        <!-- <div class="col-3 sidebar">
             <h2 class="title-menu">Menu</h2>
             {% for cat in categories %}
             <div class="divider"></div>
@@ -73,48 +118,119 @@
 			   	<small class="text-muted"> {{ prod.description }} </small>
 			</a>
             <a class="btn btn-success agregar_carrito" href="{% url 'agregar_carrito' prod.id %}" title="Agregar al carrito"><i class="fas fa-cart-plus"></i></a> {% endfor %} {% endfor %}
-        </div>
-        <div class="col-8 contenido">
+        </div> -->
+        <div class="col-12 contenido">
+            <br>
             <div class="row">
                 <div class="col-12">
+                    
+                    
+
+                    <!-- <div class="row gallery">
+                        <div class="col-md-12 col-lg-6">
+                            {% if data.photo %}
+                            <a class="picture" href="{{ data.photo.url }}">
+                                <img src="{{ data.photo.url }}" alt="fotos" class="img-main">
+                            </a>
+                            {% else %}
+                            <img src="{% static '/img/default.png' %}" alt="fotos" class="img-main"> {% endif %}
+                        </div>
+                        <div class="col-md-12 col-lg-6 fotos">
+                            <div class="scrollbar" id="style-1">
+                                <div class="force-overflow">
+                                    <div class="row">
+                                        {% if photos %} {% for el in photos %}
+                                        <div class='col-sm-4 col-md-4 col-6'>                                    
+                                            <a class="picture" href='{{ el.photo.url }}'>
+                                                <img src='{{ el.photo.url }}' />
+                                            </a>
+                                            <br><br>
+                                        </div>
+                                        {% endfor %} {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+            
+            <br>
+            <div class="row">
+                <div class="col-6">
                     <div class="row">
                         <div class="col info">
+                            <h3 class="zone">Acapulco, {{ data.zone }} </h3>
                             <h1 class="title">{{ data.name }}</h1>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col info">
+                            <span>								
+                            {{ data.category }}
+                            </span>
+                            <span class="separator"></span> 
+                            {% if data.mapa %}
+                            <span>								
+                            <i class="fa fa-map-marker-alt"></i>
+                            <a href="{{ data.mapa }}" class="map">Ubicación</a>
+                            </span>
+                            <span class="separator"></span> 
+                            {% endif %}
+                            <span>								
+                            <i class="fa fa-phone-square"></i>
+                            {{ data.phone }}
+                            </span>
+                            <span class="separator"></span>
+                            <span>								
+                            <i class="fa fa-envelope"></i>
+                            {{ data.email }}
+                            </span> {% if data.video %}
+                            <span class="separator"></span>
+                            <span>								
+                            <i class="fa fa-video"></i>
+                            <a href="{{ data.video }}" class="btn btn-link vervideo">Ver video</a>
+                            </span> {% endif %}
+                        </div>
+                    </div>
+                    <hr>                    
+                    <div class="row">
+                        <div class="col">
+                            <b>Ver Experiencias:</b><br>
                             <p class="subtitle">{{ data.description }}</p>
                         </div>
                     </div>
+                    <br>
                     <div class="row">
-                        <div class="col info">
-                            <span>								
-							{{ data.category }}
-							</span>
-                            <span class="separator"></span>
-                            <span>
-							Acapulco, {{ data.zone }}								
-							</span>
-                            <span class="separator"></span> {% if data.mapa %}
-                            <span>								
-							<i class="fa fa-map-marker-alt"></i>
-							<a href="{{ data.mapa }}" class="map">Ubicación</a>
-							</span>
-                            <span class="separator"></span> {% endif %}
-                            <span>								
-							<i class="fa fa-phone-square"></i>
-							{{ data.phone }}
-							</span>
-                            <span class="separator"></span>
-                            <span>								
-							<i class="fa fa-envelope"></i>
-							{{ data.email }}
-							</span> {% if data.video %}
-                            <span class="separator"></span>
-                            <span>								
-							<i class="fa fa-video"></i>
-							<a href="{{ data.video }}" class="btn btn-link vervideo">Ver video</a>
-							</span> {% endif %}
+                        <div class="col">
+                            <b>Lo mejor:</b><br>
+                            <p class="subtitle">{{ data.description }}</p>
                         </div>
                     </div>
-                    <hr>
+                    <br>
+                    <div class="row">
+                        <div class="col">
+                            <b>Accesibilidad:</b><br>
+                            <p class="subtitle">{{ data.description }}</p>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col">
+                            <b>Calificación del Anfitrión:</b><br>
+                            <p class="subtitle">{{ data.description }}</p>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col">
+                            <b>Servicios:</b><br>
+                            <p class="subtitle">{{ data.description }}</p>
+                        </div>
+                    </div>
+                    
+                    
                     <!-- <ul class="nav nav-tabs" id="myTab" role="tablist">
 					  <li class="nav-item">
 					    <a class="nav-link active" id="fotos-tab" data-toggle="tab" href="#fotos" role="tab" aria-controls="fotos" aria-selected="true">Fotos</a>
@@ -125,28 +241,7 @@
                     <!-- </ul> -->
                     <!-- <div class="tab-content" id="myTabContent">
 						<div class="tab-pane fade show active" id="fotos" role="tabpanel" aria-labelledby="fotos-tab"> -->
-                    <div class="row gallery">
-                        <div class="col-md-12 col-lg-6">
-                            {% if data.photo %}
-                            <a class="picture" href="{{ data.photo.url }}">
-                                <img src="{{ data.photo.url }}" alt="fotos" class="img-main">
-                            </a>
-                            {% else %}
-                            <img src="{% static '/img/default.png' %}" alt="fotos" class="img-main"> {% endif %}
-                        </div>
-                        <div class="col-md-12 col-lg-6 fotos">
-                            <div class="row">
-                                {% if photos %} {% for el in photos %}
-                                <div class='col-sm-4 col-md-4 col-6'>                                    
-                                    <a class="picture" href='{{ el.photo.url }}'>
-                                        <img src='{{ el.photo.url }}' />
-                                    </a>
-                                    <br><br>
-                                </div>
-                                {% endfor %} {% endif %}
-                            </div>
-                        </div>
-                    </div>
+                    
                     <hr>
                     <div class="row">
                         <div class="col">
@@ -247,9 +342,9 @@
         lity(video)
     });
 
-    setTimeout(function() {
-        $(".vervideo").click()
-    }, 500);
+    // setTimeout(function() {
+    //     $(".vervideo").click()
+    // }, 500);
 
     {% endif %}
 

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <title>PBUC</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="description" content="Turismo Acapulco 2018"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  {% load static %}
+    
+    <!-- Bootstrap CSS -->    
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">    
+    <link rel="stylesheet" href="{% static 'css/lity.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-table.css' %}">
+    <link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/select2-bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome-all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/progressbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/scrollbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  
+    {% block styles %}
+
+    {% endblock %}
+
+  </head>
+  <body>
+
+{% block navbar %}
+    
+  <nav id="header" class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">
+        <img src="{% static '/img/logo.jpeg' %}" alt="Logo" style="width:auto; height: 60px;"></a>
+    
+    <form class="form-inline my-2 my-lg-0">
+        <input class="form-control mr-sm-2" type="search" placeholder="Nombre del establecimiento o lugar" aria-label="Search">
+        <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">
+            <i class="fas fa-search"></i>
+            Buscar
+        </button>
+    </form>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+          
+          <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+            
+            <li class="nav-item">
+                <a class="nav-link" href="/">Inicio <span class="sr-only">(current)</span></a>
+            </li>   
+
+            <li class="nav-item">
+                <a class="nav-link" href="/signup">Registro <span class="sr-only">(current)</span></a>
+            </li>
+
+            <li class="nav-item">
+              <a href="{% url 'carrito' %}" class="nav-link carrito">
+                <i class="fas fa-shopping-cart"></i>
+                Carrito
+                <span class="badge badge-primary">{{ request.session.numero }}</span>
+              </a>
+            </li>
+            
+            {% if user.is_authenticated %}
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ request.user.username }}
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                <!--<a class="dropdown-item" href="{% url 'ver_categorias' %}">Categorias</a>
+                  <a class="dropdown-item" href="{% url 'ver_lugares' %}">Lugares</a>
+                  <a class="dropdown-item" href="{% url 'ver_productos' %}">Productos</a> -->
+                <a class="dropdown-item" href="{% url 'ver_pedidos' %}">Mis Pedidos</a>
+                {% if request.user.is_superuser and request.user.is_staff %}
+                <div class="dropdown-divider"></div>                
+                <a class="dropdown-item" href="/admin">Administrar</a>
+                {% elif request.user.is_superuser %}
+                <a class="dropdown-item" href="/lugares">Lugares</a>
+                <a class="dropdown-item" href="/productos">Productos</a>
+                <a class="dropdown-item" href="/categorias">Categorias de Producto</a>
+                {% endif %}
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/logout">Salir</a>
+              </div>
+            </li>
+            
+            {% else %}
+
+            <li class="nav-item">
+              <a class="nav-link" href="/login">Iniciar Sesión</a>
+            </li>
+
+            {% endif %}
+          </ul>
+          
+        </div>
+  </nav>
+
+  {% endblock %}
+
+  {% block content %}  
+  <div class="container-fluid">
+      
+    <div class="row row-main">
+      <div class="col-3 sidebar">      
+          {% for row in data %}  
+          <hr>     
+          <a href="#" category_id="{{row.id}}" class="category-item categoria">
+            {{ row.name }}
+          </a>
+          <!-- <hr> -->
+          {% endfor %}            
+      </div>
+      <div class="col-8 contenido">
+        <div class="row" id="lugares_encontrados"></div>
+      </div>    
+    </div>
+
+  </div>
+  {% endblock %} 
+    
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap-table.js' %}"></script>
+  <script src="{% static 'js/bootstrap-table-export.js' %}"></script>
+  <script src="{% static 'js/tableExport.js' %}"></script>
+  <script src="{% static 'js/lity.min.js' %}"></script>
+  <script src="{% static 'js/starrr.js' %}"></script>
+  <script src="{% static 'js/base.js' %}"></script>
+
+  <script>
+  
+  let urlparams = getUrlVars();
+  let zone_id = "";
+  let category_id = "";
+  let tiempounidad = 0;
+
+  if(urlparams["zone"] != "" && urlparams["zone"] != undefined)
+  {
+    zone_id = urlparams["zone"];
+  }
+  if(urlparams["category"] != "" && urlparams["category"] != undefined)
+  {
+    category_id = urlparams["category"];
+  }
+
+  $("a.picture, a.map").on("click", function(e){
+    e.preventDefault();
+    let url = $(this).attr("href");
+    lity(url);
+  });
+
+  $("input,select,textarea").addClass("form-control");
+  $('[data-toggle="tooltip"]').tooltip(); 
+
+  </script>  
+
+  {% block scripts %}
+
+  {% endblock %}
+
+  </body>
+</html>
