@@ -90,14 +90,14 @@
             </li>
             {% endfor %}
 
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a href="{% url 'carrito' %}" class="nav-link carrito">
                 <i class="fas fa-shopping-cart"></i>
                 Carrito
                 <span class="badge badge-primary">{{ request.session.numero }}</span>
               </a>
             </li>
-            
+             -->
             {% if user.is_authenticated %}
 
             <li class="nav-item dropdown">
@@ -112,7 +112,8 @@
                 {% if request.user.is_superuser and request.user.is_staff %}
                 <div class="dropdown-divider"></div>                
                 <a class="dropdown-item" href="/admin">Administrar</a>
-                {% elif request.user.is_superuser %}
+                {% endif %}
+                {% if request.user.is_superuser %}
                 <a class="dropdown-item" href="/lugares">Lugares</a>
                 <a class="dropdown-item" href="/productos">Productos</a>
                 <a class="dropdown-item" href="/categorias">Categorias de Producto</a>

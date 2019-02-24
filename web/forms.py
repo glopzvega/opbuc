@@ -41,9 +41,9 @@ class LugarModelForm(ModelForm):
 
 	class Meta:
 		model = Lugar
-		# fields = "__all__"
-		fields = ("name", "category", "zone", "phone", "email", "description", "video", "mapa", "web", "photo")
-		# exclude = ("photo",)
+		fields = "__all__"
+		# fields = ("name", "category", "zone", "phone", "email", "description", "video", "mapa", "web", "photo")
+		exclude = ("user",)
 
 		labels = {
 			'name' : 'Nombre',
@@ -51,7 +51,11 @@ class LugarModelForm(ModelForm):
 			'zone' : 'Zona',
 			'phone' : 'Teléfono',
 			'email' : 'Email',
+			'precio' : 'Precio promedio por persona',
 			'description' : 'Descripción',
+			'address' : 'Dirección',
+			'photo' : 'Foto del lugar',
+			'photoweb' : 'Foto de sitio web / promoción',
 		}
 
 	def __init__(self, *args, **kwargs):

@@ -79,7 +79,8 @@
                 {% if request.user.is_superuser and request.user.is_staff %}
                 <div class="dropdown-divider"></div>                
                 <a class="dropdown-item" href="/admin">Administrar</a>
-                {% elif request.user.is_superuser %}
+                {% endif %}
+                {% if request.user.is_superuser %}
                 <a class="dropdown-item" href="/lugares">Lugares</a>
                 <a class="dropdown-item" href="/productos">Productos</a>
                 <a class="dropdown-item" href="/categorias">Categorias de Producto</a>

@@ -264,7 +264,7 @@
             </div> 
         </div>
         <div class="col-12 col-lg-5">                
-            {% if cat.prods %}
+            
             <div class="card">
                 <div class="card-body">
                     <div class="card-title">
@@ -293,8 +293,8 @@
                                         <!-- <hr> -->
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
                                             <div>
-                                                <label><h5>
-                                                    <input type="checkbox">
+                                                <label class="producto_label"><h5>
+                                                    <input class="producto" type="checkbox" price="{{prod.price}}">
                                                     {{ prod.name }}</h5>
                                                 </label>
                                                 <br> 
@@ -318,7 +318,7 @@
                                     <br>
                                     <div class="form-group">
                                         <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-                                            <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
+                                            <input type="text" id="fecha_reserva" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
                                             <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
                                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                             </div>
@@ -332,7 +332,7 @@
                                         Número de Invitados:
                                     </label>
                                     <br>
-                                    <input type="number" min="1" value="1" class="form-control">
+                                    <input type="number" id="invitados" min="1" value="1" class="form-control">
                                 </div>                        
                             </div>
                         </div>    
@@ -341,25 +341,25 @@
                             <div class="col-12 col-lg-6">
                                 <div style="padding: 0 1em;">
                                     <label>Cupón</label>
-                                    <input type="text" class="form-control readonly" value="-100">
+                                    <input type="text" class="form-control readonly" value="-100" readonly>
                                 </div>
                             </div>
                             <div class="col-12 col-lg-6 text-right">
                                 <br>
-                                <h3>Total: $0.00</h3>
+                                <h3>Total: $<span id="total_label">0.00</span></h3>
                             </div>
                         </div>
                         <hr>
                         <div class="row">
                             <div class="col-12 text-center">
-                                <button class="btn btn-lg btn-outline-danger">CONFIRMAR</button>
+                                <button class="confirmar btn btn-lg btn-outline-danger">CONFIRMAR</button>
                             </div>
                         </div>                      
                     </div>
                 </div>
             </div>
             <br>
-            {% endif %}
+            
             {% if data.photoweb %}
             <div class="card">
                 <div class="card-body">
@@ -523,7 +523,37 @@
         return $(".starrr").starrr();
     });
 
+    calcular_total = function() {
+        console.log("CALCULAR")
+        let productos = $(".menu .list-group-item .producto:checked");
+        let subtotal = 0;
+        productos.each(function(index, value){
+            let price = $(value).attr("price");
+            subtotal += parseFloat(price);
+        })
+        // price = parseFloat(price);
+        let invitados = $("#invitados").val()
+        let total = parseInt(invitados) * subtotal;
+        console.log(total)
+        $("#total_label").html(total.toFixed(2));
+    }
+
     $(document).ready(function() {
+
+        $(".menu .list-group-item .producto, .menu .list-group-item .producto_label").on("click", function(){
+            calcular_total();
+        });
+
+        $("#invitados").on("change", function(){
+            calcular_total();
+        });
+
+        $(".confirmar").on("click", function() {
+            calcular_total() 
+        });
+
+        let today = moment().format("YYYY-MM-DD h:mm");
+        $("#fecha_reserva").val(today);
 
         $('#stars').on('starrr:change', function(e, value) {
             $('#count').html(value);

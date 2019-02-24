@@ -85,7 +85,7 @@ let buscarlugares = function()
                 '</p>',
               '</div>',
             '</div>',
-          '</div>',
+          '</div><br>',
         '</div>'].join("")
         $("#lugares_encontrados").append(card)
         $("#lugares_encontrados").show()
