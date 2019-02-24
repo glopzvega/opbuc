@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.core import serializers
 from django.contrib.auth import login, authenticate
+from django.db.models import Q
 # import locale
 from datetime import datetime
 import json
@@ -173,12 +174,14 @@ def lugar(request, id):
 	for cat in cats:
 		cat.prods = productos.filter(category=cat)
 
+	lugares = models.Lugar.objects.filter(~Q(id=id))[:3]
 	context = {
 		"data" : lugar ,
 		"comments" : comments,
 		"photos" : photos,
 		"productos" : productos,
 		"categories" : cats,
+		"lugares" : lugares
 		# "zonas" : zonas
 	}
 	return render(request, "web/lugar_detail.html", context)

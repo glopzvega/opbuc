@@ -60,36 +60,36 @@
     }
 </style>
 {% endblock %} 
-{% block carousel %} {% endblock %} 
 {% block content %}
 
+{% if photos %}
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" style="padding: 0 1em;">
     <ol class="carousel-indicators">
-        {% if photos %} {% for el in photos %}
+        {% for el in photos %}
         {% if forloop.counter0 == 0 %}
         <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}" class="active"></li>
         {% else %}
         <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}"></li>
         {% endif %}                            
-        {% endfor %} {% endif %}
+        {% endfor %}
     </ol>
     <div class="carousel-inner">
 
-        {% if photos %} {% for el in photos %}
-            {% if forloop.counter0 == 0 %}
-            <div class="carousel-item active">
-                <a class="picture" href='{{ el.photo.url }}'>
-                    <img src="{{ el.photo.url }}" class="d-block w-100" alt="Fotos">
-                </a>
-            </div>                                
-            {% else %}
-            <div class="carousel-item">
-                <a class="picture" href='{{ el.photo.url }}'>
-                    <img src="{{ el.photo.url }}" class="d-block w-100" alt="Fotos">
-                </a>
-            </div>   
-            {% endif %}
-        {% endfor %} {% endif %}
+        {% for el in photos %}
+        {% if forloop.counter0 == 0 %}
+        <div class="carousel-item active">
+            <a class="picture" href='{{ el.photo.url }}'>
+                <img src="{{ el.photo.url }}" class="d-block w-100" alt="Fotos">
+            </a>
+        </div>                                
+        {% else %}
+        <div class="carousel-item">
+            <a class="picture" href='{{ el.photo.url }}'>
+                <img src="{{ el.photo.url }}" class="d-block w-100" alt="Fotos">
+            </a>
+        </div>   
+        {% endif %}
+        {% endfor %} 
         
     </div>
     <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
@@ -101,10 +101,12 @@
         <span class="sr-only">Next</span>
     </a>
 </div>
-<br><br><br>
+<br><br>
+{% endif %}
+<br>
 <div class="container">     
     <div class="row">
-        <div class="col-12 col-md-7">
+        <div class="col-12 col-lg-7">
             <div class="row">
                 <div class="col info">
                     <h3 class="zone">Acapulco, {{ data.zone }} </h3>
@@ -141,7 +143,8 @@
                     </span> {% endif %}
                 </div>
             </div>
-            <hr>                    
+            <hr>      
+            {% if data.descripcion %}              
             <div class="row">
                 <div class="col">
                     <b>Ver Experiencias:</b><br>
@@ -149,20 +152,25 @@
                 </div>
             </div>
             <br>
+            {% endif %}
+            {% if data.lomejor %}
             <div class="row">
                 <div class="col">
                     <b>Lo mejor:</b><br>
-                    <p class="subtitle">{{ data.description }}</p>
+                    <p class="subtitle">{{ data.lomejor }}</p>
                 </div>
             </div>
             <br>
+            {% endif %}
+            {% if data.accesibilidad %}
             <div class="row">
                 <div class="col">
                     <b>Accesibilidad:</b><br>
-                    <p class="subtitle">{{ data.description }}</p>
+                    <p class="subtitle">{{ data.accesibilidad }}</p>
                 </div>
             </div>
             <br>
+            {% endif %}
             <div class="row">
                 <div class="col">
                     <b>Calificación del Anfitrión:</b><br>
@@ -177,25 +185,15 @@
                 </div>
             </div>
             <br>
+            {% if data.servicios %}
             <div class="row">
                 <div class="col">
                     <b>Servicios:</b><br>
-                    <p class="subtitle">{{ data.description }}</p>
+                    <p class="subtitle">{{ data.servicios }}</p>
                 </div>
             </div>
-            
-            
-            <!-- <ul class="nav nav-tabs" id="myTab" role="tablist">
-                <li class="nav-item">
-                <a class="nav-link active" id="fotos-tab" data-toggle="tab" href="#fotos" role="tab" aria-controls="fotos" aria-selected="true">Fotos</a>
-                </li>	 -->
-            <!-- <li class="nav-item">
-                <a class="nav-link" id="mapa-tab" data-toggle="tab" href="#mapa" role="tab" aria-controls="mapa" aria-selected="false">Mapa</a>
-                </li> -->
-            <!-- </ul> -->
-            <!-- <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="fotos" role="tabpanel" aria-labelledby="fotos-tab"> -->
-            
+            {% endif %}
+           
             
             <br>                    
             <div class="row comments">
@@ -263,30 +261,10 @@
                         </div>
                     </div>
                 </div>
-            </div>                   
-            
-            
-            <!-- </div>						 -->
-            <!-- <div class="tab-pane fade show" id="mapa" role="tabpanel" aria-labelledby="mapa-tab">
-                    {% if data.mapa %}
-                    <div class="row">
-                        <div class="col">
-                            <h3>Puesdes encontrarnos en:</h3>
-                            <hr>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            {% autoescape off %}
-                            {{ data.mapa }}
-                            {% endautoescape %}									
-                        </div>
-                    </div>
-                    {% endif %}
-                </div> -->
-            <!-- </div>			 -->
+            </div> 
         </div>
-        <div class="col-12 col-md-5">                
+        <div class="col-12 col-lg-5">                
+            {% if cat.prods %}
             <div class="card">
                 <div class="card-body">
                     <div class="card-title">
@@ -294,6 +272,16 @@
                         <div class="divider"></div>                        
                     </div>
                     <div class="card-text">
+                        {% if data.precio %}
+                        <div class="row">
+                            <div class="col-12">
+                                <span class="text-muted">
+                                    Precio promedio por persona ${{data.precio}}
+                                </span>
+                            </div>
+                        </div>
+                        <br>
+                        {% endif %}
                         <div class="row">
                             <div class="col-12">
                                 <div class="menu scrollbar" id="style-1">
@@ -370,10 +358,23 @@
                     </div>
                 </div>
             </div>
-                
+            <br>
+            {% endif %}
+            {% if data.photoweb %}
+            <div class="card">
+                <div class="card-body">
+                    <div class="card text">
+                        <a href="{{ data.web }}" target="_blank">
+                            <img src="{{ data.photoweb.url }}" alt="Foto Web">
+                        </a>
+                        </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
     <br>
+    {% if data.reglas %}
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -383,14 +384,90 @@
                     </div>
                     <div class="card-text">
                         <p>
-                            It is a long established fact that a reader 
-                            will be distracted by the readable content 
-                            of a page when looking at its layout. 
-                            The point of using Lorem Ipsum is that it has a 
-                            more-or-less normal distribution of letters, 
-                            as opposed to using 'Content here, content here', 
-                            making it look like readable English.
+                            {{data.reglas}}
                         </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    {% endif %}
+    <div class="row">
+        {% if data.mapa %}
+        <div class="col-12 col-lg-7">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h5>Como llegar</h5>
+                        <!-- <small class="text-muted">Algo va aqui </small> -->
+                    </div>
+                    <div class="card-text">
+                        {% autoescape off %}
+                        {{ data.mapa }}
+                        {% endautoescape %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% if data.promocion %}
+        <div class="col-12 col-lg-5">
+            <div class="card border-danger">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h5>
+                            Promoción del mes
+                        </h5>
+                        <!-- <small class="text-muted">algo aqui</small> -->
+                    </div>
+                    <div class="card-text" style="padding: 1em;">                        
+                        <h4 class="text-center" style="margin-top:0.5em;">Este més </h4>                        
+                        <h4 class="text-center" style="margin-top:0.5em;">AHORRA</h4>                        
+                        <h4 class="text-center" style="margin-top:0.5em;">Sobre Reserva</h4>                        
+                        <h3 class="text-center text-danger" style="margin-top:0.5em; font-weight: bold;">{{data.name | upper}}</h3>                        
+                        <h3 class="text-center" style="margin-top:0.5em;">$-{{data.promocion}} pesos</h3>                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h5>Otras sugerencias</h5>
+                    </div>
+                    <div class="card-text">
+                        <div class="row">
+                            {% if lugares %} {% for el in lugares %}
+                                {% if forloop.counter < 4 %}                      
+                                <div class="col-4">
+                                    <div class="row">
+                                        <div class="col">
+                                            {% if el.photo %}
+                                            <a href="{{el.photo.url}}" class="picture">
+                                                <img src="{{el.photo.url}}" alt="Imagen" style="height: 100px;">
+                                            </a>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col">
+                                            <div> 
+                                                <a href="{% url 'lugar' el.id %}">{{ el.name }} </a>
+                                            </div>                                            
+                                            <small>Acapulco {{ el.zone }}</small>
+                                            <br>
+                                            <span class="text-muted">$350</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            {% endfor %} {% endif %}
+                            
+                        </div>
                     </div>
                 </div>
             </div>
