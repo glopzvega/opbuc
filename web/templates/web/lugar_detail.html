@@ -193,19 +193,130 @@
                 </div>
             </div>
             {% endif %}
-           
             
-            <br>                    
+        </div>
+        <div class="col-12 col-lg-5">                
+            
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h5>RESERVA</h5>
+                        <div class="divider"></div>                        
+                    </div>
+                    <div class="card-text">
+                        {% if data.precio %}
+                        <div class="row">
+                            <div class="col-12">
+                                <span class="text-muted">
+                                    Precio promedio por persona ${{data.precio}}
+                                </span>
+                            </div>
+                        </div>
+                        <br>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="menu scrollbar" id="style-1">
+                                    <ul class="list-group">
+                                        
+                                        {% for cat in categories %}
+                                        <!-- <h3 class="text-secondary">{{ cat.name }}</h3> -->
+                                        {% for prod in cat.prods %}
+                                        <!-- <hr> -->
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <label class="producto_label"><h5>
+                                                    <input class="producto" type="checkbox" id="{{prod.id}}" price="{{prod.price}}">
+                                                    {{ prod.name }}</h5>
+                                                </label>
+                                                <br>
+                                                <small class="text-muted">It is a long established fact that a reader will be distracted by the readable content of a page</small>                                    
+                                                <br>
+                                                <div class="row">
+                                                    <div class="col-6 col-lg-6">
+                                                        Cantidad: <span class="prod_qty">1</span> 
+                                                    </div>
+                                                    <div class="col-6 col-lg-6">
+                                                        <a href="javascript:;" class="btn btn-outline-danger agregar">+</a> 
+                                                        <a href="javascript:;" class="btn btn-outline-secondary quitar">-</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <span class="badge badge-danger badge-pill">${{prod.price}}</span>                                   
+                                        </li>                                
+                                        {% endfor %} {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <br>
+                        <div class="row">
+                            <div class="col-12 col-lg-6">
+                                <div style="padding: 0 1em;">
+                                    <label>
+                                        Fecha de la reservación:
+                                    </label>
+                                    <br>
+                                    <div class="form-group">
+                                        <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                                            <input type="text" id="fecha_reserva" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
+                                            <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>       
+                                <br>                 
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <div style="padding: 0 1em;">
+                                    <label>
+                                        Número de Invitados:
+                                    </label>
+                                    <br>
+                                    <input type="number" id="invitados" min="1" value="1" class="form-control">
+                                </div>
+                                <br>
+                            </div>
+                        </div>    
+                        <br>
+                        <div class="row">
+                            <div class="col-12 col-lg-6">
+                                <div style="padding: 0 1em;">
+                                    <label>Cupón</label>
+                                    <input type="text" class="form-control readonly" value="-100" readonly>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 text-right">
+                                <br>
+                                <h3>Total: $<span id="total_label">0.00</span></h3>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <button class="confirmar btn btn-lg btn-outline-danger">CONFIRMAR</button>
+                            </div>
+                        </div>                      
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-12 col-lg-7">
             <div class="row comments">
                 <div class="col-12">    
                     <div class="card">
                         <div class="card-body">                                    
                             <div class="card-text">                                                                                       
                                 <div class="row">
-                                    <div class="col-3">
+                                    <div class="col-5 col-lg-3">
                                         <div id="stars" class="starrr"></div>
                                     </div>
-                                    <div class="col">
+                                    <div class="col-7 col-lg-9">
                                         <h4>Total de Evaluaciones 153</h4>
                                     </div>
                                 </div>                                                                                 
@@ -262,104 +373,9 @@
                     </div>
                 </div>
             </div> 
-        </div>
-        <div class="col-12 col-lg-5">                
-            
-            <div class="card">
-                <div class="card-body">
-                    <div class="card-title">
-                        <h5>RESERVA</h5>
-                        <div class="divider"></div>                        
-                    </div>
-                    <div class="card-text">
-                        {% if data.precio %}
-                        <div class="row">
-                            <div class="col-12">
-                                <span class="text-muted">
-                                    Precio promedio por persona ${{data.precio}}
-                                </span>
-                            </div>
-                        </div>
-                        <br>
-                        {% endif %}
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="menu scrollbar" id="style-1">
-                                    <ul class="list-group">
-                                        
-                                        {% for cat in categories %}
-                                        <!-- <h3 class="text-secondary">{{ cat.name }}</h3> -->
-                                        {% for prod in cat.prods %}
-                                        <!-- <hr> -->
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <label class="producto_label"><h5>
-                                                    <input class="producto" type="checkbox" price="{{prod.price}}">
-                                                    {{ prod.name }}</h5>
-                                                </label>
-                                                <br> 
-                                                <small class="text-muted">It is a long established fact that a reader will be distracted by the readable content of a page</small>                                    
-                                            </div>
-                                            <span class="badge badge-danger badge-pill">${{prod.price}}</span>                                   
-                                        </li>                                
-                                        {% endfor %} {% endfor %}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <br>
-                        <div class="row">
-                            <div class="col-12 col-lg-6">
-                                <div style="padding: 0 1em;">
-                                    <label>
-                                        Fecha de la reservación:
-                                    </label>
-                                    <br>
-                                    <div class="form-group">
-                                        <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
-                                            <input type="text" id="fecha_reserva" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
-                                            <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
-                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>                        
-                            </div>
-                            <div class="col-12 col-lg-6">
-                                <div style="padding: 0 1em;">
-                                    <label>
-                                        Número de Invitados:
-                                    </label>
-                                    <br>
-                                    <input type="number" id="invitados" min="1" value="1" class="form-control">
-                                </div>                        
-                            </div>
-                        </div>    
-                        <br>
-                        <div class="row">
-                            <div class="col-12 col-lg-6">
-                                <div style="padding: 0 1em;">
-                                    <label>Cupón</label>
-                                    <input type="text" class="form-control readonly" value="-100" readonly>
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-6 text-right">
-                                <br>
-                                <h3>Total: $<span id="total_label">0.00</span></h3>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-12 text-center">
-                                <button class="confirmar btn btn-lg btn-outline-danger">CONFIRMAR</button>
-                            </div>
-                        </div>                      
-                    </div>
-                </div>
-            </div>
             <br>
-            
+        </div>
+        <div class="col-12 col-lg-5">
             {% if data.photoweb %}
             <div class="card">
                 <div class="card-body">
@@ -372,6 +388,7 @@
             </div>
             {% endif %}
         </div>
+        <br>
     </div>
     <br>
     {% if data.reglas %}
@@ -433,7 +450,6 @@
         </div>
         {% endif %}
     </div>
-    <br>
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -445,7 +461,7 @@
                         <div class="row">
                             {% if lugares %} {% for el in lugares %}
                                 {% if forloop.counter < 4 %}                      
-                                <div class="col-4">
+                                <div class="col-12 col-lg-4">
                                     <div class="row">
                                         <div class="col">
                                             {% if el.photo %}
@@ -463,6 +479,7 @@
                                             <span class="text-muted">$350</span>
                                         </div>
                                     </div>
+                                    <br>
                                 </div>
                                 {% endif %}
                             {% endfor %} {% endif %}
@@ -529,7 +546,8 @@
         let subtotal = 0;
         productos.each(function(index, value){
             let price = $(value).attr("price");
-            subtotal += parseFloat(price);
+            let qty = $(value).parents(".list-group-item").find(".prod_qty").text();
+            subtotal += parseFloat(price) * parseInt(qty);
         })
         // price = parseFloat(price);
         let invitados = $("#invitados").val()
@@ -540,11 +558,77 @@
 
     $(document).ready(function() {
 
-        $(".menu .list-group-item .producto, .menu .list-group-item .producto_label").on("click", function(){
+        $(".menu .list-group-item .producto").on("click", function(){            
+        // $(".menu .list-group-item .producto, .menu .list-group-item .producto_label").on("click", function(){
+            let checkbox = $(this);
+            let product_id = checkbox.attr("id");
+            let product_qty = checkbox.parents(".list-group-item").find(".prod_qty").text();
+            if(checkbox.is(":checked"))
+            {                
+                $.getJSON("/carrito/agregar/" + product_id + "?qty=" + product_qty, function(res){
+                    console.log(res)
+                });
+            }
+            else
+            {
+                $.getJSON("/carrito/quitar/" + product_id + "?qty=" + product_qty, function(res){
+                    console.log(res)
+                });
+            }
             calcular_total();
         });
 
         $("#invitados").on("change", function(){
+            calcular_total();
+        });
+
+        $(".menu .list-group-item .agregar").on("click", function(){
+
+            let checkbox = $(this).parents(".list-group-item").find(".producto");
+            let product_id = checkbox.attr("id");
+            if(checkbox.not(":checked"))
+            {
+                checkbox.prop("checked", true);
+            }
+
+            // $(".menu .list-group-item .quitar").removeClass("disabled");
+            let prod_qty = $(this).parents(".list-group-item").find(".prod_qty").text();
+            prod_qty = parseInt(prod_qty) + 1;
+            $(this).parents(".list-group-item").find(".prod_qty").text(prod_qty);
+            
+            $.getJSON("/carrito/qty/" + product_id + "?qty=" + prod_qty, function(res){
+                console.log(res)
+            });
+
+            calcular_total();
+        });
+
+        $(".menu .list-group-item .quitar").on("click", function(){
+            
+            let checkbox = $(this).parents(".list-group-item").find(".producto");
+            let product_id = checkbox.attr("id");
+            let prod_qty = $(this).parents(".list-group-item").find(".prod_qty").text();
+            
+            if (parseInt(prod_qty) > 1)
+            {
+                prod_qty = parseInt(prod_qty) - 1;
+            }
+            else
+            {
+                prod_qty = 0;
+                let checkbox = $(this).parents(".list-group-item").find(".producto");
+                if(checkbox.is(":checked"))
+                {
+                    checkbox.prop("checked", false);
+                }
+                // $(".menu .list-group-item .quitar").addClass("disabled");
+            }
+            $(this).parents(".list-group-item").find(".prod_qty").text(prod_qty);
+            
+            $.getJSON("/carrito/qty/" + product_id + "?qty=" + prod_qty, function(res){
+                console.log(res)
+            });
+            
             calcular_total();
         });
 
