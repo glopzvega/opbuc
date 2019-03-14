@@ -10,9 +10,34 @@ import logging
 _logger = logging.getLogger(__name__)
 # Create your views here.
 
-from .forms import CategoriaModelForm, LugarModelForm, ProductoModelForm, PhotoModelForm, SignupForm
+from .forms import ConfigForm, CategoriaModelForm, LugarModelForm, ProductoModelForm, PhotoModelForm, SignupForm
 
 from api import models
+
+def get_config(request):
+
+	config_ids = models.Config.objects.all()
+	if config_ids:
+		if request.method == "POST":
+			form = ConfigForm(request.POST, instance=config_ids[0])
+			if form.is_valid():
+				form.save()
+				return redirect("config")
+		else:
+			form = ConfigForm(instance=config_ids[0])	
+	else:
+		if request.method == "POST":
+			form = ConfigForm(request.POST)
+			if form.is_valid():
+				form.save()
+				return redirect("config")
+		else:
+			form = ConfigForm()	    		
+	
+	return render(request, "web/config.html", {"form" : form})
+
+def get_mensajes(request):
+	return render(request, "web/index.html", {})
 
 def index(request):
 	categorias = models.Category.objects.filter(tipo__exact='lugar')
@@ -735,17 +760,44 @@ def cantidad_carrito(request, id):
 		request.session["carrito"] = []
 
 	cantidad_carrito = int(request.GET.get("qty", 1))
-
 	carrito = request.session["carrito"]
+	
 	total = 0
 	subtotal = 0
-
+	find = False
 	for el in carrito:
 		if el["id"] == producto.id:
+			if cantidad_carrito == 0:
+				carrito.remove(el)
+				break
+			find = True	
 			el["cantidad_carrito"] = cantidad_carrito
 			subtotal = float(producto.price) * cantidad_carrito
 			el["subtotal"] = subtotal
 		total += el["subtotal"]
+
+	if not find and cantidad_carrito > 0:		
+
+		if lugar != producto.lugar.id:
+			request.session["lugar"] = producto.lugar.id
+			# carrito = []
+
+		prod = {
+			"id" : producto.id,
+			"nombre" : producto.name,
+			"descripcion" : producto.description,
+			# "imagen" : producto.imagen,
+			"categoria_id" : producto.category.id,
+			"categoria" : producto.category.name,
+			"precio" : float(producto.price),
+			# "cantidad" : cantidad,
+			"cantidad_carrito" : cantidad_carrito,
+			"subtotal" : float(producto.price) * cantidad_carrito,			
+			"lugar" : producto.lugar.name,
+			"lugar_id" : producto.lugar.id,
+		}
+
+		carrito.append(prod)
 
 	request.session["numero"] = len(carrito)
 	request.session["total"] = total

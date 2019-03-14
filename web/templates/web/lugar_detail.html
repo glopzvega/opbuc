@@ -285,7 +285,8 @@
                             <div class="col-12 col-lg-6">
                                 <div style="padding: 0 1em;">
                                     <label>Cupón</label>
-                                    <input type="text" class="form-control readonly" value="-100" readonly>
+                                    <input type="hidden" id="cupon" class="form-control" value="100" readonly>
+                                    <input type="text" class="form-control" value="-100" readonly>
                                 </div>
                             </div>
                             <div class="col-12 col-lg-6 text-right">
@@ -540,7 +541,7 @@
         return $(".starrr").starrr();
     });
 
-    calcular_total = function() {
+    calcular_total = function(fn) {
         console.log("CALCULAR")
         let productos = $(".menu .list-group-item .producto:checked");
         let subtotal = 0;
@@ -550,10 +551,16 @@
             subtotal += parseFloat(price) * parseInt(qty);
         })
         // price = parseFloat(price);
-        let invitados = $("#invitados").val()
-        let total = parseInt(invitados) * subtotal;
+        // debugger
+        let descuento = $("#cupon").val();
+        // let total = parseInt(invitados) * subtotal;
+        let total = subtotal - parseInt(descuento);
         console.log(total)
         $("#total_label").html(total.toFixed(2));
+
+        if (fn != undefined){
+            fn();
+        }
     }
 
     $(document).ready(function() {
@@ -633,7 +640,9 @@
         });
 
         $(".confirmar").on("click", function() {
-            calcular_total() 
+            calcular_total(function(){
+                location.href="/carrito/";
+            }) 
         });
 
         let today = moment().format("YYYY-MM-DD h:mm");

@@ -1,12 +1,22 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
-
 # Create your models here.
 
 CATEGORIAS = [
 	("lugar", "Lugar"),
 	("producto", "Producto"),
 ]
+
+class Mensaje(models.Model):
+	mensaje = models.TextField()
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	order = models.ForeignKey("Order", on_delete=models.CASCADE)
+
+class Config(models.Model):
+	facebook = models.CharField(max_length=255)
+	twitter = models.CharField(max_length=255)
+	conekta_public = models.CharField(max_length=255)
+	conekta_private = models.CharField(max_length=255)
 
 class Zone(models.Model):
 	name = models.CharField(max_length=255)
@@ -46,6 +56,9 @@ class Lugar(models.Model):
 	mapa = models.TextField(blank=True, null=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	
+	# conekta_public = models.CharField(max_length=255)
+	# conekta_private = models.CharField(max_length=255)
+
 	def __str__(self):
 		return self.name	
 

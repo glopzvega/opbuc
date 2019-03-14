@@ -65,7 +65,7 @@ let buscarlugares = function()
           photo = "/static/img/default.png"
         console.log(photo)
         let card = [
-          '<div class="col-4">',
+          '<div class="col-12 col-lg-4">',
           '<div class="caja">',
             '<a href="/lugar/'+lugar.id+'">',
               '<img src="' + photo + '"/>',

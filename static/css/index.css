@@ -1,10 +1,10 @@
-html, body, .container-fluid, .row-main
+html, body, .row-main
 {
   height: auto;
   min-height: 1024px
 }
 
-.container-fluid
+.row-main
 {
   background-color: #dc3545;
 }
@@ -207,7 +207,8 @@ img.img-main
 {
   background: #343a40!important;
   color: white;
-  margin: 0.4em;
+  padding: 1em;
+  /* margin: 1em 0; */
   text-align: center;
 }
 

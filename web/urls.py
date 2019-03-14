@@ -22,6 +22,10 @@ urlpatterns = [
     path('carrito/qty/<int:id>', views.cantidad_carrito, name="qty_carrito"),
 
     # ADMIN URL
+
+    path('config/', views.get_config, name="config"),
+    path('mensajes/', views.get_mensajes, name="mensajes"),
+
     path('categorias/', views.ver_categorias, name="ver_categorias"),
     path('categoria/nuevo', views.categoria_nuevo, name="categoria_nuevo"),
     path('categoria/editar/<int:id>', views.categoria_editar, name="categoria_editar"),

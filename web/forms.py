@@ -1,10 +1,20 @@
 from django import forms
 from django.forms import ModelForm, NumberInput, TextInput, Textarea
 
-from api.models import Category, Lugar, Producto, Photo
+from api.models import Category, Lugar, Producto, Photo, Config, Mensaje
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+
+class ConfigForm(ModelForm):
+	class Meta:
+		model = Config
+		fields = "__all__"
+
+class MensajeForm(ModelForm):
+	class Meta:
+		model = Mensaje
+		fields = "__all__"
 
 class SignupForm(UserCreationForm):
 	# first_name = forms.CharField(max_length=30, required=False, help_text='Opcional.')
