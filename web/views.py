@@ -3,6 +3,8 @@ from django.http import JsonResponse
 from django.core import serializers
 from django.contrib.auth import login, authenticate
 from django.db.models import Q
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 # import locale
 from datetime import datetime
 import json
@@ -39,6 +41,13 @@ def get_config(request):
 def get_mensajes(request):
 	return render(request, "web/index.html", {})
 
+def get_usuarios(request):
+	usuarios = User.objects.filter(is_staff=False)
+	data = {
+		"usuarios" : usuarios
+	}    
+	return render(request, "web/usuarios.html", data)	
+	
 def index(request):
 	categorias = models.Category.objects.filter(tipo__exact='lugar')
 	zonas = models.Zone.objects.all()
@@ -731,7 +740,7 @@ def comprar_carrito(request):
 	data = {'success': True, 'id' : newOrder.id}	
 	return JsonResponse(data)
 
-# @login_required
+@login_required
 def ver_carrito(request):
 
 	total = 0

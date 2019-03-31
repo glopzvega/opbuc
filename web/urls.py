@@ -26,6 +26,7 @@ urlpatterns = [
 
     path('config/', views.get_config, name="config"),
     path('mensajes/', views.get_mensajes, name="mensajes"),
+    path('usuarios/', views.get_usuarios, name="usuarios"),
 
     path('categorias/', views.ver_categorias, name="ver_categorias"),
     path('categoria/nuevo', views.categoria_nuevo, name="categoria_nuevo"),
