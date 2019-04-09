@@ -22,7 +22,7 @@
 						<hr>
 					</div>
 					<div class="card-text">	
-						<form method="post">
+						<form id="loginForm" method="post">
 							{% csrf_token %}						
 							<div class="row">
 								<div class="col">
@@ -43,6 +43,15 @@
 									<button type="submit" class="btn btn-primary">Acceder</button>
 									<br>
 									<a href="{% url 'signup' %}" class="btn btn-link">o crea una nueva cuenta</a>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col text-center">
+									<a class="btn btn-primary" href="{% url 'social:begin' 'google-oauth2' %}">
+										<i class="fab fa-google"></i>
+										Login with Google</a>
+									<br>									
 								</div>
 							</div>
 						</form>
@@ -72,5 +81,4 @@
 {% endblock %}
 
 {% block scripts %}
-
 {% endblock %}

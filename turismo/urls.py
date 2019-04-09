@@ -20,6 +20,7 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from rest_framework import routers
 from api import views
+from web import views as web_views
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
@@ -36,7 +37,9 @@ router.register('comentarios', views.CommentViewSet)
 
 urlpatterns = [
     path('', include('web.urls')),
-    path('login/', auth_views.login, name="login"),    
+    path('login/', auth_views.login, name="login"), 
+    path('auth/', include('social_django.urls', namespace='social')),   
+    path('logingoogle/', web_views.login_google, name="login_google"),    
     path('logout/', auth_views.logout, {'next_page': '/'}, name='logout'), 
 	path('api/auth/', include('rest_framework.urls', namespace="rest_framework")),
 	path('api/', include(router.urls)),

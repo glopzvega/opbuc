@@ -6,8 +6,8 @@
     <meta charset="utf-8">
     <meta name="description" content="Turismo Acapulco 2018"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-  {% load static %}
+    <meta name="google-signin-client_id" content="999509328659-3r96tpe0vghlmj88nqgivsv9gphqmces.apps.googleusercontent.com">
+    {% load static %}
     
     <!-- Bootstrap CSS -->    
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">    
@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap-table.css' %}">
     <link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/select2-bootstrap.css' %}">
-    <link rel="stylesheet" href="{% static 'css/fontawesome-all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/all.css' %}">
     <link rel="stylesheet" href="{% static 'css/progressbar.css' %}">
     <link href="https://fonts.googleapis.com/css?family=Clicker+Script" rel="stylesheet">
     
@@ -108,11 +108,11 @@
 <script src="{% static 'js/starrr.js' %}"></script>
 <script src="{% static 'js/base.js' %}"></script>
 <script>
-    $("input").addClass("form-control")
-  </script>      
+  $("input").addClass("form-control")
+</script>      
 {% block scripts %}
 
 {% endblock %}
-
+  
   </body>
 </html>
