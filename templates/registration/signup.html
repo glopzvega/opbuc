@@ -38,9 +38,13 @@
 							<br>
 							<div class="row">
 								<div class="col text-center">
-									<a class="btn btn-primary" href="{% url 'social:begin' 'google-oauth2' %}">									
+									<a class="social social-google" style="text-decoration:none;" href="{% url 'social:begin' 'google-oauth2' %}">
 										<i class="fab fa-google"></i>
-										Registro con Google</a>
+										Login con Google</a>
+									<br>
+									<a class="social social-facebook" style="text-decoration:none;"  href="{% url 'social:begin' 'facebook' %}">
+										<i class="fab fa-facebook"></i>
+										Login con Facebook</a>
 									<br>
 								</div>
 							</div>
