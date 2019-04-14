@@ -84,6 +84,19 @@ TEMPLATES = [
     },
 ]
 
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.social_auth.associate_by_email',  # <--- este
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
+
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY ='240807395760-tc8mhp2ffnadfiqp91g5fm2ldv9dojvf.apps.googleusercontent.com'  #Paste CLient Key
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'z_IK2p2i9dTNSwHxXOHpxaCS' #Paste Secret Key
 
