@@ -57,17 +57,17 @@ def index(request):
 	}
 	return render(request, "web/index.html", context)
 
-def login_google(request):
-	if request.method == 'POST' and request.POST.get("username", False):
-		username = request.POST.get("username")
-		usuario = User.objects.filter(username=username)
-		_logger.debug(usuario)
-		# if usuario:
-		# 	login(request, usuario[0])
-		# 	return json.dumps({"success" : True})		
-		# else:
-		# 	return json.dumps({"success" : False, "error" : "Usuario no encontrado"})
-	return json.dumps({"success" : False})
+# def login_google(request):
+# 	if request.method == 'POST' and request.POST.get("username", False):
+# 		username = request.POST.get("username")
+# 		usuario = User.objects.filter(username=username)
+# 		_logger.debug(usuario)
+# 		# if usuario:
+# 		# 	login(request, usuario[0])
+# 		# 	return json.dumps({"success" : True})		
+# 		# else:
+# 		# 	return json.dumps({"success" : False, "error" : "Usuario no encontrado"})
+# 	return json.dumps({"success" : False})
 
 def signup(request):
 	if request.method == 'POST':

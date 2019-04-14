@@ -39,7 +39,7 @@ urlpatterns = [
     path('', include('web.urls')),
     path('login/', auth_views.login, name="login"), 
     path('auth/', include('social_django.urls', namespace='social')),   
-    path('logingoogle/', web_views.login_google, name="login_google"),    
+    # path('logingoogle/', web_views.login_google, name="login_google"),    
     path('logout/', auth_views.logout, {'next_page': '/'}, name='logout'), 
 	path('api/auth/', include('rest_framework.urls', namespace="rest_framework")),
 	path('api/', include(router.urls)),
