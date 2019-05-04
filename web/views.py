@@ -358,7 +358,7 @@ def ver_categorias(request):
 
 def ver_categorias_lugares(request):
 		
-	categorias = models.Category.objects.filter(user=request.user).filter(tipo="lugar")
+	categorias = models.Category.objects.filter(tipo="lugar")
 
 	context = {
 		"data" : categorias
