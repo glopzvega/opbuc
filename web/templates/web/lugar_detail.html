@@ -431,7 +431,8 @@
             </div>
         </div>
         {% endif %}
-        {% if data.promocion %}
+        <!-- {{data.promociones}} -->
+        {% if data.promociones %}
         <div class="col-12 col-lg-5">
             <div class="card border-danger">
                 <div class="card-body">
@@ -446,7 +447,7 @@
                         <h4 class="text-center" style="margin-top:0.5em;">AHORRA</h4>                        
                         <h4 class="text-center" style="margin-top:0.5em;">Sobre Reserva</h4>                        
                         <h3 class="text-center text-danger" style="margin-top:0.5em; font-weight: bold;">{{data.name | upper}}</h3>                        
-                        <h3 class="text-center" style="margin-top:0.5em;">$-{{data.promocion}} pesos</h3>                        
+                        <h3 class="text-center" style="margin-top:0.5em;">$-{{data.promociones}} pesos</h3>                        
                     </div>
                 </div>
             </div>
