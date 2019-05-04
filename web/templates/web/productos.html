@@ -19,8 +19,9 @@
 							<th>Nombre</th>
 							<th>Descripcion</th>
 							<th>Categoria</th>
-							<th>Lugar</th>	
 							<th>Precio</th>					
+							<th>Lugar</th>	
+							<th>Usuario</th>					
 						</tr>
 					</thead>
 					<tbody>
@@ -30,8 +31,9 @@
 						{{ row.name }}</a></td>
 						<td>{{ row.description }}</td>
 						<td>{{ row.category }}</td>
-						<td> {{ row.lugar }}</td>
 						<td> {{ row.price }}</td>
+						<td> {{ row.lugar }}</td>
+						<td> {{ row.lugar.user }}</td>
 						{% endfor %}
 						</tr>
 					</tbody>

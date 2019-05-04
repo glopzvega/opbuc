@@ -55,7 +55,8 @@ class Lugar(models.Model):
 	video = models.TextField(blank=True, null=True)
 	mapa = models.TextField(blank=True, null=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
-	
+	sugerido = models.BooleanField(default=False)
+	nuevo = models.BooleanField(default=True)
 	# conekta_public = models.CharField(max_length=255)
 	# conekta_private = models.CharField(max_length=255)
 
@@ -86,7 +87,9 @@ class Order(models.Model):
 	lugar = models.ForeignKey(Lugar, on_delete=models.CASCADE)
 	total = models.DecimalField(max_digits=6, decimal_places=2)
 	state = models.CharField(max_length=255, choices=STATES, default="draft")
+	invitados = models.IntegerField(default=1)
 	payment_info = models.TextField()
+	payment_id = models.CharField(max_length=255, null=True, blank=True, default="")
 
 class OrderLine(models.Model):
 	usuario = models.ForeignKey(User, on_delete=models.CASCADE)

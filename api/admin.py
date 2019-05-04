@@ -13,7 +13,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(models.Lugar)
 class LugarAdmin(admin.ModelAdmin):
-	list_display = ("id", "name", "description", "category", "zone")
+	list_display = ("id", "name", "description", "category", "zone", "user", "sugerido", "nuevo")
 
 @admin.register(models.Producto)
 class ProductoAdmin(admin.ModelAdmin):
@@ -21,7 +21,7 @@ class ProductoAdmin(admin.ModelAdmin):
 
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
-	list_display = ("id", "name", "fecha_pedido", "hora_pedido", "usuario", "total")
+	list_display = ("id", "name", "fecha_pedido", "hora_pedido", "usuario", "invitados", "total")
 
 @admin.register(models.OrderLine)
 class OrderLineAdmin(admin.ModelAdmin):

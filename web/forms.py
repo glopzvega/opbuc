@@ -40,7 +40,7 @@ class CategoriaModelForm(ModelForm):
 
 	class Meta:
 		model = Category
-		fields = ("name", "photo")
+		fields = ("name",)
 		# fields = ("nocontrol", "apellidop", "apellidom", "nombre", "edad", "sexo", "email", "celular", "telefono", "carrera", "semestre", "promedio", "curp", "lugarnac", "fechanac", "maestro1", "maestro2", "maestro3", "maestro4", "maestro1a", "maestro2a", "maestro3a", "maestro4a")
 
 		labels = {
@@ -53,7 +53,7 @@ class LugarModelForm(ModelForm):
 		model = Lugar
 		fields = "__all__"
 		# fields = ("name", "category", "zone", "phone", "email", "description", "video", "mapa", "web", "photo")
-		exclude = ("user",)
+		exclude = ("user", "clear_name", "nuevo", "sugerido")
 
 		labels = {
 			'name' : 'Nombre',
@@ -71,7 +71,8 @@ class LugarModelForm(ModelForm):
 	def __init__(self, *args, **kwargs):
 		super(LugarModelForm, self).__init__(*args, **kwargs)
 		self.fields['category'].queryset = Category.objects.filter(tipo='lugar')
-				
+		self.fields['zone'].required = True
+
 class ProductoModelForm(ModelForm):
 
 	class Meta:

@@ -10,6 +10,13 @@ html, body, .container-fluid, .row-main
   font-family: "Open-Sans";
 }
 
+textarea {
+  resize: none;
+}
+
+p {
+  word-wrap: break-word;
+}
 .container-fluid
 {
   /* background-color: #dc3545; */

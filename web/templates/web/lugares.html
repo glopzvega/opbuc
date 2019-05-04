@@ -5,13 +5,21 @@
 	<div class="card">
 		<div class="card-body">
 			<div class="card-title">
-				<h5>Lugares (Listado de Registros)</h5>
+				<h5>Lugares </h5>
 			</div>
 			<div class="card-text">
+				{% if data and not request.user.is_staff %}
+				
+				<!-- <span class="text-muted">Limite de registros alcanzados</span> -->
+
+				{% else %}
+				
 				<a href="{% url 'lugar_nuevo' %}" class="btn btn-danger">
 					<i class="glyphicon glyphicon-plus"></i>
 					Nuevo Registro
 				</a>
+				
+				{% endif %}
 				<hr>
 				<table class="table">
 					<thead>
@@ -20,6 +28,7 @@
 							<th>Descripcion</th>
 							<th>Categoria</th>
 							<th>Zona</th>						
+							<th>Usuario</th>						
 						</tr>
 					</thead>
 					<tbody>
@@ -30,6 +39,7 @@
 						<td>{{ row.description }}</td>
 						<td>{{ row.category }}</td>
 						<td> {{ row.zone }}</td>
+						<td> {{ row.user }}</td>
 						{% endfor %}
 						</tr>
 					</tbody>

@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 # import locale
 from datetime import datetime
 import json
+from random import choice
 import logging
 _logger = logging.getLogger(__name__)
 # Create your views here.
@@ -43,11 +44,41 @@ def get_mensajes(request):
 
 def get_usuarios(request):
 	usuarios = User.objects.filter(is_staff=False)
+	
+	for user in usuarios:
+		lugares = models.Lugar.objects.filter(user=user)
+		if lugares:
+			user.lugar = lugares[0]		
+
 	data = {
 		"usuarios" : usuarios
-	}    
-	return render(request, "web/usuarios.html", data)	
-	
+	}
+	return render(request, "web/usuarios.html", data)
+
+def update_usuario(request, id):
+	usuario = get_object_or_404(User, pk=id)
+	if usuario.is_superuser:
+		usuario.is_superuser = False
+	else:
+		usuario.is_superuser = True
+
+		lugar_ids = models.Lugar.objects.filter(user=usuario)
+		if not lugar_ids:
+			lugar_name = "Nuevo"
+			lugar_nuevo = models.Lugar(name=lugar_name, clear_name=lugar_name, user=usuario)
+			lugar_nuevo.save()
+	usuario.save()
+	return JsonResponse({"success": True, "id": id, "is_superuser": usuario.is_superuser})
+
+def suggest_usuario(request, id):
+	lugar = get_object_or_404(models.Lugar, pk=id)
+	if lugar.sugerido:
+		lugar.sugerido = False
+	else:
+		lugar.sugerido = True
+	lugar.save()
+	return JsonResponse({"success": True, "id": id, "sugerido": lugar.sugerido})
+
 def index(request):
 	categorias = models.Category.objects.filter(tipo__exact='lugar')
 	zonas = models.Zone.objects.all()
@@ -237,7 +268,8 @@ def lugar(request, id):
 	for cat in cats:
 		cat.prods = productos.filter(category=cat)
 
-	lugares = models.Lugar.objects.filter(~Q(id=id))[:3]
+	# lugares = models.Lugar.objects.filter(~Q(id=id))[:3]
+	lugares = models.Lugar.objects.filter(nuevo=False).filter(sugerido=True)[:3]
 	context = {
 		"data" : lugar ,
 		"comments" : comments,
@@ -258,12 +290,14 @@ def buscarlugar(request):
 			busqueda = request.GET.get("busqueda", False)			
 			lugares = lugares.filter(clear_name__icontains=busqueda)
 
-		if request.GET.get("zone", False):			
+		if request.GET.get("zone", False):
+			print("#### ZONE ####")
 			zone_id = int(request.GET.get("zone", False))
-			zone_ids = models.Zone.objects.filter(id=zone_id)
-			if zone_ids:
-				zone = zone_ids[0]
-				lugares = lugares.filter(zone=zone)
+			print(zone_id)			
+			# zone_ids = models.Zone.objects.filter(id=zone_id)
+			# if zone_ids:
+			# 	zone = zone_ids[0]
+			# 	lugares = lugares.filter(zone=zone)
 
 		if request.GET.get("category", False):			
 			category_id = int(request.GET.get("category", False))
@@ -274,7 +308,7 @@ def buscarlugar(request):
 
 		if lugares:
 			data = []
-			for lugar in lugares:
+			for lugar in lugares.filter(nuevo=False):
 				lugar_data = {
 						"id" : lugar.id,
 						"name" : lugar.name,
@@ -287,9 +321,10 @@ def buscarlugar(request):
 						"address" : lugar.address,
 						"email" : lugar.email,
 					}
-				zone = models.Zone.objects.get(pk=lugar.zone_id)
-				if zone:
-					lugar_data["zone_id"] = (zone.id, zone.name)
+				if lugar.zone_id:
+					zone = models.Zone.objects.get(pk=lugar.zone_id)
+					if zone:
+						lugar_data["zone_id"] = (zone.id, zone.name)
 
 				data.append(lugar_data)
 	
@@ -307,7 +342,17 @@ def producto(request, id):
 
 def ver_categorias(request):
 	
-	categorias = models.Category.objects.filter(user=request.user)
+	categorias = models.Category.objects.filter(user=request.user).filter(tipo="producto")
+
+	context = {
+		"data" : categorias
+	}
+
+	return render(request, "web/categorias.html", context)
+
+def ver_categorias_lugares(request):
+		
+	categorias = models.Category.objects.filter(user=request.user).filter(tipo="lugar")
 
 	context = {
 		"data" : categorias
@@ -367,7 +412,8 @@ def ver_lugares(request):
 def lugar_nuevo(request):
 	
 	if request.method == "POST":
-		form = LugarModelForm(request.POST)
+		form = LugarModelForm(request.POST, request.FILES)
+
 		if form.is_valid():
 			lugar = form.save(commit=False)
 			clear_name = lugar.name.lower()
@@ -380,7 +426,13 @@ def lugar_nuevo(request):
 			lugar.user = request.user
 			lugar.save()
 			return redirect("ver_lugares")
-	else:
+	
+	else:	
+		
+		lugares = models.Lugar.objects.filter(user=request.user)		
+		if lugares and not request.user.is_staff:
+			return redirect("ver_lugares")
+
 		form = LugarModelForm()
 
 	context = {
@@ -393,9 +445,17 @@ def lugar_editar(request, id):
 	lugar = get_object_or_404(models.Lugar, pk=id)
 
 	if request.method == "POST":
-		form = LugarModelForm(request.POST, instance=lugar)
+		form = LugarModelForm(request.POST, request.FILES, instance=lugar)
 		if form.is_valid():
-			form.save()
+			lugar = form.save(commit=False)
+			clear_name = lugar.name.lower()
+			clear_name = clear_name.replace("á", "a")
+			clear_name = clear_name.replace("é", "e")
+			clear_name = clear_name.replace("í", "i")
+			clear_name = clear_name.replace("ó", "o")
+			clear_name = clear_name.replace("ú", "u")
+			lugar.clear_name = clear_name.replace("ñ", "n")			
+			lugar.save()
 			return redirect("ver_lugares")
 	else:
 		form = LugarModelForm(instance=lugar)
@@ -560,7 +620,16 @@ def main_foto(request, id):
 
 def ver_pedidos(request):
 
-	orders = models.Order.objects.filter(usuario=request.user).order_by('-fecha_pedido')
+	orders = []
+
+	if request.user.is_superuser:
+		lugares = models.Lugar.objects.filter(user=request.user)
+		if lugares:
+			lugar = lugares[0]
+			orders = models.Order.objects.filter(lugar=lugar).order_by('-fecha_pedido')
+
+	else:
+		orders = models.Order.objects.filter(usuario=request.user).order_by('-fecha_pedido')	
 
 	if orders:
 		for oid in orders:
@@ -641,7 +710,7 @@ def confirmar_compra(request, newOrder):
 							"country": "MX"
 						} #shipping_contact - required only for physical goods
 					},
-					"metadata": {"description": "Compra de creditos: 300(MXN)", "reference": "1334523452345"},
+					"metadata": {"description": "", "reference": newOrder.name},
 					"charges":[{
 						"payment_method": {
 							"type": "default"
@@ -727,8 +796,11 @@ def comprar_carrito(request):
 	total = 0
 	if "total" in request.session:
 		total = request.session["total"]
+
+	ref = ""
+	ref = ref.join([choice("0123456789") for i in range(10)])
 	
-	newOrder = models.Order(usuario=request.user, name="/", fecha_pedido=hoy, hora_pedido=ahora, total=total, lugar=lugar)
+	newOrder = models.Order(usuario=request.user, name=ref, fecha_pedido=hoy, hora_pedido=ahora, total=total, lugar=lugar)
 	newOrder.save()
 
 	if newOrder.id:
@@ -741,6 +813,7 @@ def comprar_carrito(request):
 		res = confirmar_compra(request, newOrder)
 			
 		if res["success"]:
+			newOrder.payment_id = res["id"]
 			newOrder.state = "done"			
 			newOrder.payment_info = res
 			newOrder.save()

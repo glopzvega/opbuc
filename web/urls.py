@@ -26,9 +26,13 @@ urlpatterns = [
 
     path('config/', views.get_config, name="config"),
     path('mensajes/', views.get_mensajes, name="mensajes"),
+    
     path('usuarios/', views.get_usuarios, name="usuarios"),
-
+    path('usuarios/update/<int:id>/', views.update_usuario, name="update_usuario"),
+    path('usuarios/suggest/<int:id>/', views.suggest_usuario, name="suggest_usuario"),
+    
     path('categorias/', views.ver_categorias, name="ver_categorias"),
+    path('categoriaslugares/', views.ver_categorias_lugares, name="ver_categorias_lugares"),
     path('categoria/nuevo', views.categoria_nuevo, name="categoria_nuevo"),
     path('categoria/editar/<int:id>', views.categoria_editar, name="categoria_editar"),
 

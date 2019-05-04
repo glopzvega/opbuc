@@ -28,6 +28,10 @@ section
     /*width: 100%;*/
 } 
 
+textarea {
+  resize: none;
+}
+
 .divider
 {
   border: 1px solid #dc3545;

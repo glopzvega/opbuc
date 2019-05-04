@@ -17,6 +17,8 @@
 								<table class="table">
 									<thead>
 										<th>No. Pedido</th>
+										<th>Lugar</th>
+										<th>Usuario</th>
 										<th>Fecha</th>
 										<th>Total</th>
 										<th>Estatus</th>
@@ -27,6 +29,8 @@
 										
 										<tr>
 											<td>{{ order.name }}</td>
+											<td>{{ order.lugar }}</td>
+											<td>{{ order.usuario }}</td>
 											<td>{{ order.fecha_pedido }}</td>
 											<td>{{ order.total }}</td>
 											<td>{{ order.state_txt }}</td>

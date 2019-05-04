@@ -16,26 +16,35 @@
 				<hr>
 				<table class="table table-fixed">
 					<thead>
-						<tr>
-							<th class="col-2"></th>
-							<th class="col-10">Nombre</th>
+						<tr>							
+							<th class="col-8">Nombre</th>
+							<th class="col-2">Tipo</th>
+							<th class="col-2">Usuario</th>
 							<!-- <th>Tipo</th> -->
 						</tr>
 					</thead>
 					<tbody>
 						{% for row in data %}
 						<tr>
-						<td class="col-2">
+						<!-- <td class="col-2">
 							{% if row.photo %}
 							<a href="{{ row.photo.url }}" class="picture">
 								<img src="{{ row.photo.url }}" alt="{{ row.name }}">
 							</a>
 							{% endif %}
-						</td>				
-						<td class="col-10">
+						</td>				 -->
+						<td class="col-8">
 							<a href="{% url 'categoria_editar' row.id %}">
 								{{ row.name }}
 							</a>
+						</td>
+
+						<td class="col-2">
+							{{ row.tipo }}
+						</td>
+
+						<td class="col-2">
+							{{ row.user }}
 						</td>
 						
 						{% endfor %}
