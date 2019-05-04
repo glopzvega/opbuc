@@ -4,17 +4,22 @@
 
 {% block styles %}
 
+{% if config and config.login_image %}
 <style>
-	
+	body {
+        background-image: url('{{config.login_image.url}}');
+        background-repeat: no-repeat;
+    }
 </style>
-
+{% endif %}
 {% endblock %}
 
 {% block content %}
 
+
 <div class="container">
 	<div class="row">
-		<div class="col-4 offset-8">
+		<div class="col-12 col-lg-4 offset-lg-8">
 			<div class="card">
 				<div class="card-body">
 					<div class="card-title">

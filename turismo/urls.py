@@ -37,7 +37,8 @@ router.register('comentarios', views.CommentViewSet)
 
 urlpatterns = [
     path('', include('web.urls')),
-    path('login/', auth_views.login, name="login"), 
+    path('login/', views.CustomLoginView.as_view(), name="login"), 
+    # path('login/', views.login, {"extra_context" : {}}, name="login"), 
     path('auth/', include('social_django.urls', namespace='social')),   
     # path('logingoogle/', web_views.login_google, name="login_google"),    
     path('logout/', auth_views.logout, {'next_page': '/'}, name='logout'), 

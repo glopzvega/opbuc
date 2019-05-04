@@ -3,6 +3,10 @@ from django.contrib import admin
 # Register your models here.
 from . import models
 
+@admin.register(models.Config)
+class ConfigAdmin(admin.ModelAdmin):
+	list_display = ("id", "facebook", "twitter", "conekta_public")	
+
 @admin.register(models.Zone)
 class ZoneAdmin(admin.ModelAdmin):
 	list_display = ("id", "name")	

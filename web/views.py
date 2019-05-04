@@ -18,22 +18,28 @@ from .forms import ConfigForm, CategoriaModelForm, LugarModelForm, ProductoModel
 from api import models
 
 def get_config(request):
-
+	print("#LLOLOLL")
 	config_ids = models.Config.objects.all()
 	if config_ids:
+		print(config_ids[0].id)
+		config = get_object_or_404(models.Config, pk=config_ids[0].id)
 		if request.method == "POST":
-			form = ConfigForm(request.POST, instance=config_ids[0])
+			form = ConfigForm(request.POST, request.FILES, instance=config)
 			if form.is_valid():
-				form.save()
-				return redirect("config")
+				print("IS VALID")
+				config = form.save()
+				form = ConfigForm(instance=config)	
+
+				# return redirect("config")
 		else:
-			form = ConfigForm(instance=config_ids[0])	
+			form = ConfigForm(instance=config)	
 	else:
 		if request.method == "POST":
-			form = ConfigForm(request.POST)
+			form = ConfigForm(request.POST, request.FILES)
 			if form.is_valid():
-				form.save()
-				return redirect("config")
+				config = form.save()
+				form = ConfigForm(instance=config)
+				# return redirect("config")
 		else:
 			form = ConfigForm()	    		
 	
