@@ -274,11 +274,20 @@ def lugar(request, id):
 	for cat in cats:
 		cat.prods = productos.filter(category=cat)
 
+	calif = 0
+	prom = 0
+	for comm in comments:
+		calif += comm.puntuacion
+	if calif > 0:
+		prom = calif / len(comments)
+
 	# lugares = models.Lugar.objects.filter(~Q(id=id))[:3]
 	lugares = models.Lugar.objects.filter(nuevo=False).filter(sugerido=True)[:3]
 	context = {
 		"data" : lugar ,
 		"comments" : comments,
+		"calificacion" : len(comments),
+		"promedio" : round(prom),
 		"photos" : photos,
 		"productos" : productos,
 		"categories" : cats,

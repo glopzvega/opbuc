@@ -176,10 +176,10 @@
                     <b>Calificación del Anfitrión:</b><br>
                     <div class="row">
                         <div class="col-3">
-                            <div class="starrr"></div>
+                            <div id="promedio" class="starrr"></div>
                         </div>
                         <div class="col">
-                            <span class="text-muted">153</span>
+                            <span class="text-muted">{{promedio}}</span>
                         </div>
                     </div>
                 </div>
@@ -317,10 +317,10 @@
                             <div class="card-text">                                                                                       
                                 <div class="row">
                                     <div class="col-5 col-lg-3">
-                                        <div class="starrr"></div>
+                                        <!-- <div class="starrr"></div> -->
                                     </div>
                                     <div class="col-7 col-lg-9">
-                                        <h4>Total de Evaluaciones 153</h4>
+                                        <h4>Total de Evaluaciones: {{calificacion}}</h4>
                                     </div>
                                 </div>                                                                                 
                                 {% for comment in comments|slice:":3" %}
@@ -454,6 +454,7 @@
         </div>
         {% endif %}
     </div>
+    <br>
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -541,7 +542,11 @@
     });
 
     $(function() {
-        return $(".starrr").starrr();
+        $("#stars").starrr();
+        $("#promedio").starrr({
+            rating: '{{promedio}}',
+            readOnly: true
+        });
     });
 
     calcular_total = function(fn) {
@@ -662,6 +667,11 @@
                 $(".guardar_comentario").addClass("disabled");
             }
         });
+
+        $("#promedio")
+        {
+            
+        }
 
         $('#stars-existing').on('starrr:change', function(e, value) {
             $('#count-existing').html(value);
