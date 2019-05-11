@@ -16,11 +16,12 @@ urlpatterns = [
     path('pedidos/<int:id>', views.detalle_pedido, name="detalle_pedido"),
 
     # path('lugar/<int:id>/carrito/', views.ver_carrito_lugar, name="carrito_lugar"),
-    path('carrito/', views.ver_carrito, name="carrito"),
-    path('carrito/comprar/', views.comprar_carrito, name="comprar_carrito"),
-    path('carrito/agregar/<int:id>', views.agregar_carrito, name="agregar_carrito"),
-    path('carrito/quitar/<int:id>', views.quitar_carrito, name="quitar_carrito"),
-    path('carrito/qty/<int:id>', views.cantidad_carrito, name="qty_carrito"),
+    path('compra/', views.ver_carrito, name="carrito"),
+    path('compra/reservar/<int:id>/', views.compra_reservar, name="compra_reservar"),
+    path('compra/registrar/', views.registrar_compra, name="comprar_carrito"),
+    path('compra/agregar/<int:id>', views.agregar_carrito, name="agregar_carrito"),
+    path('compra/quitar/<int:id>', views.quitar_carrito, name="quitar_carrito"),
+    path('compra/qty/<int:id>', views.cantidad_carrito, name="qty_carrito"),
 
     # ADMIN URL
 

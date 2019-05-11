@@ -195,7 +195,7 @@
     lity(url);
   });
 
-  $("input,select,textarea").addClass("form-control");
+  $("input,select,textarea").not("[type=checkbox]").addClass("form-control");
   $('[data-toggle="tooltip"]').tooltip(); 
 
   </script>  

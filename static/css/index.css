@@ -1,7 +1,13 @@
+@font-face {
+  font-family: "Open-Sans";
+  src: url(../fonts/OpenSans-Regular.ttf);
+}
+
 html, body, .row-main
 {
   height: auto;
-  min-height: 1024px
+  min-height: 1024px;
+  font-family: "Open-Sans";
 }
 
 .row-main

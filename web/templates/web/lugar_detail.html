@@ -1,4 +1,4 @@
-{% extends 'web/__main.html' %} 
+{% extends 'web/__base.html' %} 
 {% load static %} 
 {% block styles %}
 <style>
@@ -60,6 +60,10 @@
     }
 </style>
 {% endblock %} 
+
+{% block header %}
+{% endblock %} 
+
 {% block content %}
 
 {% if photos %}
@@ -251,8 +255,6 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <br>
                         <div class="row">
                             <div class="col-12">
                                 <div style="padding: 0 1em;">
@@ -268,11 +270,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>       
-                                <br>                 
+                                </div>               
                             </div>
                         </div>    
-                        <br>
                         <div class="row">
                             <div class="col-12 col-lg-6">
                                 <div style="padding: 0 1em;">
@@ -287,13 +287,14 @@
                             <div class="col-12 col-lg-6">
                                 <div style="padding: 0 1em;">
                                     <label>Cupón</label>
-                                    <input type="hidden" id="cupon" class="form-control" value="100" readonly>
-                                    <input type="text" class="form-control" value="-100" readonly>
+                                    <input type="hidden" id="cupon" class="form-control" value="{{data.promociones}}" readonly>
+                                    {% load humanize %}
+                                    <input type="text" class="form-control" value="-${{ data.promociones|floatformat:2|intcomma }} " readonly>
                                 </div>
                             </div>
-                            <div class="col-12 col-lg-6 text-right">
+                            <div class="col-12">
                                 <br>
-                                <h3>Total: $<span id="total_label">0.00</span></h3>
+                                <h3 class="text-right">Total: $<span id="total_label">0.00</span></h3>
                             </div>
                         </div>
                         <hr>
@@ -580,13 +581,13 @@
             let product_qty = checkbox.parents(".list-group-item").find(".prod_qty").text();
             if(checkbox.is(":checked"))
             {                
-                $.getJSON("/carrito/agregar/" + product_id + "?qty=" + product_qty, function(res){
+                $.getJSON("/compra/agregar/" + product_id + "?qty=" + product_qty, function(res){
                     console.log(res)
                 });
             }
             else
             {
-                $.getJSON("/carrito/quitar/" + product_id + "?qty=" + product_qty, function(res){
+                $.getJSON("/compra/quitar/" + product_id + "?qty=" + product_qty, function(res){
                     console.log(res)
                 });
             }
@@ -611,7 +612,7 @@
             prod_qty = parseInt(prod_qty) + 1;
             $(this).parents(".list-group-item").find(".prod_qty").text(prod_qty);
             
-            $.getJSON("/carrito/qty/" + product_id + "?qty=" + prod_qty, function(res){
+            $.getJSON("/compra/qty/" + product_id + "?qty=" + prod_qty, function(res){
                 console.log(res)
             });
 
@@ -640,7 +641,7 @@
             }
             $(this).parents(".list-group-item").find(".prod_qty").text(prod_qty);
             
-            $.getJSON("/carrito/qty/" + product_id + "?qty=" + prod_qty, function(res){
+            $.getJSON("/compra/qty/" + product_id + "?qty=" + prod_qty, function(res){
                 console.log(res)
             });
             
@@ -649,7 +650,13 @@
 
         $(".confirmar").on("click", function() {
             calcular_total(function(){
-                location.href="/carrito/";
+                let invitados = $("#invitados").val();                
+                $.getJSON("/compra/reservar/{{data.id}}/", {"invitados" : invitados}, function(res){
+                    if(res.success)
+                    {
+                        location.href="/compra/";
+                    }
+                })
             }) 
         });
 
@@ -667,12 +674,7 @@
                 $(".guardar_comentario").addClass("disabled");
             }
         });
-
-        $("#promedio")
-        {
-            
-        }
-
+        
         $('#stars-existing').on('starrr:change', function(e, value) {
             $('#count-existing').html(value);
             $("#puntuacion").val(value);

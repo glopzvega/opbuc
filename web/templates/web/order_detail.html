@@ -1,5 +1,5 @@
 {% extends 'web/__base.html' %}
-
+{% load humanize %}
 {% block content %}
 
 <div class="container-fluid">
@@ -16,7 +16,10 @@
 									Fecha: {{ order.fecha_pedido }} {{ order.hora_pedido }} | 
 									<span class="badge badge-warning"> {{ order.lugar.name }}</span> | 
 									<span class="badge badge-secondary">{{ order.state_txt }}</span> |
-									<b class="text-success"> Total: ${{ order.total }} </b>
+									<b class="text-info"> Invitados: {{ order.invitados }} </b>|
+									<!-- <b class="text-success"> Subtotal: ${{ order.subtotal }} </b>|
+									<b class="text-danger"> Cupon: -${{ order.cupon }} </b>|
+									<b class="text-success"> Total: ${{ order.total }} </b> -->
 								</p>
 								<hr>
 							</div>
@@ -42,9 +45,9 @@
 												{% endif %}
 											</td>
 											<td>{{ line.producto }}</td>
-											<td>{{ line.producto.price }}</td>
+											<td>${{ line.producto.price|floatformat:2|intcomma }}</td>
 											<td>{{ line.quantity }}</td>
-											<td>{{ line.subtotal }}</td>
+											<td>${{ line.subtotal|floatformat:2|intcomma }}</td>
 										</tr>
 					
 									{% endfor %}					
@@ -53,6 +56,39 @@
 							</div>
 						</div>
 						<hr>
+						<div class="row">							
+							<div class="col-12">						
+								<div class="row">
+									<div class="col-9 text-right text-muted">				
+										<h5>Subtotal: </h5>
+									</div>
+									<div class="col-3 text-left">				
+										<h4><span class="txt_subtotal">${{ order.subtotal|floatformat:2|intcomma }}</span> </h4>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-9 text-right text-muted">										
+										<h5>Descuento:</h5>
+									</div>
+									<div class="col-3 text-left">
+										{% if order.cupon > 0 %}
+										<h4><span class="txt_cupon">-${{order.cupon|floatformat:2|intcomma }}</span> </h4>
+										{% else %}
+										<h4><span class="txt_cupon">${{order.cupon|floatformat:2|intcomma }}</span> </h4>
+										{% endif %}
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-9 text-right text-muted">				
+										<h5>Total: </h5>
+									</div>
+									<div class="col-3 text-left">				
+										<h4><span class="txt_total">${{ order.total|floatformat:2|intcomma }}</span> </h4>
+									</div>
+								</div>
+								<hr>								
+							</div>
+						</div>
 						{% if request.user.is_superuser and request.user.is_staff %}
 						<div class="row">
 							<div class="col">

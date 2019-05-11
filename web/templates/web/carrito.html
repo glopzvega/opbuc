@@ -1,17 +1,17 @@
 {% extends 'web/__base.html' %}
 {% load static %}
+{% load humanize %}
 {% block content %}
 
 {# {{ request.session.carrito }} #}
 
 <div class="container-fluid">
-{{ request.session.ahora }}
 <br>
 <div class="row">
 	<div class="col-12">
 		<div class="card">
 			<div class="card-body">
-				<div class="card-title"><h5>Confirmar Reservación:</h5></div>
+				<div class="card-title"><h5>Confirmar Reservación: ({{ invitados }} Invitados)</h5></div>
 				<div class="row">
 					<div class="col-12">	
 						<table class="table">
@@ -50,8 +50,8 @@
 									</form>
 				
 									</td>					
-									<td>{{ prod.price_txt }}</td>
-									<td><b class="subtotal">{{ prod.subtotal_txt }}</b></td>
+									<td>${{ prod.price_txt }}</td>
+									<td><b class="subtotal">${{ prod.subtotal_txt }}</b></td>
 									<td>
 										<a href="{% url 'quitar_carrito' prod.id %}" class="btn btn-light text-danger quitar_carrito" title="Quitar del Carrito de compra" data-toggle="tooltip" data-placement="left">
 											<i class="fas fa-trash"></i>
@@ -75,21 +75,40 @@
 				</div>
 				<hr>
 				<div class="row">
-					<div class="col">
+					<div class="col-6">
 						<a href="{% url 'index' %}" class="btn btn-info">Regresar al Inicio</a>
 					</div>
-					<div class="col">
-						{# <a href="{% url 'comprar' %}" class="btn btn-success">Comprar</a> #}
+					<div class="col-6">						
 						<div class="row">
-							<div class="col-11 text-right">				
-								<h2>Total: <span class="txt_total">{{ total }}</span> </h2>
+							<div class="col-9 text-right text-muted">				
+								<h5>Subtotal: </h5>
+							</div>
+							<div class="col-3 text-left">				
+								<h4><span class="txt_subtotal">${{ subtotal|floatformat:2|intcomma }}</span> </h4>
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-9 offset-3">				
-								<hr>
+							<div class="col-9 text-right text-muted">				
+								{% load humanize %}
+								<h5>Descuento:</h5>
 							</div>
-						</div>		
+							<div class="col-3 text-left">
+								{% if cupon > 0 %}
+								<h4><span class="txt_cupon">-${{cupon|floatformat:2|intcomma }}</span> </h4>
+								{% else %}
+								<h4><span class="txt_cupon">${{cupon|floatformat:2|intcomma }}</span> </h4>
+								{% endif %}
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-9 text-right text-muted">				
+								<h5>Total: </h5>
+							</div>
+							<div class="col-3 text-left">				
+								<h4><span class="txt_total">${{ total|floatformat:2|intcomma }}</span> </h4>
+							</div>
+						</div>
+						<hr>								
 					</div>
 				</div>
 				<div class="row">
@@ -219,6 +238,15 @@
 		});
 	});
 
+	let actualizar_carrito = function(qty)
+	{
+		$(".carrito .badge").text(qty);
+	}
+
+	priceFormatter = function(value) {    
+	    return Number(value).toLocaleString('es-MX', { style: 'currency', currency: 'MXN'});
+	}
+
 	$("#metodopago").on("change", function(){
 		let val = $(this).val()
 		if (val != "")
@@ -255,7 +283,9 @@
 			if(res.success)
 			{
 				row.remove()	
-				$(".txt_total").text(res.total);
+				$(".txt_subtotal").text(priceFormatter(res.subtotal));
+				$(".txt_total").text(priceFormatter(res.total));
+				$(".txt_cupon").text(priceFormatter(res.cupon));
 				actualizar_carrito(res.qty);	
 			}
 		});
@@ -271,8 +301,9 @@
 			console.log(res);
 			if(res.success)
 			{				
-				row.find(".subtotal").text(res.subtotal)
-				$(".txt_total").text(res.total);				
+				row.find(".subtotal").text(priceFormatter(res.subtotal));
+				$(".txt_subtotal").text(priceFormatter(res.subtotal));
+				$(".txt_total").text(priceFormatter(res.total));
 			}
 		});
 	})

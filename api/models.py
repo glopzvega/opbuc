@@ -91,6 +91,7 @@ class Order(models.Model):
 	total = models.DecimalField(max_digits=6, decimal_places=2)
 	state = models.CharField(max_length=255, choices=STATES, default="draft")
 	invitados = models.IntegerField(default=1)
+	cupon = models.FloatField(default=0)
 	payment_info = models.TextField()
 	payment_id = models.CharField(max_length=255, null=True, blank=True, default="")
 

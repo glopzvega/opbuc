@@ -20,7 +20,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def webhook_payment(request):
-    return HttpResponse(status=200)
+	return HttpResponse(status=200)
 
 def get_config(request):
 	
@@ -692,6 +692,8 @@ def detalle_pedido(request, id):
 	if order.state == "done":
 		order.state_txt = "Realizado"
 
+	order.subtotal = float(order.total) + order.cupon
+
 	order.lines = models.OrderLine.objects.filter(order=order)
 
 	data = {
@@ -813,7 +815,7 @@ def confirmar_compra(request, newOrder):
 	return {"success" : False, "error" : "No se recibieron datos"}
 	# return JsonResponse({"success" : False, "error" : "No se recibieron datos"})
 
-def comprar_carrito(request):
+def registrar_compra(request):
 	
 	if not request.session.has_key("carrito"):
 		request.session["carrito"] = []
@@ -834,10 +836,18 @@ def comprar_carrito(request):
 	if "total" in request.session:
 		total = request.session["total"]
 
+	cupon = 0
+	if "cupon" in request.session:
+		cupon = request.session["cupon"]
+
+	invitados = 1
+	if "invitados" in request.session:
+		invitados = request.session["invitados"]
+
 	ref = ""
 	ref = ref.join([choice("0123456789") for i in range(10)])
 	
-	newOrder = models.Order(usuario=request.user, name=ref, fecha_pedido=hoy, hora_pedido=ahora, total=total, lugar=lugar)
+	newOrder = models.Order(usuario=request.user, name=ref, fecha_pedido=hoy, hora_pedido=ahora, total=total, lugar=lugar, cupon=cupon, invitados=invitados)
 	newOrder.save()
 
 	if newOrder.id:
@@ -866,6 +876,9 @@ def comprar_carrito(request):
 def ver_carrito(request):
 
 	total = 0
+	subtotal = 0
+	invitados = 0
+	cupon = 0
 	if not request.session.has_key("carrito"):
 		request.session["carrito"] = []
 
@@ -891,13 +904,23 @@ def ver_carrito(request):
 
 		productos.append(producto)
 
-	if "total" in request.session:
+	if "invitados" in request.session:
+		invitados = request.session["invitados"]
+
+	if "subtotal" in request.session:		
+		subtotal = request.session["subtotal"]
+
+	if "total" in request.session:		
 		total = request.session["total"]
+
+	if "cupon" in request.session:
+		cupon = request.session["cupon"]
+		total = subtotal - cupon
 
 	# total = locale.currency(total, grouping=True)
 	total = "%.2f" % total
 
-	return render(request, "web/carrito.html", {"empty" : empty, "productos" : productos, "total" : total})
+	return render(request, "web/carrito.html", {"empty" : empty, "productos" : productos, "total" : total, "subtotal" : subtotal, "invitados" : invitados, "cupon" : cupon})
 
 # @login_required
 def cantidad_carrito(request, id):
@@ -947,7 +970,14 @@ def cantidad_carrito(request, id):
 
 		carrito.append(prod)
 
+	cupon = 0
+	subtotal = total
+	if "cupon" in request.session and request.session["cupon"] > 0:
+		cupon = request.session["cupon"]
+		total = subtotal - cupon    	
+
 	request.session["numero"] = len(carrito)
+	request.session["subtotal"] = subtotal
 	request.session["total"] = total
 	request.session["carrito"] = carrito
 	
@@ -955,7 +985,29 @@ def cantidad_carrito(request, id):
 	# total = locale.currency(total, grouping=True)
 	# subtotal = locale.currency(subtotal, grouping=True)
 
-	return JsonResponse({"success" : True, "qty" : len(carrito), "subtotal" : subtotal, "total" : total})		
+	return JsonResponse({"success" : True, "qty" : cantidad_carrito, "subtotal" : subtotal, "total" : total, "cupon" : cupon})		
+
+def compra_reservar(request, id):
+	
+	lugar = get_object_or_404(models.Lugar, pk=id)
+	cupon = lugar.promociones
+	
+	try:
+		invitados = int(request.GET.get("invitados", 1))
+	except:
+		invitados = 1
+		pass
+	
+	request.session["invitados"] = invitados
+	request.session["cupon"] = cupon
+
+	subtotal = 0
+	if "subtotal" in request.session:
+		subtotal = request.session["subtotal"]
+	
+	request.session["total"] = subtotal - cupon
+
+	return JsonResponse({"success" : True, "invitados" : invitados, "cupon" : cupon})		
 
 # @login_required
 def agregar_carrito(request, id):
@@ -1007,7 +1059,8 @@ def agregar_carrito(request, id):
 		total += el["subtotal"]
 
 	request.session["numero"] = len(carrito)
-	request.session["total"] = total
+	request.session["subtotal"] = total
+	# request.session["total"] = total
 	request.session["carrito"] = carrito
 
 	return JsonResponse({"success" : True, "qty" : len(carrito)})
@@ -1030,12 +1083,28 @@ def quitar_carrito(request, id):
 	total = 0
 	for el in carrito:
 		total += el["subtotal"]
+	
+	invitados = 0
+	if invitados in request.session:
+		invitados = request.session["invitados"]
+	
+	subtotal = total
+	if subtotal == 0:
+		cupon = 0
+		total = 0
+		invitados = 0
+	elif "cupon" in request.session:
+		cupon = request.session["cupon"]
+		total = subtotal - cupon
 
 	request.session["numero"] = len(carrito)
+	request.session["invitados"] = invitados
+	request.session["subtotal"] = subtotal
 	request.session["total"] = total
+	request.session["cupon"] = cupon
 	request.session["carrito"] = carrito
 
 	# locale.setlocale( locale.LC_ALL, 'en_US.UTF-8')
 	# total = locale.currency(total, grouping=True)
 
-	return JsonResponse({"success" : True, "qty" : len(carrito), "total" : total})
+	return JsonResponse({"success" : True, "qty" : len(carrito), "total" : total, "subtotal" : subtotal, "cupon" : cupon, "invitados" : invitados})

@@ -1,8 +1,3 @@
-let actualizar_carrito = function(qty)
-{
-	$(".carrito .badge").text(qty);
-}
-
 let actualizar_parametros = function(zone_id, category_id)
 {
   // debugger
