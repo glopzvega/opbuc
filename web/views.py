@@ -976,7 +976,7 @@ def ver_carrito(request):
 
 	configAdmin = False
 	usuario = get_object_or_404(User, pk=1)
-	config_ids = models.Config.objects.filter(user=lugar.user)
+	config_ids = models.Config.objects.filter(user=usuario)
 	if config_ids:
 		configAdmin = config_ids[0]
 
