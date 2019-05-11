@@ -10,6 +10,13 @@ class ConfigForm(ModelForm):
 	class Meta:
 		model = Config
 		fields = "__all__"
+		exclude = ("user", "login_image")
+
+class ConfigAdminForm(ModelForm):
+	class Meta:
+		model = Config
+		fields = "__all__"
+		exclude = ("user",)
 
 class MensajeForm(ModelForm):
 	class Meta:

@@ -13,35 +13,52 @@ import logging
 _logger = logging.getLogger(__name__)
 # Create your views here.
 
-from .forms import ConfigForm, CategoriaModelForm, LugarModelForm, ProductoModelForm, PhotoModelForm, SignupForm
+from .forms import ConfigForm, ConfigAdminForm, CategoriaModelForm, LugarModelForm, ProductoModelForm, PhotoModelForm, SignupForm
 
 from api import models
 
 def get_config(request):
-	print("#LLOLOLL")
-	config_ids = models.Config.objects.all()
+	
+	usuario = request.user
+	config_ids = models.Config.objects.filter(user=usuario)
 	if config_ids:
 		print(config_ids[0].id)
 		config = get_object_or_404(models.Config, pk=config_ids[0].id)
 		if request.method == "POST":
-			form = ConfigForm(request.POST, request.FILES, instance=config)
+			if usuario.is_staff:
+				form = ConfigAdminForm(request.POST, request.FILES, instance=config)    				
+			else:
+				form = ConfigForm(request.POST, request.FILES, instance=config)
 			if form.is_valid():
-				print("IS VALID")
 				config = form.save()
 				form = ConfigForm(instance=config)	
 
 				# return redirect("config")
 		else:
-			form = ConfigForm(instance=config)	
+			if usuario.is_staff:
+				form = ConfigAdminForm(instance=config)	
+			else:
+				form = ConfigForm(instance=config)	    			
+					
 	else:
 		if request.method == "POST":
-			form = ConfigForm(request.POST, request.FILES)
+			if usuario.is_staff:
+				form = ConfigAdminForm(request.POST, request.FILES)
+			else:
+				form = ConfigForm(request.POST, request.FILES)
 			if form.is_valid():
-				config = form.save()
-				form = ConfigForm(instance=config)
-				# return redirect("config")
+				config = form.save(commit=False)
+				config.user = usuario
+				config.save()
+				if usuario.is_staff:
+					form = ConfigAdminForm(instance=config)
+				else:
+					form = ConfigForm(instance=config)    				
 		else:
-			form = ConfigForm()	    		
+			if usuario.is_staff:
+				form = ConfigAdminForm()	    		
+			else:
+				form = ConfigForm()	    		
 	
 	return render(request, "web/config.html", {"form" : form})
 

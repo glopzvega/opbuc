@@ -18,6 +18,7 @@ class Config(models.Model):
 	conekta_public = models.CharField(max_length=255, blank=True, null=True)
 	conekta_private = models.CharField(max_length=255, blank=True, null=True)
 	login_image = models.ImageField(blank=True, null=True)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class Zone(models.Model):

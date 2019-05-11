@@ -24,6 +24,8 @@ urlpatterns = [
 
     # ADMIN URL
 
+    path('payment/', views.index, name="payment"),
+
     path('config/', views.get_config, name="config"),
     path('mensajes/', views.get_mensajes, name="mensajes"),
     
