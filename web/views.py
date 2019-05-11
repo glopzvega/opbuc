@@ -996,7 +996,7 @@ def ver_carrito(request):
 	# total = locale.currency(total, grouping=True)
 	total = "%.2f" % total
 
-	return render(request, "web/carrito.html", {"empty" : empty, "productos" : productos, "total" : total, "subtotal" : subtotal, "invitados" : invitados, "cupon" : cupon, "config" : config, "configAdmin" : config})
+	return render(request, "web/carrito.html", {"empty" : empty, "productos" : productos, "total" : total, "subtotal" : subtotal, "invitados" : invitados, "cupon" : cupon, "config" : config, "configAdmin" : configAdmin})
 
 # @login_required
 def cantidad_carrito(request, id):
