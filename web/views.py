@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.core import serializers
 from django.contrib.auth import login, authenticate
 from django.db.models import Q
@@ -16,6 +16,9 @@ _logger = logging.getLogger(__name__)
 from .forms import ConfigForm, ConfigAdminForm, CategoriaModelForm, LugarModelForm, ProductoModelForm, PhotoModelForm, SignupForm
 
 from api import models
+
+def webhook_payment(request):
+    return HttpResponse(status=200)
 
 def get_config(request):
 	
