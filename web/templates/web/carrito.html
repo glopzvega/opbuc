@@ -203,22 +203,54 @@
 
 <script>
 
-	Conekta.setPublicKey('key_KJysdbf6PotS2ut2');
+	// Conekta.setPublicKey('key_KJysdbf6PotS2ut2');
+
+	var conektaSuccessResponseHandlerAdmin = function(token) {
+		var $form = $("#card-form");		
+		$form.append($('<input type="hidden" name="conektaTokenIdAdmin" id="conektaTokenIdAdmin">').val(token.id));
+		
+		let url = $(".confirmar").attr("href");
+		let token_id = $("#conektaTokenId").val()
+		let token_id_admin = $("#conektaTokenIdAdmin").val()
+		
+		if (token_id != "" && token_id_admin != "")
+		{		
+			$.getJSON(url, {"conektaTokenId" : token_id, "conektaTokenIdAdmin" : token_id_admin}, function(res){
+				console.log(res);
+				if(res.success)
+				{
+					alert("Se ha realizado la compra")
+					location.href = "/pedidos/" + res.id
+				}
+			});
+		}
+		else
+		{
+			alert("Ocurrio un error al registrar la tarjeta");
+		}
+	};
+
+	var conektaNewToken = function()
+	{
+		var $form = $("#card-form");
+		Conekta.setPublicKey('{{ configAdmin.conekta_public }}');
+		Conekta.Token.create($form, conektaSuccessResponseHandlerAdmin, conektaErrorResponseHandler);
+	}
 
 	var conektaSuccessResponseHandler = function(token) {
 		var $form = $("#card-form");
 		//Inserta el token_id en la forma para que se envíe al servidor
 		$form.append($('<input type="hidden" name="conektaTokenId" id="conektaTokenId">').val(token.id));
-		// $form.get(0).submit(); //Hace submit
-		let url = $(".confirmar").attr("href");
-		$.getJSON(url, {"conektaTokenId" : token.id}, function(res){
-			console.log(res);
-			if(res.success)
-			{
-				alert("Se ha realizado la compra")
-				location.href = "/pedidos/" + res.id
-			}
-		});
+		conektaNewToken();
+		// let url = $(".confirmar").attr("href");
+		// $.getJSON(url, {"conektaTokenId" : token.id}, function(res){
+		// 	console.log(res);
+		// 	if(res.success)
+		// 	{
+		// 		alert("Se ha realizado la compra")
+		// 		location.href = "/pedidos/" + res.id
+		// 	}
+		// });
 	};
 	var conektaErrorResponseHandler = function(response) {
 		var $form = $("#card-form");
@@ -232,9 +264,11 @@
 		  event.preventDefault()
 		  var $form = $(this);
 		  // Previene hacer submit más de una vez
-		  $form.find("button").prop("disabled", true);
+			$form.find("button").prop("disabled", true);
+			Conekta.setPublicKey('{{ config.conekta_public }}');
 		  Conekta.Token.create($form, conektaSuccessResponseHandler, conektaErrorResponseHandler);
-		  return false;
+		
+			return false;
 		});
 	});
 

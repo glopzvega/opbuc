@@ -22,6 +22,20 @@ from django.views.decorators.csrf import csrf_exempt
 def webhook_payment(request):
 	return HttpResponse(status=200)
 
+def verificar_lugar_habilitado(usuario):
+	config_ids = models.Config.objects.filter(user=usuario)
+	lugar_ids = models.Lugar.objects.filter(user=usuario)
+	
+	if config_ids and lugar_ids:
+		config = config_ids[0]
+		lugar = lugar_ids[0]
+		if config.conekta_public and config.conekta_private:
+			lugar.nuevo = False
+		else:
+			lugar.nuevo = True
+		lugar.save()
+	return True
+
 def get_config(request):
 	
 	usuario = request.user
@@ -36,9 +50,10 @@ def get_config(request):
 				form = ConfigForm(request.POST, request.FILES, instance=config)
 			if form.is_valid():
 				config = form.save()
-				form = ConfigForm(instance=config)	
+				form = ConfigForm(instance=config)
 
-				# return redirect("config")
+			verificar_lugar_habilitado(config.user)
+
 		else:
 			if usuario.is_staff:
 				form = ConfigAdminForm(instance=config)	
@@ -54,11 +69,15 @@ def get_config(request):
 			if form.is_valid():
 				config = form.save(commit=False)
 				config.user = usuario
-				config.save()
+				config.save()				
+				
+				verificar_lugar_habilitado(config.user)
+
 				if usuario.is_staff:
 					form = ConfigAdminForm(instance=config)
 				else:
 					form = ConfigForm(instance=config)    				
+				
 		else:
 			if usuario.is_staff:
 				form = ConfigAdminForm()	    		
@@ -313,7 +332,8 @@ def lugar(request, id):
 		"photos" : photos,
 		"productos" : productos,
 		"categories" : cats,
-		"lugares" : lugares
+		"lugares" : lugares,
+		# "config" : config
 		# "zonas" : zonas
 	}
 	return render(request, "web/lugar_detail.html", context)
@@ -700,120 +720,161 @@ def detalle_pedido(request, id):
 		"order" : order
 	}
 
-	return render(request, "web/order_detail.html", data)	
+	return render(request, "web/order_detail.html", data)
+
+def _get_config_usuario(user):
+	config_ids = models.Config.objects.filter(user=user)
+	if config_ids:
+		return config_ids[0]
+	return False
+
+def pago_conekta(request, token_id, monto, description, usuario):
+	
+	try:
+
+		import conekta
+
+		config = _get_config_usuario(usuario)
+		if not config:
+			return {"success" : False, "error" : "No se encontro configuracion de pago para esta cuenta"}
+
+		conekta.api_key = config.conekta_private
+		# conekta.api_key = "key_Gh4y91YYiyTrLcPbuKtyQw"
+		conekta.api_version = "2.0.0"
+
+		customer = conekta.Customer.create({
+			'name': request.user.username,
+			'email': request.user.email or "mcgalv@gmail.com",
+			'phone': '+52181818181',
+			'payment_sources': [{
+				'type': 'card',
+				'token_id': token_id
+			}]
+		})
+		
+		order = conekta.Order.create({
+			"line_items": [{
+				"name": "Compra Opbuc",
+				"unit_price": monto,
+				"quantity": 1
+			}],
+			# "shipping_lines": [{
+			# 	"amount": 1500,
+			# 	"carrier": "FEDEX"
+			# }], #shipping_lines - physical goods only
+			"currency": "MXN",
+			"customer_info": {
+				"customer_id": customer.id
+			},
+			# "shipping_contact":{
+			# 	"address": {
+			# 		"street1": "Calle 123, int 2",
+			# 		"postal_code": "06100",
+			# 		"country": "MX"
+			# 	} #shipping_contact - required only for physical goods
+			# },
+			"metadata": {"description": "", "reference": description},
+			"charges":[{
+				"payment_method": {
+					"type": "default"
+				}  #payment_method - use the customer's default - a card
+			 #to charge a card, different from the default,
+			 #you can indicate the card's source_id as shown in the Retry Card Section
+			}]
+		})
+
+		customerJson = vars(customer)
+		del customerJson["payment_sources"]
+		# print(customerJson)
+		
+		# print(vars(order))
+		order = vars(order)
+		line_items = order["line_items"]
+		shipping_lines = order["shipping_lines"]
+		charges = order["charges"]
+						
+		line_ids = []
+		for line in line_items:
+			line = vars(line)
+			del line["parent"]
+			line_ids.append(line)
+
+		# print(line_ids)
+
+		shipping_ids = []
+		for line in shipping_lines:
+			line = vars(line)
+			del line["parent"]
+			shipping_ids.append(line)
+
+		# print(shipping_ids)
+
+		charges_ids = []
+		for charge in charges:
+			charge = vars(charge)
+			# del charge["parent"]
+			charge["payment_method"] = vars(charge["payment_method"])
+			charges_ids.append(charge)
+
+		# print(charges_ids)
+
+		order["customer_info"] = customerJson
+		order["line_items"] = line_ids
+		order["shipping_lines"] = shipping_ids
+		order["charges"] = charges_ids
+		# order["shipping_contact"] = vars(order["shipping_contact"])
+
+		return order
+
+	except conekta.ConektaError as e:												
+		print(vars(e))		
+		e = vars(e)			
+		e["success"] = False
+		return e
 
 def confirmar_compra(request, newOrder):
 
 	if request.method == "GET":
 		
-		if request.GET.get("conektaTokenId", False):
+		if request.GET.get("conektaTokenId", False) and request.GET.get("conektaTokenIdAdmin", False):
+			
+			token_id = request.GET.get("conektaTokenId", False)
+			token_id_admin = request.GET.get("conektaTokenIdAdmin", False)
 
-			import conekta
+			print(token_id)
+			print(token_id_admin)
 
-			conekta.api_key = "key_Gh4y91YYiyTrLcPbuKtyQw"
-			conekta.api_version = "2.0.0"
+			token_id = "tok_test_visa_4242"
+			token_id_admin = "tok_test_visa_4242"
 
-			try:
-				token_id = request.GET.get("conektaTokenId", False)
-				print(token_id)
-				token_id = "tok_test_visa_4242"
+			total = newOrder.total
+			monto_opbuc = total * (0.1)
+			monto_anfitrion = total - monto_opbuc
 
-				customer = conekta.Customer.create({
-					'name': request.user.username,
-					'email': request.user.email or "mcgalv@gmail.com",
-					'phone': '+52181818181',
-					'payment_sources': [{
-						'type': 'card',
-						'token_id': token_id
-					}]
-				})
-				
-				order = conekta.Order.create({
-					"line_items": [{
-						"name": "Tacos",
-						"unit_price": 1000,
-						"quantity": 12
-					}],
-					"shipping_lines": [{
-						"amount": 1500,
-						"carrier": "FEDEX"
-					}], #shipping_lines - physical goods only
-					"currency": "MXN",
-					"customer_info": {
-						"customer_id": customer.id
-					},
-					"shipping_contact":{
-						"address": {
-							"street1": "Calle 123, int 2",
-							"postal_code": "06100",
-							"country": "MX"
-						} #shipping_contact - required only for physical goods
-					},
-					"metadata": {"description": "", "reference": newOrder.name},
-					"charges":[{
-						"payment_method": {
-							"type": "default"
-						}  #payment_method - use the customer's default - a card
-					 #to charge a card, different from the default,
-					 #you can indicate the card's source_id as shown in the Retry Card Section
-					}]
-				})
+			total = int(total * 100)
+			monto_opbuc = int(monto_opbuc * 100)
+			monto_anfitrion = int(monto_anfitrion * 100)
 
-				customerJson = vars(customer)
-				del customerJson["payment_sources"]
-				# print(customerJson)
-				
-				# print(vars(order))
-				order = vars(order)
-				line_items = order["line_items"]
-				shipping_lines = order["shipping_lines"]
-				charges = order["charges"]
-								
-				line_ids = []
-				for line in line_items:
-					line = vars(line)
-					del line["parent"]
-					line_ids.append(line)
+			# total = int(newOrder.total * 100)
+			# monto_opbuc = int((total * 0.1) * 100)
+			# monto_anfitrion = total - monto_opbuc
+			print("####MONTO####")
+			print(total)
+			print(monto_opbuc)
+			print(monto_anfitrion)
 
-				# print(line_ids)
+			# order = pago_conekta(request, token_id, total, newOrder.name)
+			usuario = newOrder.lugar.user
+			order = pago_conekta(request, token_id_admin, monto_opbuc, newOrder.name, usuario)
+			
+			usuario = get_object_or_404(User, pk=1)
+			order = pago_conekta(request, token_id, monto_anfitrion, newOrder.name, usuario)
 
-				shipping_ids = []
-				for line in shipping_lines:
-					line = vars(line)
-					del line["parent"]
-					shipping_ids.append(line)
-
-				# print(shipping_ids)
-
-				charges_ids = []
-				for charge in charges:
-					charge = vars(charge)
-					# del charge["parent"]
-					charge["payment_method"] = vars(charge["payment_method"])
-					charges_ids.append(charge)
-
-				# print(charges_ids)
-
-				order["customer_info"] = customerJson
-				order["line_items"] = line_ids
-				order["shipping_lines"] = shipping_ids
-				order["charges"] = charges_ids
-				order["shipping_contact"] = vars(order["shipping_contact"])
-
-				print(order)
-				order["success"] = True
-				return order
-				# return JsonResponse(order)
-
-			except conekta.ConektaError as e:												
-				print(vars(e))		
-				e = vars(e)			
-				e["success"] = False
-				return e
-				# return JsonResponse(e)
+			print(order)
+			order["success"] = True
+			return order
 
 	return {"success" : False, "error" : "No se recibieron datos"}
-	# return JsonResponse({"success" : False, "error" : "No se recibieron datos"})
 
 def registrar_compra(request):
 	
@@ -889,10 +950,13 @@ def ver_carrito(request):
 	# locale.setlocale( locale.LC_ALL, 'en_US.UTF-8')
 	
 	productos = []
+	lugar = False
 	for el in request.session["carrito"]:
 		producto = get_object_or_404(models.Producto, pk=el["id"])
 		producto.cantidad_carrito = el["cantidad_carrito"]
 		producto.subtotal = el["subtotal"]
+
+		lugar = producto.lugar
 		
 		# subtotal_txt = locale.currency(producto.subtotal, grouping=True)
 		# producto.subtotal_txt = subtotal_txt
@@ -903,6 +967,18 @@ def ver_carrito(request):
 		producto.price_txt = "%.2f" % producto.price
 
 		productos.append(producto)
+
+	config = False
+	if lugar:    	
+		config_ids = models.Config.objects.filter(user=lugar.user)
+		if config_ids:
+			config = config_ids[0]
+
+	configAdmin = False
+	usuario = get_object_or_404(User, pk=1)
+	config_ids = models.Config.objects.filter(user=lugar.user)
+	if config_ids:
+		configAdmin = config_ids[0]
 
 	if "invitados" in request.session:
 		invitados = request.session["invitados"]
@@ -920,7 +996,7 @@ def ver_carrito(request):
 	# total = locale.currency(total, grouping=True)
 	total = "%.2f" % total
 
-	return render(request, "web/carrito.html", {"empty" : empty, "productos" : productos, "total" : total, "subtotal" : subtotal, "invitados" : invitados, "cupon" : cupon})
+	return render(request, "web/carrito.html", {"empty" : empty, "productos" : productos, "total" : total, "subtotal" : subtotal, "invitados" : invitados, "cupon" : cupon, "config" : config, "configAdmin" : config})
 
 # @login_required
 def cantidad_carrito(request, id):
@@ -989,6 +1065,8 @@ def cantidad_carrito(request, id):
 
 def compra_reservar(request, id):
 	
+	# request.session["carrito"] = []
+
 	lugar = get_object_or_404(models.Lugar, pk=id)
 	cupon = lugar.promociones
 	
