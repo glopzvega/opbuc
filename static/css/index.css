@@ -10,6 +10,14 @@ html, body, .row-main
   font-family: "Open-Sans";
 }
 
+textarea {
+  resize: none;
+}
+
+p {
+  word-wrap: break-word;
+}
+
 .row-main
 {
   background-color: #dc3545;
