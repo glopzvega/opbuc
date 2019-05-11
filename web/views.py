@@ -16,7 +16,9 @@ _logger = logging.getLogger(__name__)
 from .forms import ConfigForm, ConfigAdminForm, CategoriaModelForm, LugarModelForm, ProductoModelForm, PhotoModelForm, SignupForm
 
 from api import models
+from django.views.decorators.csrf import csrf_exempt
 
+@csrf_exempt
 def webhook_payment(request):
     return HttpResponse(status=200)
 
