@@ -31,7 +31,6 @@
                                     <tr>
                                         <th><input type="checkbox" class="checkall"></th>
                                         <th>Username</th>
-                                        <th>Email</th>
                                         <th>Lugar</th>
                                         <th>Anfitrión</th>
                                         <th>Sugerido</th>
@@ -42,8 +41,11 @@
                                     {% for user in usuarios %}
                                         <tr>
                                             <th><input user_id="{{user.id}}" type="checkbox" class="select"></th>
-                                            <td>{{user.username}}</td>
-                                            <td>{{user.email}}</td>
+                                            <td>
+                                                {{user.username}}
+                                                <br>
+                                                {{user.email}}
+                                            </td>                                            
                                             <td>{{user.lugar}}</td>
                                             <td>
                                                 {% if user.is_superuser %}
