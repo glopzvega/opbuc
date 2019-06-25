@@ -180,3 +180,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
+
+# EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+EMAIL_HOST = 'smtp.zoho.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'admin@opbuc.com'
+EMAIL_HOST_PASSWORD = 'R5SS6.i9R9V-Mdb'
+# EMAIL_USE_SSL = True
+EMAIL_USE_TLS = True

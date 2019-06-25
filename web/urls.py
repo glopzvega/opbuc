@@ -31,6 +31,7 @@ urlpatterns = [
     path('mensajes/', views.get_mensajes, name="mensajes"),
     
     path('usuarios/', views.get_usuarios, name="usuarios"),
+    path('usuarios/email/', views.mail_usuarios, name="mail_usuarios"),
     path('usuarios/update/<int:id>/', views.update_usuario, name="update_usuario"),
     path('usuarios/suggest/<int:id>/', views.suggest_usuario, name="suggest_usuario"),
     

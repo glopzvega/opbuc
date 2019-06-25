@@ -17,6 +17,7 @@ from .forms import ConfigForm, ConfigAdminForm, CategoriaModelForm, LugarModelFo
 
 from api import models
 from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
 
 @csrf_exempt
 def webhook_payment(request):
@@ -101,6 +102,31 @@ def get_usuarios(request):
 		"usuarios" : usuarios
 	}
 	return render(request, "web/usuarios.html", data)
+
+def mail_usuarios(request):
+	
+	mensaje = request.POST.get("mensaje", "")
+	user_ids = request.POST.get("usuarios", [])
+	if user_ids:
+		user_ids = user_ids.split(",")
+	print(user_ids)
+	email_list = []
+	for uid in user_ids:
+		user = User.objects.get(pk=uid)
+		if user and user.email and not user.email in email_list:
+			email_list.append(user.email)
+	
+	if email_list:
+		print(email_list)
+		send_mail(
+			'MENSAJE OPBUC',
+			mensaje,
+			'admin@opbuc.com',
+			email_list,
+			fail_silently=False,
+		)
+	
+	return JsonResponse({"success" : True})
 
 def update_usuario(request, id):
 	usuario = get_object_or_404(User, pk=id)
