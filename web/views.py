@@ -720,14 +720,16 @@ def ver_pedidos(request):
 
 	orders = []
 
-	if request.user.is_superuser:
+	if request.user.is_staff:
+		orders = models.Order.objects.all().order_by('-fecha_pedido')
+	elif request.user.is_superuser:
 		lugares = models.Lugar.objects.filter(user=request.user)
 		if lugares:
 			lugar = lugares[0]
-			orders = models.Order.objects.filter(lugar=lugar).order_by('-fecha_pedido')
+			orders = models.Order.objects.filter(lugar=lugar).filter(status_entrega="draft").order_by('-fecha_pedido')
 
 	else:
-		orders = models.Order.objects.filter(usuario=request.user).order_by('-fecha_pedido')	
+		orders = models.Order.objects.filter(usuario=request.user).filter(status_entrega="draft").order_by('-fecha_pedido')	
 
 	if orders:
 		for oid in orders:
@@ -736,6 +738,13 @@ def ver_pedidos(request):
 				oid.state_txt = "Pendiente"
 			else:
 				oid.state_txt = "Realizado"
+
+			if oid.status_entrega == 'draft':
+				oid.status_entrega_txt = 'Pendiente'
+			elif oid.status_entrega == 'done':
+				oid.status_entrega_txt = 'Entregada'
+			else:
+				oid.status_entrega_txt = 'Cancelada'
 
 			oid.lines = models.OrderLine.objects.filter(order=oid)
 
@@ -753,6 +762,13 @@ def detalle_pedido(request, id):
 	if order.state == "done":
 		order.state_txt = "Realizado"
 
+	if order.status_entrega == 'draft':
+		order.status_entrega_txt = 'Pendiente'
+	elif order.status_entrega == 'done':
+		order.status_entrega_txt = 'Entregada'
+	else:
+		order.status_entrega_txt = 'Cancelada'
+
 	order.subtotal = float(order.total) + order.cupon
 
 	order.lines = models.OrderLine.objects.filter(order=order)
@@ -762,6 +778,32 @@ def detalle_pedido(request, id):
 	}
 
 	return render(request, "web/order_detail.html", data)
+
+def entregar_pedido(request, id):
+    
+	order = get_object_or_404(models.Order, pk=id)
+	
+	order.status_entrega = "done"
+	order.save()
+
+	data = {
+		"order" : order
+	}
+
+	return redirect("detalle_pedido", order.id)
+
+def cancelar_pedido(request, id):
+    
+	order = get_object_or_404(models.Order, pk=id)
+	
+	order.status_entrega = "cancel"
+	order.save()
+	
+	data = {
+		"order" : order
+	}
+
+	return redirect("detalle_pedido", order.id)	
 
 def _get_config_usuario(user):
 	config_ids = models.Config.objects.filter(user=user)

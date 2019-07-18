@@ -59,7 +59,9 @@
                                             </td>
                                             <td>
                                                 <a href="#" data-id="{{user.id}}" class="update btn btn-primary">Anfitrión</a>
+                                                {% if user.is_superuser %}
                                                 <a href="#" data-id="{{user.lugar.id}}" class="suggest btn btn-success">Sugerir</a>
+                                                {% endif %}
                                             </td>
                                         </tr>                                    
                                     {% endfor %}

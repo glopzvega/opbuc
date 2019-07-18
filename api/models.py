@@ -21,7 +21,6 @@ class Config(models.Model):
 	login_image = models.ImageField(blank=True, null=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-
 class Zone(models.Model):
 	name = models.CharField(max_length=255)
 	photo = models.ImageField(blank=True, null=True)
@@ -94,6 +93,7 @@ class Order(models.Model):
 	invitados = models.IntegerField(default=1)
 	cupon = models.FloatField(default=0)
 	payment_info = models.TextField()
+	status_entrega = models.CharField(max_length=255, default="draft", choices=[("draft", "Pendiente"), ("done", "Entregada"), ("cancel", "Cancelada")])
 	payment_id = models.CharField(max_length=255, null=True, blank=True, default="")
 
 class OrderLine(models.Model):

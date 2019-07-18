@@ -60,17 +60,17 @@
       {% if config %}
       <br>    
         {% if config.facebook %}  
-        <a href="{{ config.facebook }}" class="btn btn-lg btn-danger" title="Facebook">
+        <a href="{{ config.facebook }}" class="btn btn-lg btn-danger" target="_blank" title="Facebook">
           <i class="fab fa-facebook-f"></i>
         </a>
         {% endif %}
         {% if config.twitter %}  
-        <a href="{{ config.twitter }}}" class="btn btn-lg btn-danger" title="Twiter">
+        <a href="{{ config.twitter }}" class="btn btn-lg btn-danger" target="_blank" title="Twiter">
           <i class="fab fa-twitter"></i>
         </a>
         {% endif %}
         {% if config.instagram %}  
-        <a href="#" class="btn btn-lg btn-danger" title="Instagram">
+        <a href="{{ config.instagram }}" class="btn btn-lg btn-danger" target="_blank" title="Instagram">
           <i class="fab fa-instagram"></i>
         </a>      
         {% endif %}

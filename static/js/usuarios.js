@@ -30,6 +30,8 @@ function send_mail(data)
 {
     $.post("/usuarios/email/", data, function(res){
         console.log(res)
+        alert("Se han enviado los mensajes");
+        $(".modal-email-usuarios").modal("hide");
     }, "json")
 }
 

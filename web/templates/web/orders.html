@@ -21,7 +21,8 @@
 										<th>Usuario</th>
 										<th>Fecha</th>
 										<th>Total</th>
-										<th>Estatus</th>
+										<th>Estatus Pago</th>										
+										<th>Estatus Entrega</th>
 										<th></th>
 									</thead>
 									<tbody>
@@ -34,10 +35,17 @@
 											<td>{{ order.fecha_pedido }}</td>
 											<td>{{ order.total }}</td>
 											<td>{{ order.state_txt }}</td>
+											<td>{{ order.status_entrega_txt }}</td>
 											<td>
-												<a href="{% url 'detalle_pedido' order.id %}" class="btn btn-info">
-													<i class="fa fa-search"></i>
+												<a href="{% url 'entregar_pedido' order.id %}" class="btn btn-success" title="Entregar" data-toggle="tooltip">
+													<i class="fa fa-check"></i>
 												</a>
+												<a href="{% url 'cancelar_pedido' order.id %}" class="btn btn-danger" title="Cancelar" data-toggle="tooltip">
+													<i class="fa fa-ban"></i>
+												</a>
+												<a href="{% url 'detalle_pedido' order.id %}" class="btn btn-info" title="Ver Pedido" data-toggle="tooltip">
+													<i class="fa fa-search"></i>
+												</a>												
 											</td>
 										</tr>
 					
