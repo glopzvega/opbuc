@@ -31,12 +31,13 @@
 
   <div class="row">
     <div class="col-4 col-lg-3">
-      <a href="/">      
-        <img src="{% static '/img/logo.svg' %}" alt="Logo" style="width:auto;height:70px;position:absolute;left:1em;top:5px;">
+      <a href="/" style="display: inline-block; margin: 10px 0;">      
+        <img src="{% static '/img/logo.svg' %}" alt="Logo" style="width:auto;height:70px;">
       </a>
     </div>
     <div class="col-8 col-lg-6">
       <br>
+      {% if buscar %}
       <div class="row">
         <div class="col">       
           <div class="linear-progress-material small">
@@ -52,18 +53,27 @@
           <br>
         </div>
       </div>
+      {% endif %}
     </div>
     <div class="col-12 col-lg-3 text-center d-none d-lg-block">
-      <br>      
-      <a href="#" class="btn btn-lg btn-danger" title="Facebook">
-        <i class="fab fa-facebook-f"></i>
-      </a>
-      <a href="#" class="btn btn-lg btn-danger" title="Twiter">
-        <i class="fab fa-twitter"></i>
-      </a>
-      <a href="#" class="btn btn-lg btn-danger" title="Instagram">
-        <i class="fab fa-instagram"></i>
-      </a>      
+      {% if config %}
+      <br>    
+        {% if config.facebook %}  
+        <a href="{{ config.facebook }}" class="btn btn-lg btn-danger" title="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        {% endif %}
+        {% if config.twitter %}  
+        <a href="{{ config.twitter }}}" class="btn btn-lg btn-danger" title="Twiter">
+          <i class="fab fa-twitter"></i>
+        </a>
+        {% endif %}
+        {% if config.instagram %}  
+        <a href="#" class="btn btn-lg btn-danger" title="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>      
+        {% endif %}
+      {% endif %}
     </div>
   </div>
 </div>

@@ -155,10 +155,15 @@ def suggest_usuario(request, id):
 def index(request):
 	categorias = models.Category.objects.filter(tipo__exact='lugar')
 	zonas = models.Zone.objects.all()
+	config = models.Config.objects.all()
 	context = {
 		"data" : categorias, 
-		"zonas" : zonas
+		"zonas" : zonas,
+		"buscar" : True,
+		"config" : config[0]
 	}
+
+
 	return render(request, "web/index.html", context)
 
 # def login_google(request):

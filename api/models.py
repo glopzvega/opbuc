@@ -15,6 +15,7 @@ class Mensaje(models.Model):
 class Config(models.Model):
 	facebook = models.CharField(max_length=255, blank=True, null=True)
 	twitter = models.CharField(max_length=255, blank=True, null=True)
+	instagram = models.CharField(max_length=255, blank=True, null=True)
 	conekta_public = models.CharField(max_length=255, blank=True, null=True)
 	conekta_private = models.CharField(max_length=255, blank=True, null=True)
 	login_image = models.ImageField(blank=True, null=True)
