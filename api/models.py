@@ -7,6 +7,11 @@ CATEGORIAS = [
 	("producto", "Producto"),
 ]
 
+ESTATUS = [
+	('active', 'Activa'),
+	('cancel', 'Bloqueada'),
+]
+
 class Mensaje(models.Model):
 	mensaje = models.TextField()
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -28,11 +33,12 @@ class Zone(models.Model):
 	def __str__(self):
 		return self.name
 
-class Category(models.Model):
+class Category(models.Model):    
 	name = models.CharField(max_length=255)
 	photo = models.ImageField(blank=True, null=True)
 	tipo = models.CharField(max_length=255, choices=CATEGORIAS)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	status = models.CharField(max_length=255, choices=ESTATUS, default="active")
 
 	def __str__(self):
 		return self.name

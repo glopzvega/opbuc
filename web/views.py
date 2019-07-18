@@ -128,6 +128,29 @@ def mail_usuarios(request):
 	
 	return JsonResponse({"success" : True})
 
+def bloquear_usuario(request, id):
+	usuario = get_object_or_404(User, pk=id)
+	if usuario.is_active:
+		usuario.is_active = False
+		
+		lugar_ids = models.Lugar.objects.filter(user=usuario)
+		if lugar_ids:
+			lugar = lugar_ids[0]
+			lugar.nuevo = True
+			lugar.save()
+	else:
+		usuario.is_active = True
+
+		lugar_ids = models.Lugar.objects.filter(user=usuario)
+		if lugar_ids:
+			lugar = lugar_ids[0]
+			lugar.nuevo = False
+			lugar.save()
+
+	usuario.save()
+	return JsonResponse({"success": True, "id": id, "is_active": usuario.is_active})
+
+
 def update_usuario(request, id):
 	usuario = get_object_or_404(User, pk=id)
 	if usuario.is_superuser:
@@ -440,9 +463,10 @@ def producto(request, id):
 
 def ver_categorias(request):
 	
-	categorias = models.Category.objects.filter(user=request.user).filter(tipo="producto")
+	categorias = models.Category.objects.filter(user=request.user).filter(tipo="producto").filter(status="active")
 
 	context = {
+		"tipo" : "producto",
 		"data" : categorias
 	}
 
@@ -450,9 +474,10 @@ def ver_categorias(request):
 
 def ver_categorias_lugares(request):
 		
-	categorias = models.Category.objects.filter(tipo="lugar")
+	categorias = models.Category.objects.filter(tipo="lugar").filter(status="active")
 
 	context = {
+		"tipo" : "lugar",
 		"data" : categorias
 	}
 
@@ -473,6 +498,27 @@ def categoria_nuevo(request):
 		form = CategoriaModelForm()
 
 	context = {
+		"tipo" : "producto", 
+		"form" : form
+	}
+
+	return render(request, "web/categoria_nuevo.html", context)
+
+def categoria_lugar_nuevo(request):
+		
+	if request.method == "POST":
+		form = CategoriaModelForm(request.POST, request.FILES)
+		if form.is_valid():
+			cat = form.save(commit=False)
+			cat.tipo = 'lugar'
+			cat.user = request.user
+			cat.save()
+			return redirect("ver_categorias_lugares")
+	else:
+		form = CategoriaModelForm()
+
+	context = {
+		"tipo" : "lugar",
 		"form" : form
 	}
 
@@ -490,11 +536,52 @@ def categoria_editar(request, id):
 		form = CategoriaModelForm(instance=cat)
 
 	context = {
+		"tipo" : "producto",
 		"data" : cat,
 		"form" : form
 	}
 
 	return render(request, "web/categoria_editar.html", context)
+
+def categoria_lugar_editar(request, id):
+	cat = get_object_or_404(models.Category, pk=id)
+
+	if request.method == "POST":
+		form = CategoriaModelForm(request.POST, request.FILES, instance=cat)
+		if form.is_valid():
+			form.save()
+			return redirect("ver_categorias_lugares")
+	else:
+		form = CategoriaModelForm(instance=cat)
+
+	context = {
+		"tipo" : "lugar",
+		"data" : cat,
+		"form" : form
+	}
+
+	return render(request, "web/categoria_editar.html", context)
+
+def categoria_bloquear(request, id):
+	
+	cat = get_object_or_404(models.Category, pk=id)	
+	
+	if cat.tipo == "producto":
+		product_ids = models.Producto.bjects.filter(category=cat)
+		if not product_ids:
+			cat.status = "cancel"
+			cat.save()
+			return JsonResponse({"success" : True})
+		mensaje = "La categoria no puede eliminarse, hay productos relacionados con la categoria"
+	else:
+		lugar_ids = models.Lugar.objects.filter(category=cat)
+		if not lugar_ids:
+			cat.status = "cancel"
+			cat.save()
+			return JsonResponse({"success" : True})
+		mensaje = "La categoria no puede eliminarse, hay lugares relacionados con la categoria"
+		
+	return JsonResponse({"success" : False, "mensaje" : mensaje})
 
 def ver_lugares(request):
 	
@@ -780,7 +867,7 @@ def detalle_pedido(request, id):
 	return render(request, "web/order_detail.html", data)
 
 def entregar_pedido(request, id):
-    
+	
 	order = get_object_or_404(models.Order, pk=id)
 	
 	order.status_entrega = "done"
@@ -793,7 +880,7 @@ def entregar_pedido(request, id):
 	return redirect("detalle_pedido", order.id)
 
 def cancelar_pedido(request, id):
-    
+	
 	order = get_object_or_404(models.Order, pk=id)
 	
 	order.status_entrega = "cancel"

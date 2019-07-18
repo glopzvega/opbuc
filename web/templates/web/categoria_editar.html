@@ -9,7 +9,11 @@
 				<hr>					
 			</div>
 			<div class="card-text">
+				{% if tipo == 'producto' %}
 				<form action="{% url 'categoria_editar' data.id %}" method="post" enctype="multipart/form-data">
+				{% else %}
+				<form action="{% url 'categoria_lugar_editar' data.id %}" method="post" enctype="multipart/form-data">
+				{% endif %}
 					{% csrf_token %}
 					<div class="row">
 						<div class="col-8 offset-2">	

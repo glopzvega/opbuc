@@ -34,6 +34,7 @@
                                         <th>Lugar</th>
                                         <th>Anfitrión</th>
                                         <th>Sugerido</th>
+                                        <th>Estatus</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -56,6 +57,16 @@
                                                 {% if user.lugar.sugerido %}
                                                 <i class="fas fa-check text-success"></i>
                                                 {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if user.is_active %}                        
+                                                <a href="#" data-id="{{user.id}}" class="btn btn-success btn-bloquear" title="Bloquear Usuario" data-toggle="tooltip">
+                                                Activo                                                
+                                                {% else %}
+                                                <a href="#" data-id="{{user.id}}" class="btn btn-danger btn-bloquear" title="Activar Usuario" data-toggle="tooltip">
+                                                Bloqueado
+                                                {% endif %}
+                                                </a>
                                             </td>
                                             <td>
                                                 <a href="#" data-id="{{user.id}}" class="update btn btn-primary">Anfitrión</a>

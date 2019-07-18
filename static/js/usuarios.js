@@ -1,3 +1,17 @@
+function bloquear_usuario (id){
+    $.getJSON(`/usuarios/bloquear/${id}/`, function(res){
+        if (res.success)
+        {
+            alert("El registro ha sido actualizado");
+            location.reload();
+        }
+        else
+        {
+            alert("Ocurrio un problema al actualizar el registro")
+        }
+    })
+}
+
 function update_usuario (id){
     $.getJSON(`/usuarios/update/${id}/`, function(res){
         if (res.success)
@@ -111,4 +125,10 @@ $("a.suggest").on("click", function(e){
     e.preventDefault();
     let id = $(this).attr("data-id");
     suggest_usuario(id);
+})
+
+$("a.btn-bloquear").on("click", function(e){
+    e.preventDefault();
+    let id = $(this).attr("data-id");
+    bloquear_usuario(id);
 })

@@ -6,21 +6,28 @@
 	<div class="card">
 		<div class="card-body">
 			<div class="card-title">
-				<h5>Categorias(Listado de Registros)</h5>				
+				<h5>Categorias</h5>				
 			</div>
 			<div class="card-text">
+				{% if tipo == "producto" %}
 				<a href="{% url 'categoria_nuevo' %}" class="btn btn-danger">
 					<i class="glyphicon glyphicon-plus"></i>
 					Nuevo Registro
 				</a>
+				{% else %}
+				<a href="{% url 'categoria_lugar_nuevo' %}" class="btn btn-danger">
+					<i class="glyphicon glyphicon-plus"></i>
+					Nuevo Registro
+				</a>
+				{% endif %}
 				<hr>
 				<table class="table table-fixed">
 					<thead>
 						<tr>							
-							<th class="col-8">Nombre</th>
+							<th class="col-6">Nombre</th>
 							<th class="col-2">Tipo</th>
 							<th class="col-2">Usuario</th>
-							<!-- <th>Tipo</th> -->
+							<th class="col-2"></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -33,10 +40,16 @@
 							</a>
 							{% endif %}
 						</td>				 -->
-						<td class="col-8">
+						<td class="col-6">
+							{% if tipo == 'producto' %}
 							<a href="{% url 'categoria_editar' row.id %}">
 								{{ row.name }}
 							</a>
+							{% else %}
+							<a href="{% url 'categoria_lugar_editar' row.id %}">
+								{{ row.name }}
+							</a>
+							{% endif %}
 						</td>
 
 						<td class="col-2">
@@ -45,6 +58,12 @@
 
 						<td class="col-2">
 							{{ row.user }}
+						</td>
+
+						<td class="col-2">
+							<a href="#" catid="{{row.id}}" class="btn btn-danger btn-eliminar" title="Eliminar" data-toggle="tooltip">
+								<i class="fas fa-ban"></i>
+							</a>
 						</td>
 						
 						{% endfor %}
@@ -56,4 +75,24 @@
 	</div>
 	
 </div>
+{% endblock %}
+{% block scripts %}
+<script>
+	$(".btn-eliminar").on("click", function(e){
+		e.preventDefault();
+		let cat_id = $(this).attr("catid");
+		$.getJSON("/categorias/bloquear/" + cat_id, function(res){
+			if(res.success)
+			{
+				alert("Se ha bloqueado correctamente");
+				location.href = "";
+			}
+			else
+			{
+				alert(res.mensaje);
+			}
+		});
+	});
+</script>
+
 {% endblock %}

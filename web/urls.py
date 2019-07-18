@@ -35,12 +35,17 @@ urlpatterns = [
     path('usuarios/', views.get_usuarios, name="usuarios"),
     path('usuarios/email/', views.mail_usuarios, name="mail_usuarios"),
     path('usuarios/update/<int:id>/', views.update_usuario, name="update_usuario"),
+    path('usuarios/bloquear/<int:id>/', views.bloquear_usuario, name="bloquear_usuario"),
     path('usuarios/suggest/<int:id>/', views.suggest_usuario, name="suggest_usuario"),
     
     path('categorias/', views.ver_categorias, name="ver_categorias"),
-    path('categoriaslugares/', views.ver_categorias_lugares, name="ver_categorias_lugares"),
     path('categoria/nuevo', views.categoria_nuevo, name="categoria_nuevo"),
     path('categoria/editar/<int:id>', views.categoria_editar, name="categoria_editar"),
+    path('categorias/bloquear/<int:id>', views.categoria_bloquear, name="categoria_bloquear"),
+    
+    path('categoriaslugares/', views.ver_categorias_lugares, name="ver_categorias_lugares"),
+    path('categorialugar/nuevo', views.categoria_lugar_nuevo, name="categoria_lugar_nuevo"),
+    path('categorialugar/editar/<int:id>', views.categoria_lugar_editar, name="categoria_lugar_editar"),
 
     path('lugares/', views.ver_lugares, name="ver_lugares"),
     path('lugar/nuevo', views.lugar_nuevo, name="lugar_nuevo"),
