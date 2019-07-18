@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="{% static 'css/select2-bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'css/all.css' %}">
     <link rel="stylesheet" href="{% static 'css/progressbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/tempusdominus-bootstrap-4.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
   
     {% block styles %}
@@ -207,6 +208,15 @@
 
   $("input,select,textarea").not("[type=checkbox]").addClass("form-control");
   $('[data-toggle="tooltip"]').tooltip(); 
+
+  $('.datetimepicker1').datetimepicker({
+    icons: {
+            time: "far fa-clock",
+            date: "far fa-calendar",
+            up: "fas fa-angle-up",
+            down: "fas fa-angle-down"
+        }
+  });
 
   </script>  
 

@@ -191,7 +191,12 @@ def signup(request):
 	else:
 		form = SignupForm()
 
-	return render(request, 'registration/signup.html', {'form': form})
+	config = models.Config.objects.all()
+
+	return render(request, 'registration/signup.html', {
+		'form': form,
+		'config' : config[0]
+		})
 
 def signup_host(request):
 	if request.method == 'POST':
@@ -207,8 +212,13 @@ def signup_host(request):
 			return redirect('index')
 	else:
 		form = SignupForm()
+	
+	config = models.Config.objects.all()
 
-	return render(request, 'registration/signup.html', {'form': form})
+	return render(request, 'registration/signup.html', {
+		'form': form,
+		'config' : config[0]
+	})
 
 def zonas(request):
 	zonas = models.Zone.objects.all()

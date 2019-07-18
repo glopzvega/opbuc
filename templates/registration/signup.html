@@ -4,6 +4,26 @@
 
 {% block title %}Registro{% endblock %}
 
+{% block styles %}
+	<style>
+		html {
+	        height: 120%
+	      }
+	</style>
+
+	{% if config and config.login_image %}
+	<style>
+		body {
+			background-image: url('{{config.login_image.url}}');
+			background-repeat: repeat;
+			background-size: 100% 100%;
+		}
+	</style>
+	{% endif %}
+	
+{% endblock %}
+
+
 {% block content %}
 
 <div class="container">
