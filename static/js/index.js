@@ -19,17 +19,17 @@ $("#busqueda").on("keyup", function(){
     $("#categorias").show();
   }
 
-  if($(this).val().length >= 2)
-  { 
+  // if($(this).val().length >= 2)
+  // { 
     
       $("#lugares_encontrados").html("").hide();
       tiempounidad = setTimeout(buscarlugares, 900);
-  }
-  else
-  {   
-    this.activeLoader = ""        
-      $("#lugares_encontrados").html("").hide();          
-  }
+  // }
+  // else
+  // {   
+  //   this.activeLoader = ""        
+  //     $("#lugares_encontrados").html("").hide();          
+  // }
 });
 
 // $("input").not("[type=checkbox]").addClass("form-control")
