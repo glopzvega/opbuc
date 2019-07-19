@@ -1017,9 +1017,6 @@ def confirmar_compra(request, newOrder):
 			token_id = request.GET.get("conektaTokenId", False)
 			token_id_admin = request.GET.get("conektaTokenIdAdmin", False)
 
-			print(token_id)
-			print(token_id_admin)
-
 			# token_id = "tok_test_visa_4242"
 			# token_id_admin = "tok_test_visa_4242"
 
@@ -1036,17 +1033,24 @@ def confirmar_compra(request, newOrder):
 			# monto_anfitrion = total - monto_opbuc
 			print("####MONTO####")
 			print(total)
+			print(token_id)
+			print(token_id_admin)
 			print(monto_opbuc)
 			print(monto_anfitrion)
 
 			# order = pago_conekta(request, token_id, total, newOrder.name)
 			usuario = newOrder.lugar.user
 			order = pago_conekta(request, token_id_admin, monto_opbuc, newOrder.name, usuario)
+			if "error_json" in order:
+				order["success"] = False
+				return order
 			
 			usuario = get_object_or_404(User, pk=1)
 			order = pago_conekta(request, token_id, monto_anfitrion, newOrder.name, usuario)
+			if "error_json" in order:
+				order["success"] = False
+				return order
 
-			print(order)
 			order["success"] = True
 			return order
 
