@@ -1095,6 +1095,8 @@ def registrar_compra(request):
 				line.save()
 		
 		res = confirmar_compra(request, newOrder)
+		print("############")
+		print(res)
 			
 		if res["success"]:
 			newOrder.payment_id = res["id"]
