@@ -1038,13 +1038,13 @@ def confirmar_compra(request, newOrder):
 			print(monto_opbuc)
 			print(monto_anfitrion)
 			
-			usuario = newOrder.lugar.user
+			usuario = get_object_or_404(User, pk=1)
 			order = pago_conekta(request, token_id_admin, monto_opbuc, newOrder.name, usuario)
 			if "error_json" in order:
-				order["success"] = False
+    				order["success"] = False
 				return order
 			
-			# usuario = get_object_or_404(User, pk=1)
+			# usuario = newOrder.lugar.user
 			# order = pago_conekta(request, token_id, monto_anfitrion, newOrder.name, usuario)
 			# if "error_json" in order:
 			# 	order["success"] = False
