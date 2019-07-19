@@ -224,6 +224,21 @@
 					alert("Se ha realizado la compra")
 					location.href = "/pedidos/" + res.id
 				}
+				else
+				{
+					if (res.error_json != undefined && res.error_json.details[0] != undefined)
+					{
+						alert(res.error_json.details[0].message);
+					}
+					else if(res.message)
+					{
+						alert(res.message);
+					}
+					else
+					{
+						alert("Ocurrio un problema al realizar la compra, intentelo de nuevo más tarde");
+					}
+				}
 			});
 		}
 		else
