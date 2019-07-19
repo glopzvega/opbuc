@@ -26,9 +26,8 @@
 							</div>
 							<div class="col-12 col-md-6 text-right">
 									<br>
-									<br>
-									{{order.status_entrega}}
-									{% if order.status_entrega == 'dratf' %}
+									<br>									
+									{% if order.status_entrega == 'draft' %}
 									<a href="{% url 'entregar_pedido' order.id %}" class="btn btn-success" title="Entregar" data-toggle="tooltip">
 										<i class="fa fa-check"></i> Entregar
 									</a>
