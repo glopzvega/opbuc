@@ -1044,11 +1044,11 @@ def confirmar_compra(request, newOrder):
 				order["success"] = False
 				return order
 			
-			usuario = get_object_or_404(User, pk=1)
-			order = pago_conekta(request, token_id, monto_anfitrion, newOrder.name, usuario)
-			if "error_json" in order:
-				order["success"] = False
-				return order
+			# usuario = get_object_or_404(User, pk=1)
+			# order = pago_conekta(request, token_id, monto_anfitrion, newOrder.name, usuario)
+			# if "error_json" in order:
+			# 	order["success"] = False
+			# 	return order
 
 			order["success"] = True
 			return order
