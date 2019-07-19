@@ -24,11 +24,12 @@
 									<b class="text-success"> Total: ${{ order.total }} </b> -->
 								</p>
 							</div>
-							<div class="col-12 col-md-6">
+							<div class="col-12 col-md-6 text-right">
+									<br>
+									<br>
 									<a href="{% url 'entregar_pedido' order.id %}" class="btn btn-success" title="Entregar" data-toggle="tooltip">
 										<i class="fa fa-check"></i> Entregar
 									</a>
-
 									<a href="{% url 'cancelar_pedido' order.id %}" class="btn btn-danger" title="Cancelar" data-toggle="tooltip">
 										<i class="fa fa-ban"></i> Cancelar
 									</a>
