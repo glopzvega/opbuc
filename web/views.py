@@ -1107,10 +1107,9 @@ def registrar_compra(request):
 			newOrder.payment_info = res
 			newOrder.save()
 			res = {'success': True, 'id' : newOrder.id}
-			
-		request.session['carrito'] = []
-		request.session['total'] = 0
-		request.session['numero'] = 0
+			request.session['carrito'] = []
+			request.session['total'] = 0
+			request.session['numero'] = 0			
 	else:
 		res = {'success': False, 'message' : "No se pudo crear la orden"}
 
