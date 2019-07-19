@@ -388,10 +388,36 @@
             <div class="card">
                 <div class="card-body">
                     <div class="card text">
-                        <a href="{{ data.web }}" target="_blank">
-                            <img src="{{ data.photoweb.url }}" alt="Foto Web">
-                        </a>
+                        <div class="row">
+                            <div class="col">
+                                <a href="{{ data.web }}" target="_blank">
+                                    <img src="{{ data.photoweb.url }}" alt="Foto Web">
+                                </a>
+                            </div>
                         </div>
+                        <br>
+                        {% if config %}
+                        <div class="row">
+                            <div class="col">
+                                {% if config.facebook %}
+                                <a href="{{ config.facebook }}" target="_blank">
+                                    <i class="fas fa-facebook"></i>
+                                </a>
+                                {% endif %}
+                                {% if config.twitter %}
+                                <a href="{{ config.twitter }}" target="_blank">
+                                    <i class="fas fa-twitter"></i>
+                                </a>
+                                {% endif %}
+                                {% if config.instagram %}
+                                <a href="{{ config.instagram }}" target="_blank">
+                                    <i class="fas fa-instagram"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
             {% endif %}

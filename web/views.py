@@ -386,6 +386,11 @@ def lugar(request, id):
 	if calif > 0:
 		prom = calif / len(comments)
 
+	config = False
+	config_ids = models.Config.objects.filter(user=lugar.user)
+	if config_ids:
+		config = config_ids[0]
+
 	# lugares = models.Lugar.objects.filter(~Q(id=id))[:3]
 	lugares = models.Lugar.objects.filter(nuevo=False).filter(sugerido=True)[:3]
 	context = {
@@ -397,6 +402,7 @@ def lugar(request, id):
 		"productos" : productos,
 		"categories" : cats,
 		"lugares" : lugares,
+		"config" : config
 		# "config" : config
 		# "zonas" : zonas
 	}
