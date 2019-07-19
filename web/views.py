@@ -1020,8 +1020,8 @@ def confirmar_compra(request, newOrder):
 			print(token_id)
 			print(token_id_admin)
 
-			token_id = "tok_test_visa_4242"
-			token_id_admin = "tok_test_visa_4242"
+			# token_id = "tok_test_visa_4242"
+			# token_id_admin = "tok_test_visa_4242"
 
 			total = newOrder.total
 			monto_opbuc = total * (0.1)
