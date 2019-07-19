@@ -53,7 +53,7 @@ let buscarlugares = function()
     $(".linear-progress-material").removeClass("active")
 
     if (res.data != undefined && res.data.length > 0){
-
+      var cards = "";
       $.each(res.data, function(index, lugar){        
         let photo = lugar.photo;
         if (photo == "")
@@ -82,9 +82,10 @@ let buscarlugares = function()
             '</div>',
           '</div><br>',
         '</div>'].join("")
-        $("#lugares_encontrados").append(card)
-        $("#lugares_encontrados").show()
+        cards += card;
       })
+      $("#lugares_encontrados").append(cards)
+      $("#lugares_encontrados").show()
 
       $("#categorias").hide();
     }
