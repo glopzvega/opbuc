@@ -229,14 +229,17 @@
 					if (res.error_json != undefined && res.error_json.details[0] != undefined)
 					{
 						alert(res.error_json.details[0].message);
+						location.reload();
 					}
 					else if(res.message)
 					{
 						alert(res.message);
+						location.reload();
 					}
 					else
 					{
 						alert("Ocurrio un problema al realizar la compra, intentelo de nuevo más tarde");
+						location.reload();
 					}
 				}
 			});
