@@ -1037,8 +1037,7 @@ def confirmar_compra(request, newOrder):
 			print(token_id_admin)
 			print(monto_opbuc)
 			print(monto_anfitrion)
-
-			# order = pago_conekta(request, token_id, total, newOrder.name)
+			
 			usuario = newOrder.lugar.user
 			order = pago_conekta(request, token_id_admin, monto_opbuc, newOrder.name, usuario)
 			if "error_json" in order:
@@ -1090,7 +1089,7 @@ def registrar_compra(request):
 	
 	newOrder = models.Order(usuario=request.user, name=ref, fecha_pedido=hoy, hora_pedido=ahora, total=total, lugar=lugar, cupon=cupon, invitados=invitados)
 	newOrder.save()
-
+	
 	if newOrder.id:
 		for prod in carrito:
 			producto = models.Producto.objects.get(pk=prod["id"])
@@ -1107,13 +1106,15 @@ def registrar_compra(request):
 			newOrder.state = "done"			
 			newOrder.payment_info = res
 			newOrder.save()
+			res = {'success': True, 'id' : newOrder.id}
+			
+		request.session['carrito'] = []
+		request.session['total'] = 0
+		request.session['numero'] = 0
+	else:
+		res = {'success': False, 'message' : "No se pudo crear la orden"}
 
-	request.session['carrito'] = []
-	request.session['total'] = 0
-	request.session['numero'] = 0
-
-	data = {'success': True, 'id' : newOrder.id}	
-	return JsonResponse(data)
+	return JsonResponse(res)
 
 @login_required
 def ver_carrito(request):
