@@ -37,12 +37,23 @@
 											<td>{{ order.state_txt }}</td>
 											<td>{{ order.status_entrega_txt }}</td>
 											<td>
-												<a href="{% url 'entregar_pedido' order.id %}" class="btn btn-success" title="Entregar" data-toggle="tooltip">
-													<i class="fa fa-check"></i>
-												</a>
+												{% if user.is_superuser and not user.is_staff %}
+													{% if order.status_entrega == 'draft' %}
+													<a href="{% url 'validar_pedido' order.id %}" class="btn btn-primary" title="Validar" data-toggle="tooltip">
+														<i class="fa fa-check"></i>
+													</a>
+													{% endif %}
+													{% if order.status_entrega == 'open' %}
+													<a href="{% url 'entregar_pedido' order.id %}" class="btn btn-success" title="Entregar" data-toggle="tooltip">
+														<i class="fas fa-paper-plane"></i>
+													</a>
+													{% endif %}
+												{% endif %}
+												{% if order.status_entrega == 'draft' %}
 												<a href="{% url 'cancelar_pedido' order.id %}" class="btn btn-danger" title="Cancelar" data-toggle="tooltip">
 													<i class="fa fa-ban"></i>
 												</a>
+												{% endif %}
 												<a href="{% url 'detalle_pedido' order.id %}" class="btn btn-info" title="Ver Pedido" data-toggle="tooltip">
 													<i class="fa fa-search"></i>
 												</a>												

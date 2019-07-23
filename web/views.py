@@ -421,10 +421,11 @@ def buscarlugar(request):
 			print("#### ZONE ####")
 			zone_id = int(request.GET.get("zone", False))
 			print(zone_id)			
-			# zone_ids = models.Zone.objects.filter(id=zone_id)
-			# if zone_ids:
-			# 	zone = zone_ids[0]
-			# 	lugares = lugares.filter(zone=zone)
+			zone_ids = models.Zone.objects.filter(id=zone_id)
+			print(zone_ids)
+			if zone_ids:
+				zone = zone_ids[0]
+				lugares = lugares.filter(zone=zone)
 
 		if request.GET.get("category", False):			
 			category_id = int(request.GET.get("category", False))
@@ -819,10 +820,10 @@ def ver_pedidos(request):
 		lugares = models.Lugar.objects.filter(user=request.user)
 		if lugares:
 			lugar = lugares[0]
-			orders = models.Order.objects.filter(lugar=lugar).filter(status_entrega="draft").order_by('-fecha_pedido')
+			orders = models.Order.objects.filter(lugar=lugar).filter(~Q(status_entrega="done")).filter(~Q(status_entrega="cancel")).order_by('-fecha_pedido')
 
 	else:
-		orders = models.Order.objects.filter(usuario=request.user).filter(status_entrega="draft").order_by('-fecha_pedido')	
+		orders = models.Order.objects.filter(usuario=request.user).filter(~Q(status_entrega="done")).filter(~Q(status_entrega="cancel")).order_by('-fecha_pedido')	
 
 	if orders:
 		for oid in orders:
@@ -834,6 +835,8 @@ def ver_pedidos(request):
 
 			if oid.status_entrega == 'draft':
 				oid.status_entrega_txt = 'Pendiente'
+			elif oid.status_entrega == 'open':
+				oid.status_entrega_txt = 'En proceso'
 			elif oid.status_entrega == 'done':
 				oid.status_entrega_txt = 'Entregada'
 			else:
@@ -842,6 +845,7 @@ def ver_pedidos(request):
 			oid.lines = models.OrderLine.objects.filter(order=oid)
 
 	data = {
+		"user" : request.user,
 		"orders" : orders
 	}
 
@@ -857,6 +861,8 @@ def detalle_pedido(request, id):
 
 	if order.status_entrega == 'draft':
 		order.status_entrega_txt = 'Pendiente'
+	elif order.status_entrega == 'open':
+		order.status_entrega_txt = 'En Proceso'
 	elif order.status_entrega == 'done':
 		order.status_entrega_txt = 'Entregada'
 	else:
@@ -867,10 +873,24 @@ def detalle_pedido(request, id):
 	order.lines = models.OrderLine.objects.filter(order=order)
 
 	data = {
+		"user" : request.user,
 		"order" : order
 	}
 
 	return render(request, "web/order_detail.html", data)
+
+def validar_pedido(request, id):
+		
+	order = get_object_or_404(models.Order, pk=id)
+	
+	order.status_entrega = "open"
+	order.save()
+
+	data = {
+		"order" : order
+	}
+
+	return redirect("detalle_pedido", order.id)
 
 def entregar_pedido(request, id):
 	
@@ -1008,7 +1028,7 @@ def pago_conekta(request, token_id, monto, description, usuario):
 		e["success"] = False
 		return e
 
-def confirmar_compra(request, newOrder):
+def confirmar_compra(request, lugar, ref, total):
 
 	if request.method == "GET":
 		
@@ -1020,7 +1040,7 @@ def confirmar_compra(request, newOrder):
 			# token_id = "tok_test_visa_4242"
 			# token_id_admin = "tok_test_visa_4242"
 
-			total = newOrder.total
+			# total = newOrder.total
 			monto_opbuc = total * (0.1)
 			monto_anfitrion = total - monto_opbuc
 
@@ -1039,12 +1059,12 @@ def confirmar_compra(request, newOrder):
 			print(monto_anfitrion)
 			
 			usuario = get_object_or_404(User, pk=1)
-			order = pago_conekta(request, token_id_admin, monto_opbuc, newOrder.name, usuario)
+			order = pago_conekta(request, token_id_admin, monto_opbuc, ref, usuario)
 			if "error_json" in order:
 				order["success"] = False
 				return order
 			
-			# usuario = newOrder.lugar.user
+			# usuario = lugar.user
 			# order = pago_conekta(request, token_id, monto_anfitrion, newOrder.name, usuario)
 			# if "error_json" in order:
 			# 	order["success"] = False
@@ -1087,31 +1107,37 @@ def registrar_compra(request):
 	ref = ""
 	ref = ref.join([choice("0123456789") for i in range(10)])
 	
-	newOrder = models.Order(usuario=request.user, name=ref, fecha_pedido=hoy, hora_pedido=ahora, total=total, lugar=lugar, cupon=cupon, invitados=invitados)
-	newOrder.save()
+	res = confirmar_compra(request, lugar, ref, total)
 	
-	if newOrder.id:
-		for prod in carrito:
-			producto = models.Producto.objects.get(pk=prod["id"])
-			if producto:
-				line = models.OrderLine(usuario=request.user, order=newOrder, producto=producto, quantity=prod["cantidad_carrito"], subtotal=prod["subtotal"])
-				line.save()
+	print("############")
+	print(res)
+	
+	if res["success"]:
+
+		newOrder = models.Order(usuario=request.user, name=ref, fecha_pedido=hoy, hora_pedido=ahora, total=total, lugar=lugar, cupon=cupon, invitados=invitados)
+		newOrder.save()
+
+		if newOrder.id:
+			for prod in carrito:
+				producto = models.Producto.objects.get(pk=prod["id"])
+				if producto:
+					line = models.OrderLine(usuario=request.user, order=newOrder, producto=producto, quantity=prod["cantidad_carrito"], subtotal=prod["subtotal"])
+					line.save()
 		
-		res = confirmar_compra(request, newOrder)
-		print("############")
-		print(res)
-			
-		if res["success"]:
 			newOrder.payment_id = res["id"]
 			newOrder.state = "done"			
 			newOrder.payment_info = res
 			newOrder.save()
-			res = {'success': True, 'id' : newOrder.id}
+
 			request.session['carrito'] = []
 			request.session['total'] = 0
 			request.session['numero'] = 0			
-	else:
-		res = {'success': False, 'message' : "No se pudo crear la orden"}
+			
+			res = {'success': True, 'id' : newOrder.id}
+			return JsonResponse(res)
+			
+		else:
+			res = {'success': False, 'message' : "No se pudo crear la orden"}
 
 	return JsonResponse(res)
 

@@ -11,7 +11,11 @@
   
   <div class="row row-main">
     <div class="col-12 col-lg-3 sidebar">      
-      	{% for row in data %}  
+        <a href="#" category_id="" class="list-item categoria">
+          Todas las categorias
+        </a>
+        <hr>
+        {% for row in data %}  
       	<!-- <hr>      -->
         <a href="#" category_id="{{row.id}}" class="list-item categoria">
           {{ row.name }}

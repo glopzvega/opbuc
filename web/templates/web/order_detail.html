@@ -27,10 +27,21 @@
 							<div class="col-12 col-md-6 text-right">
 									<br>
 									<br>									
+									{% if user.is_superuser and not user.is_staff %}
+										{% if order.status_entrega == 'draft' %}
+										<a href="{% url 'validar_pedido' order.id %}" class="btn btn-primary" title="Validar" data-toggle="tooltip">
+											<i class="fa fa-check"></i>  Validar
+										</a>
+										{% endif %}
+										{% if order.status_entrega == 'open' %}
+										<a href="{% url 'entregar_pedido' order.id %}" class="btn btn-success" title="Entregar" data-toggle="tooltip">
+											
+											<i class="fas fa-paper-plane"></i>Entregar
+										</a>
+										{% endif %}
+									{% endif %}
+									
 									{% if order.status_entrega == 'draft' %}
-									<a href="{% url 'entregar_pedido' order.id %}" class="btn btn-success" title="Entregar" data-toggle="tooltip">
-										<i class="fa fa-check"></i> Entregar
-									</a>
 									<a href="{% url 'cancelar_pedido' order.id %}" class="btn btn-danger" title="Cancelar" data-toggle="tooltip">
 										<i class="fa fa-ban"></i> Cancelar
 									</a>

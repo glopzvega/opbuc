@@ -99,7 +99,7 @@ class Order(models.Model):
 	invitados = models.IntegerField(default=1)
 	cupon = models.FloatField(default=0)
 	payment_info = models.TextField()
-	status_entrega = models.CharField(max_length=255, default="draft", choices=[("draft", "Pendiente"), ("done", "Entregada"), ("cancel", "Cancelada")])
+	status_entrega = models.CharField(max_length=255, default="draft", choices=[("draft", "Pendiente"), ("open", "En Proceso"), ("done", "Entregada"), ("cancel", "Cancelada")])
 	payment_id = models.CharField(max_length=255, null=True, blank=True, default="")
 
 class OrderLine(models.Model):
