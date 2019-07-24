@@ -1,12 +1,25 @@
-let actualizar_parametros = function(zone_id, category_id)
+let urlparams = getUrlVars();
+let zone_id = "";
+let category_id = "";
+let tiempounidad = 0;
+
+if(urlparams["zone"] != "" && urlparams["zone"] != undefined)
 {
-  // debugger
-  location.href = "?zone="+zone_id+"&category="+category_id;
+  zone_id = urlparams["zone"];
 }
+if(urlparams["category"] != "" && urlparams["category"] != undefined)
+{
+  category_id = urlparams["category"];
+}
+// let actualizar_parametros = function(zone_id, category_id)
+// {
+//   // debugger
+//   location.href = "?zone="+zone_id+"&category="+category_id;
+// }
 
 $(".buscar-btn").on("click", function(){
   $("#lugares_encontrados").html("").hide();
-    buscarlugares();
+    buscarlugares(zone_id, category_id);
 });
 
 $("#busqueda").on("keyup", function(){
@@ -19,39 +32,23 @@ $("#busqueda").on("keyup", function(){
     $("#categorias").show();
   }
 
-  // if($(this).val().length >= 2)
-  // { 
-    
-      $("#lugares_encontrados").html("").hide();
-      tiempounidad = setTimeout(buscarlugares, 900);
-  // }
-  // else
-  // {   
-  //   this.activeLoader = ""        
-  //     $("#lugares_encontrados").html("").hide();          
-  // }
+  $("#lugares_encontrados").html("").hide();
+  tiempounidad = setTimeout(buscarlugares, 900);
+  
 });
 
-// $("input").not("[type=checkbox]").addClass("form-control")
-// $("select,textarea").addClass("form-control")
-// $('[data-toggle="tooltip"]').tooltip();    
 
-// $('.datetimepicker1').datetimepicker({
-//   icons: {
-//           time: "far fa-clock",
-//           date: "far fa-calendar",
-//           up: "fas fa-angle-up",
-//           down: "fas fa-angle-down"
-//       }
-// });
-
-let buscarlugares = function()
+let buscarlugares = function(zone_id, category_id)
 {
   let busqueda = $("#busqueda").val()
   console.log(busqueda)
   $.getJSON("/buscarlugar/", {"busqueda" : busqueda, "zone" : zone_id, "category" : category_id}, function(res){
+    $("#lugares_encontrados").html("");
     $(".linear-progress-material").removeClass("active")
-
+    // if (zone_id != "")
+    //   $("a.zona[zone_id="+zone_id+"]").addClass("selected");
+    // if(category_id != "")
+    //   $("a.categoria[category_id="+category_id+"]").addClass("selected");
     if (res.data != undefined && res.data.length > 0){
       var cards = "";
       $.each(res.data, function(index, lugar){        
@@ -95,14 +92,19 @@ let buscarlugares = function()
 
 $("a.categoria").on("click", function(e){  
   e.preventDefault();   
+  $("a.categoria").removeClass("selected");
+  $("a.zona").removeClass("selected");
+  $(this).addClass("selected");
   category_id = $(this).attr("category_id");  
-  actualizar_parametros(zone_id, category_id);  
+  buscarlugares("", category_id);  
 });
-
+// 
 $("a.zona").on("click", function(e){  
   e.preventDefault();   
+  $("a.zona").removeClass("selected");
+  $(this).addClass("selected");
   zone_id = $(this).attr("zone_id");  
-  actualizar_parametros(zone_id, category_id);     
+  buscarlugares(zone_id, category_id);     
 });
 
-buscarlugares();
+buscarlugares(zone_id, category_id);

@@ -91,7 +91,7 @@
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
             
             <li class="nav-item">
-              <a class="nav-link" href="/">Inicio <span class="sr-only">(current)</span></a>
+              <a class="nav-link zona selected" href="/">Inicio <span class="sr-only">(current)</span></a>
             </li>       
 
             {% for zone in zonas %}              
@@ -186,20 +186,6 @@
 
   <script>
   
-  let urlparams = getUrlVars();
-  let zone_id = "";
-  let category_id = "";
-  let tiempounidad = 0;
-
-  if(urlparams["zone"] != "" && urlparams["zone"] != undefined)
-  {
-    zone_id = urlparams["zone"];
-  }
-  if(urlparams["category"] != "" && urlparams["category"] != undefined)
-  {
-    category_id = urlparams["category"];
-  }
-
   $("a.picture, a.map").on("click", function(e){
     e.preventDefault();
     let url = $(this).attr("href");

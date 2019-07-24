@@ -230,6 +230,11 @@ img.img-main
   text-align: center;
 }
 
+.sidebar a.selected
+{
+  border-bottom: 2px solid red;
+}
+
 .sidebar.left
 { 
   text-align: left;
@@ -280,4 +285,10 @@ img.img-main
 {
   font-family: 'Clicker Script', cursive;
   padding: 0.5em;
+}
+
+.navbar-nav > .nav-item > .nav-link.selected
+{
+  border-bottom: 2px solid #dc3545;
+
 }
