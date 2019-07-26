@@ -574,7 +574,7 @@ def categoria_bloquear(request, id):
 	cat = get_object_or_404(models.Category, pk=id)	
 	
 	if cat.tipo == "producto":
-		product_ids = models.Producto.bjects.filter(category=cat)
+		product_ids = models.Producto.objects.filter(category=cat)
 		if not product_ids:
 			cat.status = "cancel"
 			cat.save()
