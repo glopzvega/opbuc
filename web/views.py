@@ -939,15 +939,26 @@ def pago_conekta(request, token_id, monto, description, usuario):
 		conekta.api_version = "2.0.0"
 
 		customer = conekta.Customer.create({
-			'name': request.user.username,
-			'email': request.user.email or "mcgalv@gmail.com",
-			'phone': '+52181818181',
+			'name': "%s %s" % (request.user.first_name, request.user.last_name,),
+			'email': request.user.email,
+			# 'phone': '+52181818181',
 			'payment_sources': [{
 				'type': 'card',
 				'token_id': token_id
 			}]
 		})
 		
+		# carrito = request.session["carrito"]
+		# line_items = []
+		# for prod in carrito:
+		# 	producto = models.Producto.objects.get(pk=prod["id"])
+		# 	if producto:
+		# 		line_items.append({
+		# 			"name" : producto.name,
+		# 			"unit_price" : producto.price,
+		# 			"quantity" : 1
+		# 		})
+
 		order = conekta.Order.create({
 			"line_items": [{
 				"name": "Compra Opbuc",
@@ -1032,43 +1043,22 @@ def confirmar_compra(request, lugar, ref, total):
 
 	if request.method == "GET":
 		
-		if request.GET.get("conektaTokenId", False) and request.GET.get("conektaTokenIdAdmin", False):
+		if request.GET.get("conektaTokenId", False):
 			
 			token_id = request.GET.get("conektaTokenId", False)
-			token_id_admin = request.GET.get("conektaTokenIdAdmin", False)
+			# token_id_admin = request.GET.get("conektaTokenIdAdmin", False)
 
-			# token_id = "tok_test_visa_4242"
-			# token_id_admin = "tok_test_visa_4242"
-
-			# total = newOrder.total
-			monto_opbuc = total * (0.1)
-			monto_anfitrion = total - monto_opbuc
-
-			total = int(total * 100)
-			monto_opbuc = int(monto_opbuc * 100)
-			monto_anfitrion = int(monto_anfitrion * 100)
-
-			# total = int(newOrder.total * 100)
-			# monto_opbuc = int((total * 0.1) * 100)
-			# monto_anfitrion = total - monto_opbuc
-			print("####MONTO####")
-			print(total)
+			print("### TOKEN ID ###")
 			print(token_id)
-			print(token_id_admin)
-			print(monto_opbuc)
-			print(monto_anfitrion)
-			
+		
+			# monto_opbuc = total * 100
+			monto_opbuc = 300			
+								
 			usuario = get_object_or_404(User, pk=1)
-			order = pago_conekta(request, token_id_admin, monto_opbuc, ref, usuario)
+			order = pago_conekta(request, token_id, monto_opbuc, ref, lugar.user)
 			if "error_json" in order:
 				order["success"] = False
 				return order
-			
-			# usuario = lugar.user
-			# order = pago_conekta(request, token_id, monto_anfitrion, newOrder.name, usuario)
-			# if "error_json" in order:
-			# 	order["success"] = False
-			# 	return order
 
 			order["success"] = True
 			return order
@@ -1182,11 +1172,11 @@ def ver_carrito(request):
 		if config_ids:
 			config = config_ids[0]
 
-	configAdmin = False
-	usuario = get_object_or_404(User, pk=1)
-	config_ids = models.Config.objects.filter(user=usuario)
-	if config_ids:
-		configAdmin = config_ids[0]
+	# configAdmin = False
+	# usuario = get_object_or_404(User, pk=1)
+	# config_ids = models.Config.objects.filter(user=usuario)
+	# if config_ids:
+	# 	configAdmin = config_ids[0]
 
 	if "invitados" in request.session:
 		invitados = request.session["invitados"]
@@ -1204,7 +1194,8 @@ def ver_carrito(request):
 	# total = locale.currency(total, grouping=True)
 	total = "%.2f" % total
 
-	return render(request, "web/carrito.html", {"empty" : empty, "productos" : productos, "total" : total, "subtotal" : subtotal, "invitados" : invitados, "cupon" : cupon, "config" : config, "configAdmin" : configAdmin})
+	return render(request, "web/carrito.html", {"empty" : empty, "productos" : productos, "total" : total, "subtotal" : subtotal, "invitados" : invitados, "cupon" : cupon, "config" : config})
+	# return render(request, "web/carrito.html", {"empty" : empty, "productos" : productos, "total" : total, "subtotal" : subtotal, "invitados" : invitados, "cupon" : cupon, "config" : config, "configAdmin" : configAdmin})
 
 # @login_required
 def cantidad_carrito(request, id):

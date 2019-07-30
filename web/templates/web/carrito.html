@@ -204,73 +204,61 @@
 <script type="text/javascript" src="https://cdn.conekta.io/js/latest/conekta.js"></script>
 
 <script>
-
-	// Conekta.setPublicKey('key_KJysdbf6PotS2ut2');
-
-	var conektaSuccessResponseHandlerAdmin = function(token) {
-		var $form = $("#card-form");		
-		$form.append($('<input type="hidden" name="conektaTokenIdAdmin" id="conektaTokenIdAdmin">').val(token.id));
-		
+	
+	var registrar_compra = function()
+	{
 		let url = $(".confirmar").attr("href");
 		let token_id = $("#conektaTokenId").val()
-		let token_id_admin = $("#conektaTokenIdAdmin").val()
-		
-		if (token_id != "" && token_id_admin != "")
-		{		
-			$.getJSON(url, {"conektaTokenId" : token_id, "conektaTokenIdAdmin" : token_id_admin}, function(res){
-				console.log(res);
-				if(res.success)
+		// let token_id_admin = $("#conektaTokenIdAdmin").val()
+			
+		$.getJSON(url, {"conektaTokenId" : token_id}, function(res){
+			console.log(res);
+			if(res.success)
+			{
+				alert("Se ha realizado la compra")
+				location.href = "/pedidos/" + res.id
+			}
+			else
+			{
+				if (res.error_json != undefined && res.error_json.details[0] != undefined)
 				{
-					alert("Se ha realizado la compra")
-					location.href = "/pedidos/" + res.id
+					alert(res.error_json.details[0].message);					
+				}
+				else if(res.message)
+				{
+					alert(res.message);				
 				}
 				else
 				{
-					if (res.error_json != undefined && res.error_json.details[0] != undefined)
-					{
-						alert(res.error_json.details[0].message);
-						location.reload();
-					}
-					else if(res.message)
-					{
-						alert(res.message);
-						location.reload();
-					}
-					else
-					{
-						alert("Ocurrio un problema al realizar la compra, intentelo de nuevo más tarde");
-						location.reload();
-					}
+					alert("Ocurrio un problema al realizar la compra, intentelo de nuevo más tarde");
 				}
-			});
-		}
-		else
-		{
-			alert("Ocurrio un error al registrar la tarjeta");
-		}
-	};
-
-	var conektaNewToken = function()
-	{
-		var $form = $("#card-form");
-		Conekta.setPublicKey('{{ configAdmin.conekta_public }}');
-		Conekta.Token.create($form, conektaSuccessResponseHandlerAdmin, conektaErrorResponseHandler);
+				
+				location.reload();
+			}
+		});
+		
 	}
+
+	// var conektaSuccessResponseHandlerAdmin = function(token) {
+	// 	var $form = $("#card-form");		
+	// 	$form.append($('<input type="hidden" name="conektaTokenIdAdmin" id="conektaTokenIdAdmin">').val(token.id));
+		
+	// };
+
+	// var conektaNewToken = function()
+	// {
+	// 	var $form = $("#card-form");
+	// 	Conekta.setPublicKey('{{ configAdmin.conekta_public }}');
+	// 	Conekta.Token.create($form, conektaSuccessResponseHandlerAdmin, conektaErrorResponseHandler);
+	// }
 
 	var conektaSuccessResponseHandler = function(token) {
 		var $form = $("#card-form");
 		//Inserta el token_id en la forma para que se envíe al servidor
 		$form.append($('<input type="hidden" name="conektaTokenId" id="conektaTokenId">').val(token.id));
-		conektaNewToken();
-		// let url = $(".confirmar").attr("href");
-		// $.getJSON(url, {"conektaTokenId" : token.id}, function(res){
-		// 	console.log(res);
-		// 	if(res.success)
-		// 	{
-		// 		alert("Se ha realizado la compra")
-		// 		location.href = "/pedidos/" + res.id
-		// 	}
-		// });
+		// conektaNewToken();
+		registrar_compra();
+		
 	};
 	var conektaErrorResponseHandler = function(response) {
 		var $form = $("#card-form");
@@ -278,19 +266,18 @@
 		$form.find("button").prop("disabled", false);
 	};
 
-	//jQuery para que genere el token después de dar click en submit
-	$(function () {
-		$("#card-form").submit(function(event) {
-		  event.preventDefault()
-		  var $form = $(this);
-		  // Previene hacer submit más de una vez
-			$form.find("button").prop("disabled", true);
-			Conekta.setPublicKey('{{ config.conekta_public }}');
-		  Conekta.Token.create($form, conektaSuccessResponseHandler, conektaErrorResponseHandler);
+	
+	$("#card-form").submit(function(event) {
+		event.preventDefault()
+		var $form = $(this);
+		 
+		$form.find("button").prop("disabled", true);
+		Conekta.setPublicKey('{{ config.conekta_public }}');
+		Conekta.Token.create($form, conektaSuccessResponseHandler, conektaErrorResponseHandler);
 		
-			return false;
-		});
+		return false;
 	});
+	
 
 	let actualizar_carrito = function(qty)
 	{
@@ -315,17 +302,7 @@
 
 	$(".confirmar").on("click", function(e){
 		e.preventDefault()
-		$(".modal-tarjeta").modal("show")
-
-		// let url = $(this).attr("href")
-		// $.getJSON(url, function(res){
-		// 	console.log(res);
-		// 	if(res.success)
-		// 	{
-		// 		alert("Se ha realizado la compra")
-		// 		location.href = "/pedidos/" + res.id
-		// 	}
-		// });
+		$(".modal-tarjeta").modal("show");		
 	});
 
 	$(".quitar_carrito").on("click", function(e){
