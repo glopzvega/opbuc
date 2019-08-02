@@ -191,5 +191,5 @@ EMAIL_HOST_PASSWORD = 'R5SS6.i9R9V-Mdb'
 EMAIL_USE_TLS = True
 
 CRONJOBS = [
-    ('*/1 * * * *', 'web.crons.my_scheduled_job')
+    ('*/1 * * * *', 'web.crons.my_scheduled_job', '>> /tmp/scheduled_job.log')
 ]
