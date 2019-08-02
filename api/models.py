@@ -74,11 +74,28 @@ class Lugar(models.Model):
 
 class Producto(models.Model):
 	name = models.CharField(max_length=255)
-	price = models.DecimalField(max_digits=20, decimal_places=2)
+	price = models.FloatField(2)
 	description = models.TextField()
 	category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL)
 	photo = models.ImageField(blank=True, null=True)
 	lugar = models.ForeignKey(Lugar, blank=True, null=True, on_delete=models.SET_NULL)
+
+	def __str__(self):
+		return self.name
+
+class Cobro(models.Model):
+	STATES = [
+		("draft", "Pendiente"),
+		("done", "Realizado"),
+	]
+	name = models.CharField(max_length=255)
+	lugar = models.ForeignKey(Lugar, on_delete=models.CASCADE)
+	fecha = models.DateField()
+	state = models.CharField(max_length=255, choices=STATES, default="draft")
+	total = models.FloatField()
+	total_porcentaje = models.FloatField()
+	usuario = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+	payment_info = models.TextField(default='')
 
 	def __str__(self):
 		return self.name
@@ -94,13 +111,17 @@ class Order(models.Model):
 	fecha_pedido = models.DateField()
 	hora_pedido = models.TimeField()
 	lugar = models.ForeignKey(Lugar, on_delete=models.CASCADE)
-	total = models.DecimalField(max_digits=6, decimal_places=2)
+	total = models.FloatField()
 	state = models.CharField(max_length=255, choices=STATES, default="draft")
 	invitados = models.IntegerField(default=1)
 	cupon = models.FloatField(default=0)
 	payment_info = models.TextField()
 	status_entrega = models.CharField(max_length=255, default="draft", choices=[("draft", "Pendiente"), ("open", "En Proceso"), ("done", "Entregada"), ("cancel", "Cancelada")])
 	payment_id = models.CharField(max_length=255, null=True, blank=True, default="")
+	cobro_id = models.ForeignKey('Cobro', null=True, blank=True, on_delete=models.SET_NULL)
+
+	def __str__(self):
+		return self.name
 
 class OrderLine(models.Model):
 	usuario = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -108,7 +129,7 @@ class OrderLine(models.Model):
 	order = models.ForeignKey(Order, on_delete=models.CASCADE)
 	producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
 	quantity = models.IntegerField()
-	subtotal = models.DecimalField(max_digits=6, decimal_places=2)
+	subtotal = models.FloatField()
 
 class Comment(models.Model):
 	usuario = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -25,7 +25,11 @@ class ProductoAdmin(admin.ModelAdmin):
 
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
-	list_display = ("id", "name", "fecha_pedido", "hora_pedido", "usuario", "invitados", "total")
+	list_display = ("id", "name", "fecha_pedido", "hora_pedido", "usuario", "lugar", "invitados", "total", "cobro_id")
+
+@admin.register(models.Cobro)
+class CobroAdmin(admin.ModelAdmin):
+	list_display = ("id", "name", "fecha", "lugar", "total", "total_porcentaje", "state")
 
 @admin.register(models.OrderLine)
 class OrderLineAdmin(admin.ModelAdmin):

@@ -39,6 +39,10 @@ urlpatterns = [
     path('usuarios/bloquear/<int:id>/', views.bloquear_usuario, name="bloquear_usuario"),
     path('usuarios/suggest/<int:id>/', views.suggest_usuario, name="suggest_usuario"),
     
+    path('cobranza/', views.get_cobranza, name="cobranza"),
+    path('cobranza/pagar/<int:id>/', views.pagar_cobranza, name="pagar_cobranza"),
+    path('cobranza/generar/<int:id>/', views.generar_cobranza, name="generar_cobranza"),
+
     path('categorias/', views.ver_categorias, name="ver_categorias"),
     path('categoria/nuevo', views.categoria_nuevo, name="categoria_nuevo"),
     path('categoria/editar/<int:id>', views.categoria_editar, name="categoria_editar"),

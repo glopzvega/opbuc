@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 # import locale
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 from random import choice
 import logging
@@ -89,6 +89,86 @@ def get_config(request):
 
 def get_mensajes(request):
 	return render(request, "web/index.html", {})
+
+def get_cobranza(request):
+	configAdmin = False
+	cobro_ids = []
+
+	usuario = get_object_or_404(User, pk=1)
+	config_ids = models.Config.objects.filter(user=usuario)
+	
+	if config_ids:
+		configAdmin = config_ids[0]
+		if request.user.is_staff:
+			cobro_ids = models.Cobro.objects.all()
+		else:
+			cobro_ids = models.Cobro.objects.filter(lugar__user=request.user)
+	
+	return render(request, "web/cobranza.html", {"data" : cobro_ids, "config" : configAdmin})
+
+def generar_cobranza(request, id):
+    	
+	lugar = get_object_or_404(models.Lugar, pk=id)
+
+	fecha = "2019-08-01"
+	fecha = datetime.strptime(fecha, "%Y-%m-%d")
+	dias = timedelta(days=1)
+	last_day = fecha - dias
+	first_day = last_day.strftime("%Y-%m-01")
+	last_day = last_day.strftime("%Y-%m-%d")
+	print("##### FECHAS #####")
+	print(last_day)
+	print(first_day)
+	
+	comision = 0
+	total = 0
+	ref = ""
+	ref = ref.join([choice("0123456789") for i in range(10)])
+	fecha = datetime.now().strftime("%Y-%m-%d")
+	description = "Cobranza %s %s" % (fecha, ref)
+	newCobro = models.Cobro(name=description, fecha=fecha, lugar=lugar, state='draft', total=total, total_porcentaje=comision)
+	newCobro.save()
+
+	ordenes_pendientes = models.Order.objects.filter(lugar=lugar).filter(cobro_id__isnull=True).filter(fecha_pedido__lte=last_day)
+	# .filter(fecha__range=[first_day, last_day])
+	for order in ordenes_pendientes:
+		porcentaje = float(order.total) * 0.1
+		comision += porcentaje
+		total += order.total	
+		order.cobro_id = newCobro
+		order.save()
+
+	newCobro.total = total
+	newCobro.total_porcentaje = comision
+	newCobro.save()
+
+	return redirect("cobranza")
+
+def pagar_cobranza(request, id):
+	
+	if request.GET.get("conektaTokenId", False):    			
+		token_id = request.GET.get("conektaTokenId", False)
+
+	cobro_ids = models.Cobro.objects.filter(id=id)
+	if cobro_ids and token_id:
+		cobro = cobro_ids[0]		
+		lugar = cobro.lugar
+		monto = int(float(cobro.total_porcentaje) * 100)		
+		producto = cobro.name   	
+			
+		ref = ""
+		ref = ref.join([choice("0123456789") for i in range(10)])
+
+		order = pago_conekta(request, token_id, monto, ref, cobro.usuario)
+		if "error_json" in order:
+			order["success"] = False
+			return JsonResponse(order)
+		
+		order["success"] = True
+		cobro.state = "done"
+		cobro.save()
+
+	return JsonResponse(order)
 
 def get_usuarios(request):
 	usuarios = User.objects.filter(is_staff=False)
@@ -592,7 +672,10 @@ def categoria_bloquear(request, id):
 
 def ver_lugares(request):
 	
-	lugares = models.Lugar.objects.all().filter(user=request.user)
+	if request.user.is_staff:
+		lugares = models.Lugar.objects.all()
+	else:
+		lugares = models.Lugar.objects.all().filter(user=request.user)
 
 	context = {
 		"data" : lugares
@@ -924,7 +1007,7 @@ def _get_config_usuario(user):
 		return config_ids[0]
 	return False
 
-def pago_conekta(request, token_id, monto, description, usuario):
+def pago_conekta(request, token_id, monto, description, usuario, producto='Compra Opbuc'):
 	
 	try:
 
@@ -961,7 +1044,7 @@ def pago_conekta(request, token_id, monto, description, usuario):
 
 		order = conekta.Order.create({
 			"line_items": [{
-				"name": "Compra Opbuc",
+				"name": producto,
 				"unit_price": monto,
 				"quantity": 1
 			}],
@@ -1054,7 +1137,7 @@ def confirmar_compra(request, lugar, ref, total):
 			# monto_opbuc = total * 100
 			monto_opbuc = 300			
 								
-			usuario = get_object_or_404(User, pk=1)
+			# usuario = get_object_or_404(User, pk=1)
 			order = pago_conekta(request, token_id, monto_opbuc, ref, lugar.user)
 			if "error_json" in order:
 				order["success"] = False
