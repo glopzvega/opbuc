@@ -190,7 +190,10 @@ def verificar_pago_cobranza_method():
 	cobros_ids = models.Cobro.objects.filter(state='draft')
 	for cobro in cobros_ids:    	
 		if cobro.lugar.user.id != 1:
-			bloquear_usuario(None, cobro.lugar.user.id)
+			if cobro.total > 0: 
+				bloquear_usuario(None, cobro.lugar.user.id)
+			else:
+				cobro.state = 'done'
 		# cobro.lugar.nuevo = True
 		# cobro.lugar.save()
 	return True	
