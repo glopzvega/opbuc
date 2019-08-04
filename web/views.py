@@ -188,9 +188,10 @@ def pagar_cobranza(request, id):
 def verificar_pago_cobranza_method():
 	print("### VERIFICAR COBRANZA ###")
 	cobros_ids = models.Cobro.objects.filter(state='draft')
-	for cobro in cobros_ids:
-		cobro.lugar.nuevo = True
-		cobro.lugar.save()
+	for cobro in cobros_ids:    	
+		bloquear_usuario(None, cobro.lugar.user)
+		# cobro.lugar.nuevo = True
+		# cobro.lugar.save()
 	return True	
 
 def get_usuarios(request):
