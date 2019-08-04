@@ -109,16 +109,16 @@ def get_cobranza(request):
 def generar_cobranza(request, id):
     	
 	lugar = get_object_or_404(models.Lugar, pk=id)
-
-	fecha = "2019-08-01"
-	fecha = datetime.strptime(fecha, "%Y-%m-%d")
-	dias = timedelta(days=1)
-	last_day = fecha - dias
-	first_day = last_day.strftime("%Y-%m-01")
-	last_day = last_day.strftime("%Y-%m-%d")
-	print("##### FECHAS #####")
-	print(last_day)
-	print(first_day)
+	fecha = datetime.now().strftime("%Y-%m-%d")
+	# fecha = "2019-08-01"
+	# fecha = datetime.strptime(fecha, "%Y-%m-%d")
+	# dias = timedelta(days=1)
+	# last_day = fecha - dias
+	# first_day = last_day.strftime("%Y-%m-01")
+	# last_day = last_day.strftime("%Y-%m-%d")
+	print("##### FECHA COBRANZA #####")
+	print(fecha)
+	# print(first_day)
 	
 	comision = 0
 	total = 0
@@ -126,21 +126,24 @@ def generar_cobranza(request, id):
 	ref = ref.join([choice("0123456789") for i in range(10)])
 	fecha = datetime.now().strftime("%Y-%m-%d")
 	description = "Cobranza %s %s" % (fecha, ref)
-	newCobro = models.Cobro(name=description, fecha=fecha, lugar=lugar, state='draft', total=total, total_porcentaje=comision)
-	newCobro.save()
 
-	ordenes_pendientes = models.Order.objects.filter(lugar=lugar).filter(cobro_id__isnull=True).filter(fecha_pedido__lte=last_day)
+	ordenes_pendientes = models.Order.objects.filter(lugar=lugar).filter(cobro_id__isnull=True).filter(fecha_pedido__lte=fecha)
 	# .filter(fecha__range=[first_day, last_day])
-	for order in ordenes_pendientes:
-		porcentaje = float(order.total) * 0.1
-		comision += porcentaje
-		total += order.total	
-		order.cobro_id = newCobro
-		order.save()
+	
+	if ordenes_pendientes:		
+		newCobro = models.Cobro(name=description, fecha=fecha, lugar=lugar, state='draft', total=total, total_porcentaje=comision)
+		newCobro.save()
+	
+		for order in ordenes_pendientes:
+			porcentaje = float(order.total) * 0.1
+			comision += porcentaje
+			total += order.total	
+			order.cobro_id = newCobro
+			order.save()
 
-	newCobro.total = total
-	newCobro.total_porcentaje = comision
-	newCobro.save()
+		newCobro.total = total
+		newCobro.total_porcentaje = comision
+		newCobro.save()
 
 	return redirect("cobranza")
 
