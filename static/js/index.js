@@ -101,7 +101,8 @@ $("a.categoria").on("click", function(e){
 // 
 $("a.zona").on("click", function(e){  
   e.preventDefault();   
-  $("a.zona").removeClass("selected");
+  $(".navbar-nav > .nav-item > .nav-link").removeClass("selected");
+  // $("a.zona").removeClass("selected");
   $(this).addClass("selected");
   zone_id = $(this).attr("zone_id");  
   buscarlugares(zone_id, category_id);     
