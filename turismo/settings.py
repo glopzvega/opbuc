@@ -192,6 +192,6 @@ EMAIL_USE_TLS = True
 
 CRONJOBS = [
     # El dia 1 de cada mes
-    ('0 0 1 * *', 'web.crons.my_scheduled_job', '>> /tmp/scheduled_job.log')
-    ('0 0 2 * *', 'web.crons.my_scheduled_job', '>> /tmp/scheduled_job.log')
+    ('0 0 1 * *', 'web.crons.generar_cobranza', '>> /tmp/scheduled_job.log'),
+    ('0 0 2 * *', 'web.crons.verificar_pago_cobranza', '>> /tmp/scheduled_job.log')
 ]
