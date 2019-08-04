@@ -13,10 +13,13 @@ from datetime import datetime as dt
 # 		views.updateAllItems(True)
 # 		pass    # do your thing here
 
-def my_scheduled_job():
-	print("###CRON JOB###")	
+def verificar_pago_cobranza():
+	print("### CRON JOB VERIFICAR ###")	
+	print(dt.now().strftime("%Y-%m-%d %H:%M:%S"))	
+	views.verificar_pago_cobranza_method()	
+
+def generar_cobranza():
+	print("###CRON JOB GENERAR ###")	
 	print(dt.now().strftime("%Y-%m-%d %H:%M:%S"))
-	lugares = models.Lugar.objects.filter(nuevo=False)
-	for lugar in lugares:
-		views.generar_cobranza_method(lugar.id)
+	views.generar_cobranza_method()	
 	pass

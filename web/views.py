@@ -107,54 +107,56 @@ def get_cobranza(request):
 	return render(request, "web/cobranza.html", {"data" : cobro_ids, "config" : configAdmin})
 
 def generar_cobranza_method(id):
+
+	lugares = models.Lugar.objects.filter(nuevo=False)
+	for lugar in lugares:	
+		lugar = get_object_or_404(models.Lugar, pk=id)
+		fecha = datetime.now().strftime("%Y-%m-%d")
+		# fecha = "2019-08-01"
+		# fecha = datetime.strptime(fecha, "%Y-%m-%d")
+		# dias = timedelta(days=1)
+		# last_day = fecha - dias
+		# first_day = last_day.strftime("%Y-%m-01")
+		# last_day = last_day.strftime("%Y-%m-%d")
+		print("##### FECHA COBRANZA %s #####" % lugar.name)
+		print(fecha)
+		# print(first_day)
 		
-	lugar = get_object_or_404(models.Lugar, pk=id)
-	fecha = datetime.now().strftime("%Y-%m-%d")
-	# fecha = "2019-08-01"
-	# fecha = datetime.strptime(fecha, "%Y-%m-%d")
-	# dias = timedelta(days=1)
-	# last_day = fecha - dias
-	# first_day = last_day.strftime("%Y-%m-01")
-	# last_day = last_day.strftime("%Y-%m-%d")
-	print("##### FECHA COBRANZA %s #####" % lugar.name)
-	print(fecha)
-	# print(first_day)
-	
-	cobros_ids = models.Cobro.objects.filter(lugar=lugar, fecha=fecha)
+		cobros_ids = models.Cobro.objects.filter(lugar=lugar, fecha=fecha)
 
-	if not cobros_ids:
+		if not cobros_ids:
 
-		ordenes_pendientes = models.Order.objects.filter(lugar=lugar).filter(cobro_id__isnull=True).filter(fecha_pedido__lte=fecha)
-		# .filter(fecha__range=[first_day, last_day])
+			ordenes_pendientes = models.Order.objects.filter(lugar=lugar).filter(cobro_id__isnull=True).filter(fecha_pedido__lte=fecha)
+			# .filter(fecha__range=[first_day, last_day])
+			
+			comision = 0
+			total = 0
+			ref = ""
+			ref = ref.join([choice("0123456789") for i in range(10)])
+			# fecha = datetime.now().strftime("%Y-%m-%d")
+			description = "Cobranza %s %s" % (fecha, ref)
+
+			newCobro = models.Cobro(name=description, fecha=fecha, lugar=lugar, state='draft', total=total, total_porcentaje=comision)
+			newCobro.save()
+
+			if ordenes_pendientes:
 		
-		comision = 0
-		total = 0
-		ref = ""
-		ref = ref.join([choice("0123456789") for i in range(10)])
-		# fecha = datetime.now().strftime("%Y-%m-%d")
-		description = "Cobranza %s %s" % (fecha, ref)
+				for order in ordenes_pendientes:
+					porcentaje = float(order.total) * 0.1
+					comision += porcentaje
+					total += order.total	
+					order.cobro_id = newCobro
+					order.save()
 
-		newCobro = models.Cobro(name=description, fecha=fecha, lugar=lugar, state='draft', total=total, total_porcentaje=comision)
-		newCobro.save()
-
-		if ordenes_pendientes:
-	
-			for order in ordenes_pendientes:
-				porcentaje = float(order.total) * 0.1
-				comision += porcentaje
-				total += order.total	
-				order.cobro_id = newCobro
-				order.save()
-
-			if total > 0 or comision > 0:
-				newCobro.total = total
-				newCobro.total_porcentaje = comision
-				newCobro.save()
+				if total > 0 or comision > 0:
+					newCobro.total = total
+					newCobro.total_porcentaje = comision
+					newCobro.save()
 
 	return True
 
 def generar_cobranza(request, id):
-	generar_cobranza_method(id)
+	generar_cobranza_method()
 	return redirect("cobranza")
 
 def pagar_cobranza(request, id):
@@ -182,6 +184,14 @@ def pagar_cobranza(request, id):
 		cobro.save()
 
 	return JsonResponse(order)
+
+def verificar_pago_cobranza_method():
+	print("### VERIFICAR COBRANZA ###")
+	cobros_ids = models.Cobro.objects.filter(state='draft')
+	for cobro in cobros_ids:
+		cobro.lugar.nuevo = True
+		cobro.lugar.save()
+	return True	
 
 def get_usuarios(request):
 	usuarios = User.objects.filter(is_staff=False)
