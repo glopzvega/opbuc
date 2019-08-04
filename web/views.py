@@ -194,6 +194,7 @@ def verificar_pago_cobranza_method():
 				bloquear_usuario(None, cobro.lugar.user.id)
 			else:
 				cobro.state = 'done'
+				cobro.save()
 		# cobro.lugar.nuevo = True
 		# cobro.lugar.save()
 	return True	
