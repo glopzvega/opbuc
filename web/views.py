@@ -106,11 +106,11 @@ def get_cobranza(request):
 	
 	return render(request, "web/cobranza.html", {"data" : cobro_ids, "config" : configAdmin})
 
-def generar_cobranza_method(id):
+def generar_cobranza_method():
 
 	lugares = models.Lugar.objects.filter(nuevo=False)
 	for lugar in lugares:	
-		lugar = get_object_or_404(models.Lugar, pk=id)
+		# lugar = get_object_or_404(models.Lugar, pk=id)
 		fecha = datetime.now().strftime("%Y-%m-%d")
 		# fecha = "2019-08-01"
 		# fecha = datetime.strptime(fecha, "%Y-%m-%d")
