@@ -106,8 +106,8 @@ def get_cobranza(request):
 	
 	return render(request, "web/cobranza.html", {"data" : cobro_ids, "config" : configAdmin})
 
-def generar_cobranza(request, id):
-    	
+def generar_cobranza_method(id):
+		
 	lugar = get_object_or_404(models.Lugar, pk=id)
 	fecha = datetime.now().strftime("%Y-%m-%d")
 	# fecha = "2019-08-01"
@@ -116,35 +116,45 @@ def generar_cobranza(request, id):
 	# last_day = fecha - dias
 	# first_day = last_day.strftime("%Y-%m-01")
 	# last_day = last_day.strftime("%Y-%m-%d")
-	print("##### FECHA COBRANZA #####")
+	print("##### FECHA COBRANZA %s #####" % lugar.name)
 	print(fecha)
 	# print(first_day)
 	
-	comision = 0
-	total = 0
-	ref = ""
-	ref = ref.join([choice("0123456789") for i in range(10)])
-	fecha = datetime.now().strftime("%Y-%m-%d")
-	description = "Cobranza %s %s" % (fecha, ref)
+	cobros_ids = models.Cobro.objects.filter(lugar=lugar, fecha=fecha)
 
-	ordenes_pendientes = models.Order.objects.filter(lugar=lugar).filter(cobro_id__isnull=True).filter(fecha_pedido__lte=fecha)
-	# .filter(fecha__range=[first_day, last_day])
-	
-	if ordenes_pendientes:		
+	if not cobros_ids:
+
+		ordenes_pendientes = models.Order.objects.filter(lugar=lugar).filter(cobro_id__isnull=True).filter(fecha_pedido__lte=fecha)
+		# .filter(fecha__range=[first_day, last_day])
+		
+		comision = 0
+		total = 0
+		ref = ""
+		ref = ref.join([choice("0123456789") for i in range(10)])
+		# fecha = datetime.now().strftime("%Y-%m-%d")
+		description = "Cobranza %s %s" % (fecha, ref)
+
 		newCobro = models.Cobro(name=description, fecha=fecha, lugar=lugar, state='draft', total=total, total_porcentaje=comision)
 		newCobro.save()
+
+		if ordenes_pendientes:
 	
-		for order in ordenes_pendientes:
-			porcentaje = float(order.total) * 0.1
-			comision += porcentaje
-			total += order.total	
-			order.cobro_id = newCobro
-			order.save()
+			for order in ordenes_pendientes:
+				porcentaje = float(order.total) * 0.1
+				comision += porcentaje
+				total += order.total	
+				order.cobro_id = newCobro
+				order.save()
 
-		newCobro.total = total
-		newCobro.total_porcentaje = comision
-		newCobro.save()
+			if total > 0 or comision > 0:
+				newCobro.total = total
+				newCobro.total_porcentaje = comision
+				newCobro.save()
 
+	return True
+
+def generar_cobranza(request, id):
+	generar_cobranza_method(id)
 	return redirect("cobranza")
 
 def pagar_cobranza(request, id):

@@ -18,5 +18,5 @@ def my_scheduled_job():
 	print(dt.now().strftime("%Y-%m-%d %H:%M:%S"))
 	lugares = models.Lugar.objects.filter(nuevo=False)
 	for lugar in lugares:
-		views.generar_cobranza(lugar.id)
+		views.generar_cobranza_method(lugar.id)
 	pass
