@@ -26,58 +26,60 @@
                             <hr>
                         </div>
                         <div class="card-text">
-                            <table class="table table-usuarios">
-                                <thead>
-                                    <tr>
-                                        <th><input type="checkbox" class="checkall"></th>
-                                        <th>Username</th>
-                                        <th>Lugar</th>
-                                        <th>Anfitrión</th>
-                                        <th>Sugerido</th>
-                                        <th>Estatus</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for user in usuarios %}
+                            <div class="table-responsive">
+                                <table class="table table-usuarios">
+                                    <thead>
                                         <tr>
-                                            <th><input user_id="{{user.id}}" type="checkbox" class="select"></th>
-                                            <td>
-                                                {{user.username}}
-                                                <br>
-                                                <small>{{user.email}}</small>
-                                            </td>                                            
-                                            <td>{{user.lugar}}</td>
-                                            <td>
-                                                {% if user.is_superuser %}
-                                                <i class="fas fa-check text-success"></i>
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                {% if user.lugar.sugerido %}
-                                                <i class="fas fa-check text-success"></i>
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                {% if user.is_active %}                        
-                                                <a href="#" data-id="{{user.id}}" class="btn btn-success btn-bloquear" title="Bloquear Usuario" data-toggle="tooltip">
-                                                Activo                                                
-                                                {% else %}
-                                                <a href="#" data-id="{{user.id}}" class="btn btn-danger btn-bloquear" title="Activar Usuario" data-toggle="tooltip">
-                                                Bloqueado
-                                                {% endif %}
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <a href="#" data-id="{{user.id}}" class="update btn btn-primary">Anfitrión</a>
-                                                {% if user.is_superuser %}
-                                                <a href="#" data-id="{{user.lugar.id}}" class="suggest btn btn-success">Sugerir</a>
-                                                {% endif %}
-                                            </td>
-                                        </tr>                                    
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                                            <th><input type="checkbox" class="checkall"></th>
+                                            <th>Username</th>
+                                            <th>Lugar</th>
+                                            <th>Anfitrión</th>
+                                            <th>Sugerido</th>
+                                            <th>Estatus</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for user in usuarios %}
+                                            <tr>
+                                                <th><input user_id="{{user.id}}" type="checkbox" class="select"></th>
+                                                <td>
+                                                    {{user.username}}
+                                                    <br>
+                                                    <small>{{user.email}}</small>
+                                                </td>                                            
+                                                <td>{{user.lugar}}</td>
+                                                <td>
+                                                    {% if user.is_superuser %}
+                                                    <i class="fas fa-check text-success"></i>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if user.lugar.sugerido %}
+                                                    <i class="fas fa-check text-success"></i>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if user.is_active %}                        
+                                                    <a href="#" data-id="{{user.id}}" class="btn btn-success btn-bloquear" title="Bloquear Usuario" data-toggle="tooltip">
+                                                    Activo                                                
+                                                    {% else %}
+                                                    <a href="#" data-id="{{user.id}}" class="btn btn-danger btn-bloquear" title="Activar Usuario" data-toggle="tooltip">
+                                                    Bloqueado
+                                                    {% endif %}
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a href="#" data-id="{{user.id}}" class="update btn btn-primary">Anfitrión</a>
+                                                    {% if user.is_superuser %}
+                                                    <a href="#" data-id="{{user.lugar.id}}" class="suggest btn btn-success">Sugerir</a>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>                                    
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

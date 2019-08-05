@@ -21,55 +21,43 @@
 				</a>
 				{% endif %}
 				<hr>
-				<table class="table table-fixed">
-					<thead>
-						<tr>							
-							<th class="col-6">Nombre</th>
-							<th class="col-2">Tipo</th>
-							<th class="col-2">Usuario</th>
-							<th class="col-2"></th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for row in data %}
-						<tr>
-						<!-- <td class="col-2">
-							{% if row.photo %}
-							<a href="{{ row.photo.url }}" class="picture">
-								<img src="{{ row.photo.url }}" alt="{{ row.name }}">
-							</a>
-							{% endif %}
-						</td>				 -->
-						<td class="col-6">
-							{% if tipo == 'producto' %}
-							<a href="{% url 'categoria_editar' row.id %}">
-								{{ row.name }}
-							</a>
-							{% else %}
-							<a href="{% url 'categoria_lugar_editar' row.id %}">
-								{{ row.name }}
-							</a>
-							{% endif %}
-						</td>
-
-						<td class="col-2">
-							{{ row.tipo }}
-						</td>
-
-						<td class="col-2">
-							{{ row.user }}
-						</td>
-
-						<td class="col-2">
-							<a href="#" catid="{{row.id}}" class="btn btn-danger btn-eliminar" title="Eliminar" data-toggle="tooltip">
-								<i class="fas fa-ban"></i>
-							</a>
-						</td>
-						
-						{% endfor %}
-						</tr>
-					</tbody>
-				</table>
+				<div class="table-responsive">
+					<table class="table">
+						<thead>
+							<tr>							
+								<th>Nombre</th>
+								<th>Tipo</th>
+								<th>Usuario</th>
+								<th></th>								
+							</tr>
+						</thead>
+						<tbody>
+							{% for row in data %}
+							<tr>							
+								<td>
+									{% if tipo == 'producto' %}
+									<a href="{% url 'categoria_editar' row.id %}">
+										{{ row.name }}
+									</a>
+									{% else %}
+									<a href="{% url 'categoria_lugar_editar' row.id %}">
+										{{ row.name }}
+									</a>
+									{% endif %}
+								</td>
+								<td>{{ row.tipo }}</td>
+								<td>{{ row.user }}</td>
+								<td>
+									<a href="#" catid="{{row.id}}" class="btn btn-danger btn-eliminar" title="Eliminar" data-toggle="tooltip">
+										<i class="fas fa-ban"></i>
+									</a>
+								</td>
+							
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>

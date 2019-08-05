@@ -13,31 +13,33 @@
 					Nuevo Registro
 				</a>
 				<hr>
-				<table class="table">
-					<thead>
-						<tr>
-							<th>Nombre</th>
-							<th>Descripcion</th>
-							<th>Categoria</th>
-							<th>Precio</th>					
-							<th>Lugar</th>	
-							<th>Usuario</th>					
-						</tr>
-					</thead>
-					<tbody>
-						{% for row in data %}
-						<tr>				
-						<td><a href="{% url 'producto_editar' row.id %}">
-						{{ row.name }}</a></td>
-						<td>{{ row.description }}</td>
-						<td>{{ row.category }}</td>
-						<td> {{ row.price }}</td>
-						<td> {{ row.lugar }}</td>
-						<td> {{ row.lugar.user }}</td>
-						{% endfor %}
-						</tr>
-					</tbody>
-				</table>
+				<div class="table-responsive">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Nombre</th>
+								<th>Descripcion</th>
+								<th>Categoria</th>
+								<th>Precio</th>					
+								<th>Lugar</th>	
+								<th>Usuario</th>					
+							</tr>
+						</thead>
+						<tbody>
+							{% for row in data %}
+							<tr>				
+							<td><a href="{% url 'producto_editar' row.id %}">
+							{{ row.name }}</a></td>
+							<td>{{ row.description }}</td>
+							<td>{{ row.category }}</td>
+							<td> {{ row.price }}</td>
+							<td> {{ row.lugar }}</td>
+							<td> {{ row.lugar.user }}</td>
+							{% endfor %}
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -14,55 +14,57 @@
 					<div class="card-text">
 						<div class="row">
 							<div class="col">
-								<table class="table">
-									<thead>
-										<th>No. Pedido</th>
-										<th>Lugar</th>
-										<th>Usuario</th>
-										<th>Fecha</th>
-										<th>Total</th>
-										<th>Estatus Pago</th>										
-										<th>Estatus Entrega</th>
-										<th></th>
-									</thead>
-									<tbody>
-									{% for order in orders %}
-										
-										<tr>
-											<td>{{ order.name }}</td>
-											<td>{{ order.lugar }}</td>
-											<td>{{ order.usuario }}</td>
-											<td>{{ order.fecha_pedido }}</td>
-											<td>{{ order.total }}</td>
-											<td>{{ order.state_txt }}</td>
-											<td>{{ order.status_entrega_txt }}</td>
-											<td>
-												{% if user.is_superuser and not user.is_staff %}
+								<div class="table-responsive">								
+									<table class="table">
+										<thead>
+											<th>No. Pedido</th>
+											<th>Lugar</th>
+											<th>Usuario</th>
+											<th>Fecha</th>
+											<th>Total</th>
+											<th>Estatus Pago</th>										
+											<th>Estatus Entrega</th>
+											<th></th>
+										</thead>
+										<tbody>
+										{% for order in orders %}
+											
+											<tr>
+												<td>{{ order.name }}</td>
+												<td>{{ order.lugar }}</td>
+												<td>{{ order.usuario }}</td>
+												<td>{{ order.fecha_pedido }}</td>
+												<td>{{ order.total }}</td>
+												<td>{{ order.state_txt }}</td>
+												<td>{{ order.status_entrega_txt }}</td>
+												<td>
+													{% if user.is_superuser and not user.is_staff %}
+														{% if order.status_entrega == 'draft' %}
+														<a href="{% url 'validar_pedido' order.id %}" class="btn btn-primary" title="Validar" data-toggle="tooltip">
+															<i class="fa fa-check"></i>
+														</a>
+														{% endif %}
+														{% if order.status_entrega == 'open' %}
+														<a href="{% url 'entregar_pedido' order.id %}" class="btn btn-success" title="Entregar" data-toggle="tooltip">
+															<i class="fas fa-paper-plane"></i>
+														</a>
+														{% endif %}
+													{% endif %}
 													{% if order.status_entrega == 'draft' %}
-													<a href="{% url 'validar_pedido' order.id %}" class="btn btn-primary" title="Validar" data-toggle="tooltip">
-														<i class="fa fa-check"></i>
+													<a href="{% url 'cancelar_pedido' order.id %}" class="btn btn-danger" title="Cancelar" data-toggle="tooltip">
+														<i class="fa fa-ban"></i>
 													</a>
 													{% endif %}
-													{% if order.status_entrega == 'open' %}
-													<a href="{% url 'entregar_pedido' order.id %}" class="btn btn-success" title="Entregar" data-toggle="tooltip">
-														<i class="fas fa-paper-plane"></i>
-													</a>
-													{% endif %}
-												{% endif %}
-												{% if order.status_entrega == 'draft' %}
-												<a href="{% url 'cancelar_pedido' order.id %}" class="btn btn-danger" title="Cancelar" data-toggle="tooltip">
-													<i class="fa fa-ban"></i>
-												</a>
-												{% endif %}
-												<a href="{% url 'detalle_pedido' order.id %}" class="btn btn-info" title="Ver Pedido" data-toggle="tooltip">
-													<i class="fa fa-search"></i>
-												</a>												
-											</td>
-										</tr>
-					
-									{% endfor %}					
-									</tbody>
-								</table>
+													<a href="{% url 'detalle_pedido' order.id %}" class="btn btn-info" title="Ver Pedido" data-toggle="tooltip">
+														<i class="fa fa-search"></i>
+													</a>												
+												</td>
+											</tr>
+						
+										{% endfor %}					
+										</tbody>
+									</table>
+								</div>
 							</div>
 						</div>
 					</div>

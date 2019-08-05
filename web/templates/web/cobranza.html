@@ -10,41 +10,43 @@
             <h5 class="card-title">
                 Cobranza
             </h5>
-            <div class="card-text">                
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Descripción</th>
-                            <th>Fecha</th>
-                            <th>Lugar</th>
-                            <th>Total</th>
-                            <th>Comisión</th>
-                            <th>Estatus</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for cobro in data %}
-                        <tr>
-                            <td>{{ cobro.name }}</td>
-                            <td>{{ cobro.fecha }}</td>
-                            <td>{{ cobro.lugar }}</td>
-                            <td>{{ cobro.total }}</td>
-                            <td>{{ cobro.total_porcentaje }}</td>
-                            {% if cobro.state == 'draft' %}
-                            <td>Pendiente</td>
-                            {% elif cobro.state == 'done' %}
-                            <td>Realizado</td>
-                            {% endif %}
-                            <td>
-                            {% if cobro.state == 'draft' %}
-                                <a href="{{cobro.id}}" class="btn btn-danger confirmar">Pagar</a>
-                            {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+            <div class="card-text">   
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Descripción</th>
+                                <th>Fecha</th>
+                                <th>Lugar</th>
+                                <th>Total</th>
+                                <th>Comisión</th>
+                                <th>Estatus</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for cobro in data %}
+                            <tr>
+                                <td>{{ cobro.name }}</td>
+                                <td>{{ cobro.fecha }}</td>
+                                <td>{{ cobro.lugar }}</td>
+                                <td>{{ cobro.total }}</td>
+                                <td>{{ cobro.total_porcentaje }}</td>
+                                {% if cobro.state == 'draft' %}
+                                <td>Pendiente</td>
+                                {% elif cobro.state == 'done' %}
+                                <td>Realizado</td>
+                                {% endif %}
+                                <td>
+                                {% if cobro.state == 'draft' %}
+                                    <a href="{{cobro.id}}" class="btn btn-danger confirmar">Pagar</a>
+                                {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>              
             </div>
 
         </div>
