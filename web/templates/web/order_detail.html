@@ -2,6 +2,16 @@
 {% load humanize %}
 {% block content %}
 
+{% load tz %}
+
+{% localtime on %}
+{{ order.fecha_pedido }} {{ order.hora_pedido }}
+{% endlocaltime %}
+
+{% localtime off %}
+{{ order.fecha_pedido }} {{ order.hora_pedido }}
+{% endlocaltime %}
+
 <div class="container-fluid">
 	<br>
 	<div class="row">
