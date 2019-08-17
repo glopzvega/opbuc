@@ -1,19 +1,6 @@
 {% extends 'web/__base.html' %}
 {% load humanize %}
 {% block content %}
-
-{% load tz %}
-
-{{ order.hora_pedido|timezone:"Europe/Paris" }}
-
-{% timezone "America/Mexico_City" %}
-{{ order.fecha_pedido }} {{ order.hora_pedido }}
-{% endtimezone %}
-
-{% timezone None %}
-{{ order.fecha_pedido }} {{ order.hora_pedido }}
-{% endtimezone %}
-
 <div class="container-fluid">
 	<br>
 	<div class="row">
