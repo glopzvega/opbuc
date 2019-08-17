@@ -1,15 +1,16 @@
 {% extends 'web/__base.html' %}
 {% load humanize %}
 {% block content %}
+
 {% load tz %}
 
-{% localtime on %}
-    {{ value }}
-{% endlocaltime %}
+{% timezone "America/Mexico_City" %}
+{{ order.fecha_pedido }} {{ order.hora_pedido }}
+{% endtimezone %}
 
-{% localtime off %}
-    {{ value }}
-{% endlocaltime %}
+{% timezone None %}
+{{ order.fecha_pedido }} {{ order.hora_pedido }}
+{% endtimezone %}
 
 <div class="container-fluid">
 	<br>
