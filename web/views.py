@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 # import locale
+from django.utils import timezone
 from datetime import datetime, timedelta
 import json
 from random import choice
@@ -1191,8 +1192,8 @@ def registrar_compra(request):
 	lugar_id = request.session["lugar"]
 	lugar = get_object_or_404(models.Lugar, pk=lugar_id)
 
-	hoy = datetime.now().strftime("%Y-%m-%d")
-	ahora = datetime.now().strftime("%H:%M:%S")
+	hoy = timezone.now().strftime("%Y-%m-%d")
+	ahora = timezone.now().strftime("%H:%M:%S")
 	
 	total = 0
 	if "total" in request.session:
