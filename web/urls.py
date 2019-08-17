@@ -41,7 +41,8 @@ urlpatterns = [
     
     path('cobranza/', views.get_cobranza, name="cobranza"),
     path('cobranza/pagar/<int:id>/', views.pagar_cobranza, name="pagar_cobranza"),
-    path('cobranza/generar/<int:id>/', views.generar_cobranza, name="generar_cobranza"),
+    path('cobranza/generar/', views.generar_cobranza, name="generar_cobranza"),
+    path('cobranza/verificar/', views.verificar_cobranza, name="verificar_cobranza"),
 
     path('categorias/', views.ver_categorias, name="ver_categorias"),
     path('categoria/nuevo', views.categoria_nuevo, name="categoria_nuevo"),
