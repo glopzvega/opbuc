@@ -1195,7 +1195,7 @@ def registrar_compra(request):
 	
 	fmt = "%Y-%m-%d %H:%M:%S"
 	fmt_dia = "%Y-%m-%d"
-	fmt_hora = "%Y-%m-%d"
+	fmt_hora = "%H:%M:%S"
 	fecha_utc = datetime.now(timezone('UTC'))
 	fecha_utc_str = fecha_utc.strftime(fmt)
 
