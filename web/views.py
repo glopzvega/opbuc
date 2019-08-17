@@ -1204,8 +1204,8 @@ def registrar_compra(request):
 	print(fecha_utc_str)
 	print(fecha_mx_str)
 
-	hoy = timezone.now().strftime("%Y-%m-%d")
-	ahora = timezone.now().strftime("%H:%M:%S")
+	hoy = datetime.now().strftime("%Y-%m-%d")
+	ahora = datetime.now().strftime("%H:%M:%S")
 	
 	total = 0
 	if "total" in request.session:
