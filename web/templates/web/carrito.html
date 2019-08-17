@@ -82,24 +82,24 @@
 				</div>
 				<hr>
 				<div class="row">
-					<div class="col-6">
+					<div class="col-12 col-md-6">
 						<a href="{% url 'index' %}" class="btn btn-info">Regresar al Inicio</a>
 					</div>
 					<div class="col-12 col-md-6">						
 						<div class="row">
-							<div class="col-9 text-right text-muted">				
+							<div class="col-md-9 col-6 text-right text-muted">				
 								<h5>Subtotal: </h5>
 							</div>
-							<div class="col-3 text-left">				
+							<div class="col-md-3 col-6 text-left">				
 								<h4><span class="txt_subtotal">${{ subtotal|floatformat:2|intcomma }}</span> </h4>
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-9 text-right text-muted">				
+							<div class="col-md-9 col-6 text-right text-muted">				
 								{% load humanize %}
 								<h5>Descuento:</h5>
 							</div>
-							<div class="col-3 text-left">
+							<div class="col-md-3 col-6 text-left">
 								{% if cupon > 0 %}
 								<h4><span class="txt_cupon">-${{cupon|floatformat:2|intcomma }}</span> </h4>
 								{% else %}
@@ -108,20 +108,19 @@
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-9 text-right text-muted">				
+							<div class="col-md-9 col-6 text-right text-muted">				
 								<h5>Total: </h5>
 							</div>
-							<div class="col-3 text-left">				
+							<div class="col-md-3 col-6 text-left">				
 								<h4><span class="txt_total">${{ total|floatformat:2|intcomma }}</span> </h4>
 							</div>
 						</div>
 						<hr>								
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-7"></div>
-					<div class="col-2">Metodo de Pago:</div>
-					<div class="col-3">								
+				<div class="row">					
+					<div class="col-md-2 offset-md-7 col-6">Metodo de Pago:</div>
+					<div class="col-md-3 col-6">								
 						<select name="metodopago" id="metodopago" class="form-control">
 							<!--<option value="1">Pago en Oxxo</option>-->
 							<option value="">Selecciona un método de pago</option>
