@@ -99,7 +99,7 @@ class ProductoModelForm(ModelForm):
 		super(ProductoModelForm, self).__init__(*args, **kwargs)
 		self.fields['category'].queryset = Category.objects.filter(tipo='producto').filter(user=user)
 		if user:
-			self.fields['category'].queryset = Category.objects.filter(user=user)
+			self.fields['category'].queryset = Category.objects.filter(user=user).filter(status='active')
 			self.fields['lugar'].queryset = Lugar.objects.filter(user=user)
 
 class PhotoModelForm(ModelForm):

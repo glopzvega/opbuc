@@ -285,7 +285,7 @@ def suggest_usuario(request, id):
 	return JsonResponse({"success": True, "id": id, "sugerido": lugar.sugerido})
 
 def index(request):
-	categorias = models.Category.objects.filter(tipo__exact='lugar')
+	categorias = models.Category.objects.filter(tipo__exact='lugar').filter(status='active')
 	zonas = models.Zone.objects.all()
 	config = models.Config.objects.all()
 	context = {
