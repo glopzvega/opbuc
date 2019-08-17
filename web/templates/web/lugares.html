@@ -43,9 +43,7 @@
 							<td> {{ row.zone }}</td>
 							<td> {{ row.user }}</td>
 							<td>
-								{% if request.user.is_staff %}
-									<a href="{% url 'generar_cobranza' row.id %}" class="btn btn-success"> Generar Cobranza </a>
-								{% endif %}
+								
 							</td>
 							{% endfor %}
 							</tr>

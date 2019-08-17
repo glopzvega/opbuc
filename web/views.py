@@ -108,6 +108,14 @@ def get_cobranza(request):
 	
 	return render(request, "web/cobranza.html", {"data" : cobro_ids, "config" : configAdmin})
 
+def generar_cobranza(request):
+	generar_cobranza_method()
+	return redirect("cobranza")
+
+def verificar_cobranza(request):
+	verificar_pago_cobranza_method()
+	return redirect("cobranza")
+
 def generar_cobranza_method():
 
 	lugares = models.Lugar.objects.filter(nuevo=False)
@@ -156,10 +164,6 @@ def generar_cobranza_method():
 					newCobro.save()
 
 	return True
-
-def generar_cobranza(request, id):
-	generar_cobranza_method()
-	return redirect("cobranza")
 
 def pagar_cobranza(request, id):
 	
