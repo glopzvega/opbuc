@@ -6,8 +6,9 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 # import locale
-from django.utils import timezone
+# from django.utils import timezone
 from datetime import datetime, timedelta
+from pytz import timezone
 import json
 from random import choice
 import logging
