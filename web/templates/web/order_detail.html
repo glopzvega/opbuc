@@ -4,6 +4,8 @@
 
 {% load tz %}
 
+{{ order.hora_pedido|timezone:"Europe/Paris" }}
+
 {% timezone "America/Mexico_City" %}
 {{ order.fecha_pedido }} {{ order.hora_pedido }}
 {% endtimezone %}
