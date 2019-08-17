@@ -1194,6 +1194,8 @@ def registrar_compra(request):
 	lugar = get_object_or_404(models.Lugar, pk=lugar_id)
 	
 	fmt = "%Y-%m-%d %H:%M:%S"
+	fmt_dia = "%Y-%m-%d"
+	fmt_hora = "%Y-%m-%d"
 	fecha_utc = datetime.now(timezone('UTC'))
 	fecha_utc_str = fecha_utc.strftime(fmt)
 
@@ -1204,8 +1206,8 @@ def registrar_compra(request):
 	print(fecha_utc_str)
 	print(fecha_mx_str)
 
-	hoy = datetime.now().strftime("%Y-%m-%d")
-	ahora = datetime.now().strftime("%H:%M:%S")
+	hoy = fecha_mx.strftime(fmt_dia)
+	ahora = fecha_mx.strftime(fmt_hora)
 	
 	total = 0
 	if "total" in request.session:
