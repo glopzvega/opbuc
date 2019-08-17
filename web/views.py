@@ -1191,6 +1191,17 @@ def registrar_compra(request):
 
 	lugar_id = request.session["lugar"]
 	lugar = get_object_or_404(models.Lugar, pk=lugar_id)
+	
+	fmt = "%Y-%m-%d %H:%M:%S"
+	fecha_utc = datetime.now(timezone('UTC'))
+	fecha_utc_str = fecha_utc.strftime(fmt)
+
+	fecha_mx = fecha_utc.astimezone(timezone('America/Mexico_City'))
+	fecha_mx_str = fecha_mx.strftime(fmt)
+
+	print("##### FECHAS #####")
+	print(fecha_utc_str)
+	print(fecha_mx_str)
 
 	hoy = timezone.now().strftime("%Y-%m-%d")
 	ahora = timezone.now().strftime("%H:%M:%S")
