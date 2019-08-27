@@ -525,6 +525,10 @@ def lugar(request, id):
 
 def buscarlugar(request):
 	data = []
+	busqueda = False
+	zone_id = False
+	category_id = False
+
 	if request.method == "GET":
 		lugares = models.Lugar.objects.all()
 		
@@ -540,6 +544,10 @@ def buscarlugar(request):
 			print(zone_ids)
 			if zone_ids:
 				zone = zone_ids[0]
+				zone_id = {
+					"id" : zone.id,
+					"name" : zone.name
+				}
 				lugares = lugares.filter(zone=zone)
 
 		if request.GET.get("category", False):			
@@ -547,6 +555,10 @@ def buscarlugar(request):
 			category_ids = models.Category.objects.filter(id=category_id)
 			if category_ids:
 				category = category_ids[0]
+				category_id = {
+					"id" : category.id,
+					"name" : category.name
+				}
 				lugares = lugares.filter(category=category)
 
 		if lugares:
@@ -570,8 +582,13 @@ def buscarlugar(request):
 						lugar_data["zone_id"] = (zone.id, zone.name)
 
 				data.append(lugar_data)
-	
-	return JsonResponse({"data" : data})
+	ctx = {
+		"data" : data,
+		"busqueda" : busqueda,
+		"zone_id" : zone_id,
+		"category_id" : category_id
+	}
+	return JsonResponse(ctx)
 
 def producto(request, id):
 	producto = get_object_or_404(models.Producto, pk=id)	

@@ -41,6 +41,8 @@ $("#busqueda").on("keyup", function(){
 let buscarlugares = function(zone_id, category_id)
 {
   let busqueda = $("#busqueda").val()
+  let zone_res = {};
+  let category_res = {};
   console.log(busqueda)
   $.getJSON("/buscarlugar/", {"busqueda" : busqueda, "zone" : zone_id, "category" : category_id}, function(res){
     $("#lugares_encontrados").html("");
@@ -49,7 +51,34 @@ let buscarlugares = function(zone_id, category_id)
     //   $("a.zona[zone_id="+zone_id+"]").addClass("selected");
     // if(category_id != "")
     //   $("a.categoria[category_id="+category_id+"]").addClass("selected");
-    if (res.data != undefined && res.data.length > 0){
+    zone_res = res.zone_id;
+    if (zone_res)
+    {
+      console.log(zone_res)
+      $("a.zona").each(function(index, value){
+        if($(this).attr("zone_id") == zone_res.id)
+        {
+          $(this).addClass("selected");
+          $("#dropdownMenuButtonZona").text(zone_res.name);
+        }
+      });
+    }
+
+    category_res = res.category_id;
+    if (category_res)
+    {
+      console.log(category_res)
+      $("a.categoria").each(function(index, value){
+        if($(this).attr("category_id") == category_res.id)
+        {
+          $(this).addClass("selected");
+          $("#dropdownMenuButtonCategoria").text(category_res.name);
+        }
+      });
+    }
+
+    if (res.data != undefined && res.data.length > 0)
+    {      
       var cards = "";
       $.each(res.data, function(index, lugar){        
         let photo = lugar.photo;

@@ -6,11 +6,18 @@
 <link rel="stylesheet" href="{% static 'css/index.css' %}">
 {% endblock %}
 
+{% block menucategorias %}
+<a class="dropdown-item categoria" category_id="" href="#">Todas</a>
+{% for row in data %}  
+<a class="dropdown-item categoria" category_id="{{row.id}}" href="#">{{row.name}}</a>
+{% endfor %}
+{% endblock %}
+
 {% block content %}  
 <div class="container-fluid">
   
   <div class="row row-main">
-    <div class="col-12 col-lg-3 sidebar">      
+    <div class="col-lg-3 sidebar d-none d-sm-none d-md-block">      
         <a href="#" category_id="" class="list-item categoria selected">
           Todas las categorias
         </a>
