@@ -59,7 +59,7 @@ let buscarlugares = function(zone_id, category_id)
         if($(this).attr("zone_id") == zone_res.id)
         {
           $(this).addClass("selected");
-          $("#dropdownMenuButtonZona").text(zone_res.name);
+          $("#dropdownMenuButtonZona").text(zone_res.name.substr(0, 8));
         }
       });
     }
@@ -72,7 +72,7 @@ let buscarlugares = function(zone_id, category_id)
         if($(this).attr("category_id") == category_res.id)
         {
           $(this).addClass("selected");
-          $("#dropdownMenuButtonCategoria").text(category_res.name);
+          $("#dropdownMenuButtonCategoria").text(category_res.name.substr(0, 8));
         }
       });
     }
