@@ -752,6 +752,9 @@ def lugar_nuevo(request):
 			lugar.clear_name = clear_name.replace("ñ", "n")
 			lugar.user = request.user
 			lugar.save()
+
+			verificar_lugar_habilitado(lugar.user)
+
 			return redirect("ver_lugares")
 	
 	else:	
@@ -783,6 +786,9 @@ def lugar_editar(request, id):
 			clear_name = clear_name.replace("ú", "u")
 			lugar.clear_name = clear_name.replace("ñ", "n")			
 			lugar.save()
+
+			verificar_lugar_habilitado(lugar.user)
+			
 			return redirect("ver_lugares")
 	else:
 		form = LugarModelForm(instance=lugar)
