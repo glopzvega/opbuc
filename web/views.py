@@ -708,15 +708,15 @@ def categoria_bloquear(request, id):
 	if cat.tipo == "producto":
 		product_ids = models.Producto.objects.filter(category=cat)
 		if not product_ids:
-			cat.status = "cancel"
-			cat.save()
+			# cat.status = "cancel"
+			cat.delete()
 			return JsonResponse({"success" : True})
 		mensaje = "La categoria no puede eliminarse, hay productos relacionados con la categoria"
 	else:
 		lugar_ids = models.Lugar.objects.filter(category=cat)
 		if not lugar_ids:
-			cat.status = "cancel"
-			cat.save()
+			# cat.status = "cancel"
+			cat.delete()
 			return JsonResponse({"success" : True})
 		mensaje = "La categoria no puede eliminarse, hay lugares relacionados con la categoria"
 		
