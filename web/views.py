@@ -246,7 +246,7 @@ def mail_usuarios(request):
 def bloquear_usuario(request, id):
 	usuario = get_object_or_404(User, pk=id)
 	if usuario.is_active:
-		usuario.is_active = False
+		# usuario.is_active = False
 		
 		lugar_ids = models.Lugar.objects.filter(user=usuario)
 		if lugar_ids:
@@ -254,7 +254,7 @@ def bloquear_usuario(request, id):
 			lugar.nuevo = True
 			lugar.save()
 	else:
-		usuario.is_active = True
+		# usuario.is_active = True
 
 		lugar_ids = models.Lugar.objects.filter(user=usuario)
 		if lugar_ids:
@@ -262,7 +262,7 @@ def bloquear_usuario(request, id):
 			lugar.nuevo = False
 			lugar.save()
 
-	usuario.save()
+	# usuario.save()
 	return JsonResponse({"success": True, "id": id, "is_active": usuario.is_active})
 
 
