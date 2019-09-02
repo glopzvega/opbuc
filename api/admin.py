@@ -13,7 +13,8 @@ class ZoneAdmin(admin.ModelAdmin):
 
 @admin.register(models.Category)
 class CategoryAdmin(admin.ModelAdmin):
-	list_display = ("id", "name", "tipo")	
+	list_filter = ("tipo", "status")	
+	list_display = ("id", "name", "tipo", "status")	
 
 @admin.register(models.Lugar)
 class LugarAdmin(admin.ModelAdmin):
