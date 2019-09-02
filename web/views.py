@@ -138,18 +138,17 @@ def generar_cobranza_method():
 
 			ordenes_pendientes = models.Order.objects.filter(lugar=lugar).filter(cobro_id__isnull=True).filter(fecha_pedido__lte=fecha)
 			# .filter(fecha__range=[first_day, last_day])
-			
-			comision = 0
-			total = 0
-			ref = ""
-			ref = ref.join([choice("0123456789") for i in range(10)])
-			# fecha = datetime.now().strftime("%Y-%m-%d")
-			description = "Cobranza %s %s" % (fecha, ref)
-
-			newCobro = models.Cobro(name=description, fecha=fecha, lugar=lugar, state='draft', total=total, total_porcentaje=comision)
-			newCobro.save()
-
 			if ordenes_pendientes:
+				
+				comision = 0
+				total = 0
+				ref = ""
+				ref = ref.join([choice("0123456789") for i in range(10)])
+				# fecha = datetime.now().strftime("%Y-%m-%d")
+				description = "Cobranza %s %s" % (fecha, ref)
+
+				newCobro = models.Cobro(name=description, fecha=fecha, lugar=lugar, state='draft', total=total, total_porcentaje=comision)
+				newCobro.save()
 		
 				for order in ordenes_pendientes:
 					porcentaje = float(order.total) * 0.1
