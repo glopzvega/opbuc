@@ -60,7 +60,7 @@
                                                     {% endif %}
                                                 </td>
                                                 <td>
-                                                    {% if user.is_active %}                        
+                                                    {% if not user.lugar.nuevo %}                        
                                                     <a href="#" data-id="{{user.id}}" class="btn btn-success btn-bloquear" title="Bloquear Usuario" data-toggle="tooltip">
                                                     Activo                                                
                                                     {% else %}
