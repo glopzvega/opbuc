@@ -286,6 +286,7 @@ def index(request):
 	zonas = models.Zone.objects.all()
 	config = models.Config.objects.all()
 	context = {
+		"index" : True,
 		"data" : categorias, 
 		"zonas" : zonas,
 		"buscar" : True,
