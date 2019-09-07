@@ -50,51 +50,53 @@
 						<hr>
 						<div class="row">
 							<div class="col">
-								<table class="table">
-									<thead>
-										<th></th>
-										<th>Producto</th>
-										<th>Precio</th>
-										<th>Cantidad</th>
-										<th>Subtotal</th>
-									</thead>
-									<tbody>
-									{% for line in order.lines %}
-										
-										<tr>
-											<td width="10%;">
-												{% if line.producto.photo %}
-												<a class="picture" href="{{ line.producto.photo.url }}">
-												<img src="{{ line.producto.photo.url }}" alt="{{ line.producto }}" style="width:100%;"></a>
-												{% endif %}
-											</td>
-											<td>{{ line.producto }}</td>
-											<td>${{ line.producto.price|floatformat:2|intcomma }}</td>
-											<td>{{ line.quantity }}</td>
-											<td>${{ line.subtotal|floatformat:2|intcomma }}</td>
-										</tr>
-					
-									{% endfor %}					
-									</tbody>
-								</table>
+								<div class="table-responsive">
+									<table class="table">
+										<thead>
+											<th></th>
+											<th>Producto</th>
+											<th>Precio</th>
+											<th>Cantidad</th>
+											<th>Subtotal</th>
+										</thead>
+										<tbody>
+										{% for line in order.lines %}
+											
+											<tr>
+												<td width="10%;">
+													{% if line.producto.photo %}
+													<a class="picture" href="{{ line.producto.photo.url }}">
+													<img src="{{ line.producto.photo.url }}" alt="{{ line.producto }}" style="width:100%;"></a>
+													{% endif %}
+												</td>
+												<td>{{ line.producto }}</td>
+												<td>${{ line.producto.price|floatformat:2|intcomma }}</td>
+												<td>{{ line.quantity }}</td>
+												<td>${{ line.subtotal|floatformat:2|intcomma }}</td>
+											</tr>
+						
+										{% endfor %}					
+										</tbody>
+									</table>
+								</div>
 							</div>
 						</div>
 						<hr>
 						<div class="row">							
 							<div class="col-12">						
 								<div class="row">
-									<div class="col-md-9 col-7 text-right text-muted">				
-										<h5>Subtotal: </h5>
+									<div class="col-md-9 col-5 text-right text-muted">				
+										<b><small>Subtotal: </small></b>
 									</div>
-									<div class="col-md-3 col-5 text-left">				
+									<div class="col-md-3 col-7 text-left">				
 										<h4><span class="txt_subtotal">${{ order.subtotal|floatformat:2|intcomma }}</span> </h4>
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-md-9 col-7 text-right text-muted">										
-										<h5>Descuento:</h5>
+									<div class="col-md-9 col-5 text-right text-muted">										
+										<b><small>Descuento:</small></b>
 									</div>
-									<div class="col-md-3 col-5 text-left">
+									<div class="col-md-3 col-7 text-left">
 										{% if order.cupon > 0 %}
 										<h4><span class="txt_cupon">-${{order.cupon|floatformat:2|intcomma }}</span> </h4>
 										{% else %}
@@ -103,10 +105,10 @@
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-md-9 col-7 text-right text-muted">				
-										<h5>Total: </h5>
+									<div class="col-md-9 col-5 text-right text-muted">				
+										<b><small>Total: </small></b>
 									</div>
-									<div class="col-md-3 col-5 text-left">				
+									<div class="col-md-3 col-7 text-left">				
 										<h4><span class="txt_total">${{ order.total|floatformat:2|intcomma }}</span> </h4>
 									</div>
 								</div>
