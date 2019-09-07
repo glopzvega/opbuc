@@ -67,15 +67,15 @@
 						</form>
 						<br>
 						{% if form.errors %}
-						<p>Your username and password didn't match. Please try again.</p>
+						<p>Tu usuario y contraseña no coinciden, por favor intentalo nuevamente.</p>
 						{% endif %}
 
 						{% if next %}
 								{% if user.is_authenticated %}
-								<p>Your account doesn't have access to this page. To proceed,
-								please login with an account that has access.</p>
+								<p>Tu cuenta no tiene acceso a esta página. Para proceder,
+								por favor has login con una cuenta que tenga acceso.</p>
 								{% else %}
-								<p>Please login to see this page.</p>
+								<p>Por favor has login para ver esta página</p>
 								{% endif %}
 						{% endif %}
 									

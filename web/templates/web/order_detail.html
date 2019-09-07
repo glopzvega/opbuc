@@ -83,18 +83,18 @@
 						<div class="row">							
 							<div class="col-12">						
 								<div class="row">
-									<div class="col-9 text-right text-muted">				
+									<div class="col-md-9 col-7 text-right text-muted">				
 										<h5>Subtotal: </h5>
 									</div>
-									<div class="col-3 text-left">				
+									<div class="col-md-3 col-5 text-left">				
 										<h4><span class="txt_subtotal">${{ order.subtotal|floatformat:2|intcomma }}</span> </h4>
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-9 text-right text-muted">										
+									<div class="col-md-9 col-7 text-right text-muted">										
 										<h5>Descuento:</h5>
 									</div>
-									<div class="col-3 text-left">
+									<div class="col-md-3 col-5 text-left">
 										{% if order.cupon > 0 %}
 										<h4><span class="txt_cupon">-${{order.cupon|floatformat:2|intcomma }}</span> </h4>
 										{% else %}
@@ -103,10 +103,10 @@
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-9 text-right text-muted">				
+									<div class="col-md-9 col-7 text-right text-muted">				
 										<h5>Total: </h5>
 									</div>
-									<div class="col-3 text-left">				
+									<div class="col-md-3 col-5 text-left">				
 										<h4><span class="txt_total">${{ order.total|floatformat:2|intcomma }}</span> </h4>
 									</div>
 								</div>
