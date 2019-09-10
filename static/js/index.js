@@ -63,6 +63,16 @@ let buscarlugares = function(zone_id, category_id)
         }
       });
     }
+    else
+    {
+      $("a.zona").each(function(index, value){
+        if($(this).attr("zone_id") == "")
+        {
+          $(this).addClass("selected");
+          $("#dropdownMenuButtonZona").text("Todas");
+        }
+      });
+    }
 
     category_res = res.category_id;
     if (category_res)
@@ -73,6 +83,16 @@ let buscarlugares = function(zone_id, category_id)
         {
           $(this).addClass("selected");
           $("#dropdownMenuButtonCategoria").text(category_res.name.substr(0, 10));
+        }
+      });
+    }
+    else
+    {
+      $("a.categoria").each(function(index, value){
+        if($(this).attr("category_id") == "")
+        {
+          $(this).addClass("selected");
+          $("#dropdownMenuButtonCategoria").text("Todas");
         }
       });
     }
@@ -122,8 +142,9 @@ let buscarlugares = function(zone_id, category_id)
 $("a.categoria").on("click", function(e){  
   e.preventDefault();   
   $("a.categoria").removeClass("selected");
-  $("a.zona").removeClass("selected");
   $(this).addClass("selected");
+  $("a.zona").removeClass("selected");
+  $("a.nav-link.inicio").addClass("selected");
   category_id = $(this).attr("category_id");  
   buscarlugares("", category_id);  
 });
