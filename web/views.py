@@ -184,6 +184,10 @@ def pagar_cobranza(request, id):
 			order["success"] = False
 			return JsonResponse(order)
 		
+		if lugar.nuevo:
+			lugar.nuevo = False
+			lugar.save()
+			
 		order["success"] = True
 		cobro.state = "done"
 		cobro.save()
