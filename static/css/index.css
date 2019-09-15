@@ -292,3 +292,18 @@ img.img-main
   border-bottom: 2px solid #dc3545;
 
 }
+
+@media only screen 
+and (max-width : 320px) {
+
+  .carousel
+  {    
+    height: 200px;
+  }
+  .carousel img
+  {          
+    height: 200px;
+    
+  }
+
+}
