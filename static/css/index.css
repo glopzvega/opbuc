@@ -299,7 +299,7 @@ and (max-width : 450px) {
   .carousel
   {    
     height: 200px;
-    margin-bottom: 2em;
+    margin-bottom: 1em;
   }
   .carousel img
   {          
