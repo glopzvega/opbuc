@@ -44,7 +44,7 @@
                                 <td>Realizado</td>
                                 {% endif %}
                                 <td>
-                                {% if cobro.state == 'draft' %}
+                                {% if cobro.state == 'draft' and not user.is_staff %}
                                     <a href="{{cobro.id}}" class="btn btn-danger confirmar">Pagar</a>
                                 {% endif %}
                                 </td>
