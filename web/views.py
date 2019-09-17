@@ -425,7 +425,7 @@ def lugares_categoria(request, id):
 					"name" : lugar.zone.name,
 				},
 				"address" : lugar.address,
-				"phone" : lugar.phone,
+				# "phone" : lugar.phone,
 				"email" : lugar.email,				
 				"photo" : lugar.photo.url
 			}
@@ -568,7 +568,7 @@ def buscarlugar(request):
 						"description" : lugar.description,
 						"zone_id" : lugar.zone_id,
 						"category_id" : lugar.category_id,
-						"phone" : lugar.phone,
+						# "phone" : lugar.phone,
 						"address" : lugar.address,
 						"email" : lugar.email,
 					}
