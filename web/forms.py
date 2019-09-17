@@ -60,13 +60,13 @@ class LugarModelForm(ModelForm):
 		model = Lugar
 		fields = "__all__"
 		# fields = ("name", "category", "zone", "phone", "email", "description", "video", "mapa", "web", "photo")
-		exclude = ("user", "clear_name", "nuevo", "sugerido")
+		exclude = ("user", "clear_name", "nuevo", "sugerido", "phone")
 
 		labels = {
 			'name' : 'Nombre',
 			'category' : 'Categoría',
 			'zone' : 'Zona',
-			'phone' : 'Teléfono',
+			# 'phone' : 'Teléfono',
 			'email' : 'Email',
 			'precio' : 'Precio promedio por persona',
 			'description' : 'Descripción',
