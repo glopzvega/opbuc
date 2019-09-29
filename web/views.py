@@ -151,7 +151,9 @@ def generar_cobranza_method():
 				newCobro.save()
 		
 				for order in ordenes_pendientes:
-					porcentaje = float(order.total) * 0.1
+					monto_conekta = float(order.total) - (float(order.total) * 0.03) - (2.5 * 1.16)
+					porcentaje = monto_conekta * 0.05
+					# porcentaje = float(order.total) * 0.1
 					comision += porcentaje
 					total += order.total	
 					order.cobro_id = newCobro
