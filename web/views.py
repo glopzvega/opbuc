@@ -490,7 +490,8 @@ def lugar(request, id):
 			cats.append(cat)
 
 	for cat in cats:
-		cat.prods = productos.filter(category=cat)
+		if cat and cat.prods:
+			cat.prods = productos.filter(category=cat)
 
 	calif = 0
 	prom = 0
